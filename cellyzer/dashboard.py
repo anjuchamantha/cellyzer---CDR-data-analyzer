@@ -1,5 +1,5 @@
 """
 GUI is modeled here
 
-tools - Tkinter / Kivy
+tools - Tkinter / Kivy/ Dash
 """

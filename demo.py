@@ -2,11 +2,7 @@
 This is for manual testing the library
 """
 
-from cellyzer import core
+import cellyzer as cz
 
-# core.graph()
-
-# read call records csv file
-# make CallRecord objects
-
-
+cz.read_call("csv")
+# cz.utils.utils_func()
