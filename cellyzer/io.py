@@ -6,6 +6,7 @@ altering datasets (removing columns etc.)
 
 """
 
+import csv
 
 def io_func():
     print("I am from io")
@@ -48,9 +49,20 @@ def read_call(type):
     pass
 
 
-def read_msg():
+def read_msg(file_path):
     print("[x]  Reading Message Data")
-    read_csv()
+
+    try:
+        with open(file_path, 'r') as csv_file:
+            reader = csv.DictReader(csv_file)
+            messages = dict((d['user'], ( d['other'], d['direction'], d['length'], d['timestamp'] )) for d in reader)
+
+    except IOError:
+        pass
+
+
+    for key in messages:
+        print(key , messages[key])
 
     """
      Load message records from a file.
