@@ -96,8 +96,8 @@ class DataSet:
     def __init__(self):
         self._records = []
 
-    # def get_records(self):
-    #     return self._records
+    def get_records(self):
+        return self._records
 
     def add_data_to_records(self, data):
         self._records.append(data)

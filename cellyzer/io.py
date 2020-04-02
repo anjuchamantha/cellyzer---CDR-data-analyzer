@@ -70,7 +70,7 @@ def read_call(file_path):
 
 
 def read_msg(file_path):
-    print("[x]  Reading Message Data")
+    print("[x]  Reading Message Data...")
 
     try:
         with open(file_path, 'r') as csv_file:
@@ -84,11 +84,11 @@ def read_msg(file_path):
                     message[f] = val[f]
                 messages_list.append(message)
 
-            for m in messages_list:
-                print(m)
+            # for m in messages_list:
+            #     print(m)
             # messages = dict((d['user'], ( d['other'], d['direction'], d['length'], d['timestamp'] )) for d in reader)
 
-            create_msg_obj(messages_list)
+            return create_msg_obj(messages_list)
     except IOError:
         print("IO Error :", IOError)
         pass
@@ -161,11 +161,12 @@ def create_msg_obj(messages):
                     length = msg[key]
                 elif 'time' in key:
                     timestamp = msg[key]
-            #print(user, other_user, direction, length, timestamp)
+            # print(user, other_user, direction, length, timestamp)
 
             message_record_obj = MessageRecord(user, other_user, direction, length, timestamp)
 
             message_dataset_obj.add_data_to_records(message_record_obj)
 
         # print(message_dataset_obj.get_max())
-        print("objects created")
+        print("[x]  Objects creation successful\n")
+        return message_dataset_obj
