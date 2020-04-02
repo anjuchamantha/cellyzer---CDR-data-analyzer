@@ -12,6 +12,8 @@ import cellyzer as cz
 
 
 
-file_path = "../dataset/my_test_data/messages.csv"
-cz.read_msg(file_path)
+msg_file_path = "../dataset/my_test_data/messages.csv"
+cz.read_msg(msg_file_path)
 
+# call_file_path = "../dataset/my_test_data/call.csv"
+# cz.read_call(call_file_path)

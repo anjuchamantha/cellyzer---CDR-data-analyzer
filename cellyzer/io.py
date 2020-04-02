@@ -30,10 +30,28 @@ def read_csv():
     pass
 
 
-def read_call(type):
+def read_call(file_path):
     print("[x]  Reading Call Data")
-    if type=="csv":
-        read_csv()
+
+    try:
+        with open(file_path, 'r') as csv_file:
+            reader = csv.DictReader(csv_file)
+
+            fieldnames = reader.fieldnames
+            call_list = []
+            for val in reader:
+                call = dict()
+                for f in fieldnames:
+                    call[f] = val[f]
+                call_list.append(call)
+
+            for c in call_list:
+                print(c)
+
+            create_call_obj(call_list)
+    except IOError:
+        print("IO Error :", IOError)
+        pass
 
     """
      Load call records from a file.
@@ -64,19 +82,16 @@ def read_msg(file_path):
                 message = dict()
                 for f in fieldnames:
                     message[f] = val[f]
-                    messages_list.append(message)
+                messages_list.append(message)
 
             for m in messages_list:
                 print(m)
-            #messages = dict((d['user'], ( d['other'], d['direction'], d['length'], d['timestamp'] )) for d in reader)
+            # messages = dict((d['user'], ( d['other'], d['direction'], d['length'], d['timestamp'] )) for d in reader)
 
             create_msg_obj(messages_list)
     except IOError:
-        print ("IO Error :", IOError)
+        print("IO Error :", IOError)
         pass
-
-
-
 
     """
      Load message records from a file.
@@ -124,6 +139,11 @@ def to_csv():
     pass
 
 
+def create_call_obj(calls):
+    if calls is not None:
+        call_dataset_obj = CallDataSet()
+
+
 def create_msg_obj(messages):
     if messages is not None:
         message_dataset_obj = MessageDataSet()
@@ -141,10 +161,11 @@ def create_msg_obj(messages):
                     length = msg[key]
                 elif 'time' in key:
                     timestamp = msg[key]
+            #print(user, other_user, direction, length, timestamp)
 
             message_record_obj = MessageRecord(user, other_user, direction, length, timestamp)
 
             message_dataset_obj.add_data_to_records(message_record_obj)
 
-        #print(message_dataset_obj.get_max())
-        print ("objects created")
+        # print(message_dataset_obj.get_max())
+        print("objects created")
