@@ -4,7 +4,6 @@ This is for manual testing the library
 
 import cellyzer as cz
 
-
 # cz.read_call("csv")
 # cz.utils.utils_func()
 
@@ -14,16 +13,19 @@ import cellyzer as cz
 
 msg_file_path = "../dataset/my_test_data/messages.csv"
 messageDataSet = cz.read_msg(msg_file_path)
-cz.utils.print_dataset(messageDataSet,name= "Message Dataset")
+# cz.utils.print_dataset(messageDataSet, name="Message Dataset")
 
 all_users = messageDataSet.get_all_users()
 print("All Users : %s \n" % all_users)
 
-connected_users = messageDataSet.get_connected_users("7610039694")
-print("Users connected to 7610039694 : %s \n" % connected_users)
+search_user1 = "7681546436"
+search_user2 = "7641036117"
 
-user_record_list = messageDataSet.get_records("7610039694")
+connected_users = messageDataSet.get_connected_users(search_user1)
+print("Users connected to %s : %s \n" % (search_user1 , connected_users))
+
+user_record_list = messageDataSet.get_records(search_user1, search_user2)
+# cz.utils.print_record_lists(user_record_list)
+
 user_message_dataset = cz.MessageDataSet(user_record_list)
-cz.utils.print_dataset(user_message_dataset)
-
-
+cz.utils.print_dataset(user_message_dataset, name="User Records of %s" % search_user1 + " " + search_user2)

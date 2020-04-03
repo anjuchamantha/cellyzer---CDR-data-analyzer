@@ -1,5 +1,8 @@
 import tabulate
 
+def print_record_lists(records):
+    for record in records:
+        print(vars(record))
 
 def print_dataset(dataset_obj, notebook=False, name="Dataset"):
     # print a dataset obj as a dictionary

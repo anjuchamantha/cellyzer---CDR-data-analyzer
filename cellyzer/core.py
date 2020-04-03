@@ -150,11 +150,11 @@ class MessageDataSet(DataSet):
             if (user1 is None) and (user2 is None):
                 # calls the function of DataSet class
                 return super().get_records()
-            if user2 is None:
+            if (user1 is not None) and (user2 is None):
                 # returns a list of MessageRecord objects where the given user is involved
-                if user == user or user == other_user:
+                if user1 == user or user1 == other_user:
                     connection_records.append(record)
-            else:
+            if (user1 is not None) and (user2 is not None):
                 # returns a list of MessageRecord objects where the given 2 users are involved(connected)
                 if (user1 == user and user2 == other_user) or (user1 == other_user and user2 == user):
                     connection_records.append(record)
