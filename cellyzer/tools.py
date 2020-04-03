@@ -1,4 +1,18 @@
 import datetime
+import tabulate
+
+
+def print_matrix(_2dlist, headers):
+    print(headers)
+    print(_2dlist)
+    matrix = []
+    for i in range(0, len(_2dlist)):
+        _2dlist[i].insert(0, headers[i])
+        matrix.append(_2dlist[i])
+    headers.insert(0, "")
+    # print (matrix)
+    # print (headers)
+    print(tabulate.tabulate(matrix, headers=headers, tablefmt='pretty'))
 
 
 def get_date_from_timestamp(timestamp):

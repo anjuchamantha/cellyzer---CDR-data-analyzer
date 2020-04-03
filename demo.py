@@ -32,3 +32,5 @@ cz.utils.print_dataset(user_message_dataset, name="User Records of %s" % search_
 
 date = cz.tools.get_date_from_timestamp("Mon Feb 11 07:08:49 +0000 1980")
 print(date)
+
+messageDataSet.print_connection_matrix()

@@ -13,6 +13,7 @@ Cell
 import matplotlib.pyplot as plt
 import numpy as np
 import math
+from . import tools
 
 
 # class DataFrame:
@@ -173,6 +174,20 @@ class MessageDataSet(DataSet):
                 connected_users.append(other_user)
         connected_users.remove(user)
         return connected_users
+
+    def print_connection_matrix(self):
+        matrix = []
+        all_users = self.get_all_users()
+        for u1 in all_users:
+            connected_users = self.get_connected_users(u1)
+            row = []
+            for u2 in all_users:
+                if u2 in connected_users:
+                    row.append("X")
+                else:
+                    row.append(".")
+            matrix.append(row)
+        tools.print_matrix(matrix, all_users)
 
     def get_close_contacts(self):
         print("close contacts")
