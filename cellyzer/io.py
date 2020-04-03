@@ -146,13 +146,14 @@ def create_call_obj(calls):
 
 def create_msg_obj(messages):
     if messages is not None:
-        message_dataset_obj = MessageDataSet()
 
+        msg_records = []
         for msg in messages:
             user = other_user = direction = length = timestamp = None
+
             for key in msg:
-                if 'user' in key:
-                    user = msg[key]
+                if 'user' == key:
+                    user = msg["user"]
                 elif 'other' in key:
                     other_user = msg[key]
                 elif 'dir' in key:
@@ -163,10 +164,10 @@ def create_msg_obj(messages):
                     timestamp = msg[key]
             # print(user, other_user, direction, length, timestamp)
 
-            message_record_obj = MessageRecord(user, other_user, direction, length, timestamp)
+            message_record_obj = MessageRecord(
+                user, other_user, direction, length, timestamp)
+            msg_records.append(message_record_obj)
+        message_dataset_obj = MessageDataSet(msg_records)
 
-            message_dataset_obj.add_data_to_records(message_record_obj)
-
-        # print(message_dataset_obj.get_max())
         print("[x]  Objects creation successful\n")
         return message_dataset_obj
