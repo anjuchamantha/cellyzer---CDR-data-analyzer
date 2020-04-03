@@ -84,11 +84,7 @@ def read_msg(file_path):
                     message[f] = val[f]
                 messages_list.append(message)
 
-            # for m in messages_list:
-            #     print(m)
-            # messages = dict((d['user'], ( d['other'], d['direction'], d['length'], d['timestamp'] )) for d in reader)
-
-            return create_msg_obj(messages_list,fieldnames)
+            return create_msg_obj(messages_list, fieldnames)
     except IOError:
         print("IO Error :", IOError)
         pass
@@ -106,7 +102,6 @@ def read_msg(file_path):
 
 
     """
-    pass
 
 
 def read_cell():
@@ -144,7 +139,7 @@ def create_call_obj(calls):
         call_dataset_obj = CallDataSet()
 
 
-def create_msg_obj(messages,fieldnames):
+def create_msg_obj(messages, fieldnames):
     if messages is not None:
 
         msg_records = []
@@ -167,7 +162,7 @@ def create_msg_obj(messages,fieldnames):
             message_record_obj = MessageRecord(
                 user, other_user, direction, length, timestamp)
             msg_records.append(message_record_obj)
-        message_dataset_obj = MessageDataSet(msg_records,fieldnames)
+        message_dataset_obj = MessageDataSet(msg_records, fieldnames)
 
         # print("[x]  Objects creation successful\n")
         return message_dataset_obj

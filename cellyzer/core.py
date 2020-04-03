@@ -143,6 +143,7 @@ class MessageDataSet(DataSet):
         return all_users
 
     def get_records(self, user1=None, user2=None):
+        # filter records using given user(s)
         connection_records = []
         for record in super().get_records():
             user = record.get_user()
@@ -161,6 +162,7 @@ class MessageDataSet(DataSet):
         return connection_records
 
     def get_connected_users(self, user):
+        # returns the list of users that are connected to the given user
         connected_users = []
         for record in self.get_records(user):
             user = record.get_user()
