@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 from . import tools
+from . import visualization
 
 
 # class DataFrame:
@@ -188,6 +189,30 @@ class MessageDataSet(DataSet):
                     row.append(".")
             matrix.append(row)
         tools.print_matrix(matrix, all_users)
+
+    def get_connections(self):
+        connections = []
+        for record in self.get_records():
+            connection = [record.get_user(), record.get_other_user()]
+            connections.append(connection)
+        return connections
+
+    def get_distinct_connections(self):
+        connections = []
+        for record in self.get_records():
+            connection = [record.get_user(), record.get_other_user()]
+            reverse_connection = connections
+            reverse_connection.reverse()
+            if (connection not in connections) and (reverse_connection not in connections):
+                connections.append(connection)
+        return connections
+
+    def visualize_connection_network(self, distinct=False):
+        if distinct:
+            connections = self.get_distinct_connections()
+        else:
+            connections = self.get_connections()
+        visualization.network_graph(connections)
 
     def get_close_contacts(self):
         print("close contacts")

@@ -3,8 +3,6 @@ import tabulate
 
 
 def print_matrix(_2dlist, headers):
-    print(headers)
-    print(_2dlist)
     matrix = []
     for i in range(0, len(_2dlist)):
         _2dlist[i].insert(0, headers[i])

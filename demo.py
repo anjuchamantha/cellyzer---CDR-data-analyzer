@@ -34,3 +34,5 @@ date = cz.tools.get_date_from_timestamp("Mon Feb 11 07:08:49 +0000 1980")
 print(date)
 
 messageDataSet.print_connection_matrix()
+
+messageDataSet.visualize_connection_network()
