@@ -93,7 +93,8 @@ class CellRecord(Record):
 
 # classes for DataSet
 class DataSet:
-    def __init__(self, records=None):
+    def __init__(self, records=None, fieldnames=None):
+        self.fieldnames = fieldnames
         if records is None:
             self._records = []
         else:
@@ -146,7 +147,7 @@ class MessageDataSet(DataSet):
         for record in super().get_records():
             user = record.get_user()
             other_user = record.get_other_user()
-            if user1 is None and user2 is None:
+            if (user1 is None) and (user2 is None):
                 # calls the function of DataSet class
                 return super().get_records()
             if user2 is None:
