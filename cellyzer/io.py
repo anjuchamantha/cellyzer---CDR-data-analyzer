@@ -48,7 +48,7 @@ def read_call(file_path):
             for c in call_list:
                 print(c)
 
-            create_call_obj(call_list)
+            create_call_obj(call_list, fieldnames)
     except IOError:
         print("IO Error :", IOError)
         pass
@@ -134,9 +134,33 @@ def to_csv():
     pass
 
 
-def create_call_obj(calls):
+def create_call_obj(calls, fieldnames):
     if calls is not None:
-        call_dataset_obj = CallDataSet()
+
+        call_records = []
+        for call in calls:
+            user = other_user = direction = duration = timestamp = antenna_id = cost = None
+
+            for key in call:
+                if 'user' == key:
+                    user = call["user"]
+                elif 'other' in key:
+                    other_user = call[key]
+                elif 'dir' in key:
+                    direction = call[key]
+                elif 'dur' in key:
+                    duration = call[key]
+                elif 'time' in key:
+                    timestamp = call[key]
+            # print(user, other_user, direction, length, timestamp)
+
+            call_record_obj = CallRecord(
+                user, other_user, direction, duration, timestamp)
+            call_records.append(call_record_obj)
+        call_dataset_obj = CallDataSet(call_records, fieldnames)
+
+        # print("[x]  Objects creation successful\n")
+        return call_dataset_obj
 
 
 def create_msg_obj(messages, fieldnames):
