@@ -1,30 +1,15 @@
 """
 Main classes are modeled here
 
-classes
----------
-CallRecord
-User
-Message
-Cell
-
 """
 
-import matplotlib.pyplot as plt
-import numpy as np
-import math
 from . import tools
 from . import visualization
 
 
-# class DataFrame:
-#     def __init__(self):
-
-
 # Classes for Records
 class Record:
-    def getsomething(self):
-        print("in parent record class")
+    pass
 
 
 class CallRecord(Record):
@@ -167,16 +152,16 @@ class MessageDataSet(DataSet):
         # returns the list of users that are connected to the given user
         connected_users = []
         for record in self.get_records(user):
-            user = record.get_user()
-            other_user = record.get_other_user()
-            if user not in connected_users:
-                connected_users.append(user)
-            if other_user not in connected_users:
-                connected_users.append(other_user)
-        connected_users.remove(user)
+            user1 = record.get_user()
+            user2 = record.get_other_user()
+            if (user1 not in connected_users) and (user1 != user):
+                connected_users.append(user1)
+            if (user2 not in connected_users) and (user2 != user):
+                connected_users.append(user2)
         return connected_users
 
     def print_connection_matrix(self):
+
         matrix = []
         all_users = self.get_all_users()
         for u1 in all_users:
@@ -184,7 +169,9 @@ class MessageDataSet(DataSet):
             row = []
             for u2 in all_users:
                 if u2 in connected_users:
-                    row.append("X")
+
+                    weight = len(self.get_records(u1, u2))
+                    row.append(weight)
                 else:
                     row.append(".")
             matrix.append(row)
@@ -197,22 +184,9 @@ class MessageDataSet(DataSet):
             connections.append(connection)
         return connections
 
-    def get_distinct_connections(self):
-        connections = []
-        for record in self.get_records():
-            connection = [record.get_user(), record.get_other_user()]
-            reverse_connection = connections
-            reverse_connection.reverse()
-            if (connection not in connections) and (reverse_connection not in connections):
-                connections.append(connection)
-        return connections
-
-    def visualize_connection_network(self, distinct=False):
-        if distinct:
-            connections = self.get_distinct_connections()
-        else:
-            connections = self.get_connections()
-        visualization.network_graph(connections)
+    def visualize_connection_network(self, directed=True):
+        connections = self.get_connections()
+        visualization.network_graph(connections, directed)
 
     def get_close_contacts(self):
         print("close contacts")
@@ -245,15 +219,3 @@ class User:
 
     def get_ignored_calls(self):
         print("ignored calls = 111222333")
-
-
-# additional functions
-def graph():
-    x = np.arange(0, math.pi * 2, 0.05)
-    y = np.sin(x)
-    plt.xlabel("angle")
-    plt.ylabel("sine")
-    plt.title("Sine Wave")
-    plt.plot(x, y)
-    plt.show()
-    return

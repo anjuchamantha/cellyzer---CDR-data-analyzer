@@ -1,8 +1,7 @@
 """
 Graphing classes and Mapping classes are modeled here
 
-Graphing - matplotlib
-Mapping - ipyleaflet / folium
+Graphing - matplotlib, networkx
 """
 
 import networkx as nx
@@ -48,14 +47,14 @@ def get_weighted_edge_list(edge_list, directed):
         return weighted_edge_list
 
 
-def network_graph(edge_list, directed=True):
+def network_graph(edge_list, directed):
     if directed:
         g = nx.DiGraph()
     else:
         g = nx.Graph()
 
     weighted_edges = get_weighted_edge_list(edge_list, directed)
-    print(weighted_edges)
+    # print(weighted_edges)
     for edge in weighted_edges:
         g.add_edge(edge[0], edge[1], weight=edge[2])
 
@@ -66,12 +65,3 @@ def network_graph(edge_list, directed=True):
     nx.draw_networkx_edge_labels(g, pos, edge_labels=labels, with_labels=True, font_size=8, label_pos=0.3)
     plt.savefig("connection_network.png")
     plt.show()
-
-# g.add_edge(1, 2)
-# g.add_edge(2, 3)
-# g.add_edge(3, 4)
-# g.add_edge(1, 4)
-# g.add_edge(1, 5)
-#
-# nx.draw(g, with_labels=True)
-# plt.savefig("filename.png")
