@@ -15,7 +15,7 @@ def io_func():
     return
 
 
-def read_csv():
+def read_csv(filepath):
     print("         from a CSV file ...")
 
     """
@@ -27,7 +27,27 @@ def read_csv():
         Path of the file.
 
     """
-    pass
+    try:
+        with open(filepath, 'r') as csv_file:
+            records = csv.DictReader(csv_file)
+
+            fieldnames = records.fieldnames
+            record_list = []
+            for val in records:
+                record = dict()
+                for f in fieldnames:
+                    record[f] = val[f]
+                record_list.append(record)
+
+            for c in record_list:
+                print(c)
+
+            dataset_object = DataSet(record_list, fieldnames)
+            return dataset_object
+
+    except IOError:
+        print("IO Error :", IOError)
+        pass
 
 
 def read_call(file_path):
