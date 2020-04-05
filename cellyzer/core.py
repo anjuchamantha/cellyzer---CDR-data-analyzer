@@ -180,7 +180,9 @@ class MessageDataSet(DataSet):
     def get_connections(self):
         connections = []
         for record in self.get_records():
-            connection = [record.get_user(), record.get_other_user()]
+            connection, direction = [record.get_user(), record.get_other_user()], record.get_direction()
+            if direction == "Incoming":
+                connection.reverse()
             connections.append(connection)
         return connections
 
