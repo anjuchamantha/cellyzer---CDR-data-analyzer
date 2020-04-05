@@ -124,6 +124,63 @@ class CallDataSet(DataSet):
                 all_users.append(other_user)
         return all_users
 
+    def get_records(self, user1=None, user2=None):
+        # filter records using given user(s)
+        connection_reords = []
+        for record in super().get_records():
+            user = record.get_user()
+            other_user = record.get_other_user()
+            if(user1 is None) and (user2 is None):
+                # calls the function of Dataset class
+                return super().get_records()
+            if(user1 is not None) and (user2 is None):
+                # returns a list of CallRecord objects where the given user is involved
+                if user1 == user or user1 == other_user:
+                    connection_reords.append(record)
+            if (user1 is not None) and (user2 is not None):
+                # returns a list of CallRecord objects where the gicen 2 users are involved
+                if (user1 == user and user2 == other_user) or (user1 == other_user and user2 == user):
+                    connection_reords.append(record)
+        return connection_reords
+
+    def get_connected_users(self, user):
+        # returns the list of users that are connected to the given user
+        connected_users = []
+        for record in self.get_records(user):
+            user1 = record.get_user()
+            user2 = record.get_other_user()
+            if (user1 not in connected_users) and (user1 != user):
+                connected_users.append(user1)
+            if (user2 not in connected_users) and (user2 != user):
+                connected_users.append(user2)
+        return connected_users
+
+    def print_connection_matrix(self):
+        matrix = []
+        all_users = self.get_all_users()
+        for u1 in all_users:
+            connected_users = self.get_connected_users(u1)
+            row = []
+            for u2 in all_users:
+                if u2 in connected_users:
+                    weight = len(self.get_records(u1, u2))
+                    row.append(weight)
+                else:
+                    row.append(".")
+            matrix.append(row)
+        tools.print_matrix(matrix, all_users)
+
+    def get_connections(self):
+        connections = []
+        for record in self.get_records():
+            connection = [record.get_user(), record.get_other_user()]
+            connections.append(connection)
+        return connections
+
+    def visualize_connection_network(self, directed=True):
+        connections = self.get_connections()
+        visualization.network_graph(connections, directed)
+
     def get_close_contacts(self):
         print("close contacts")
 

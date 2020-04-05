@@ -11,8 +11,8 @@ import cellyzer as cz
 # cz.core.graph()
 
 
-# msg_file_path = "dataset/my_test_data/messages.csv"
-# messageDataSet = cz.read_msg(msg_file_path)
+msg_file_path = "dataset/my_test_data/messages.csv"
+messageDataSet = cz.read_msg(msg_file_path)
 # cz.utils.print_dataset(messageDataSet, name="Message Dataset")
 
 # all_users = messageDataSet.get_all_users()
@@ -37,9 +37,30 @@ import cellyzer as cz
 #
 # messageDataSet.visualize_connection_network()
 
+# ---------------------call functions demo---------------
 
 call_file_path = "dataset/my_test_data/calls.csv"
 callDataSet = cz.read_call(call_file_path)
 
 all_users_of_calls = callDataSet.get_all_users()
-print("All Users : %s \n" % all_users_of_calls)
+print("All Users in call dataSet : %s \n" % all_users_of_calls)
+
+search_user_call_1 = "7981267897"
+search_user_call_2 = "7743039441"
+
+connected_users_calls = callDataSet.get_connected_users(search_user_call_1)
+print("Users connected to %s : %s \n" % (search_user_call_1, connected_users_calls))
+
+user_call_record_list = callDataSet.get_records(search_user_call_1, search_user_call_2)
+print(">> call records between %s and %s"%(search_user_call_1,search_user_call_2))
+cz.utils.print_record_lists(user_call_record_list)
+
+user_call_dataset = cz.MessageDataSet(user_call_record_list)
+cz.utils.print_dataset(user_call_dataset, name="User Records of %s" % search_user_call_1 + " " + search_user_call_2)
+
+callDataSet.print_connection_matrix()
+
+callDataSet.visualize_connection_network()
+
+
+
