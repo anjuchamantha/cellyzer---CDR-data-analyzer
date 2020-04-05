@@ -14,12 +14,14 @@ class Record:
 
 class CallRecord(Record):
 
-    def __init__(self, user, other_user, direction, duration, timestamp):
+    def __init__(self, user, other_user, direction, duration, timestamp, cell_id, cost):
         self._user = user
         self._other_user = other_user
         self._direction = direction
         self._duration = duration
         self._timestamp = timestamp
+        self._cell_id = cell_id
+        self._cost = cost
 
     def get_user(self):
         return self._user
@@ -35,6 +37,12 @@ class CallRecord(Record):
 
     def get_timestamp(self):
         return self._timestamp
+
+    def get_cell_id(self):
+        return self._cell_id
+
+    def get_cost(self):
+        return self._cost
 
 
 class MessageRecord(Record):
@@ -104,6 +112,18 @@ class DataSet:
 
 
 class CallDataSet(DataSet):
+    def get_all_users(self):
+        # return all the different users in the CallDataSet
+        all_users = []
+        for record in super().get_records():
+            user = record.get_user()
+            other_user = record.get_other_user()
+            if user not in all_users:
+                all_users.append(user)
+            if other_user not in all_users:
+                all_users.append(other_user)
+        return all_users
+
     def get_close_contacts(self):
         print("close contacts")
 

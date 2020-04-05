@@ -51,7 +51,7 @@ def read_csv(filepath):
 
 
 def read_call(file_path):
-    print("[x]  Reading Call Data")
+    # print("[x]  Reading Call Data")
 
     try:
         with open(file_path, 'r') as csv_file:
@@ -65,10 +65,7 @@ def read_call(file_path):
                     call[f] = val[f]
                 call_list.append(call)
 
-            for c in call_list:
-                print(c)
-
-            create_call_obj(call_list, fieldnames)
+            return create_call_obj(call_list, fieldnames)
     except IOError:
         print("IO Error :", IOError)
         pass
@@ -86,7 +83,6 @@ def read_call(file_path):
         
     
     """
-    pass
 
 
 def read_msg(file_path):
@@ -159,7 +155,7 @@ def create_call_obj(calls, fieldnames):
 
         call_records = []
         for call in calls:
-            user = other_user = direction = duration = timestamp = antenna_id = cost = None
+            user = other_user = direction = duration = timestamp = cell_id = cost = None
 
             for key in call:
                 if 'user' == key:
@@ -172,10 +168,15 @@ def create_call_obj(calls, fieldnames):
                     duration = call[key]
                 elif 'time' in key:
                     timestamp = call[key]
+                elif 'cell' in key or 'antenna' in key:
+                    cell_id = call[key]
+                elif 'cost' in key:
+                    cost = call[key]
+
             # print(user, other_user, direction, length, timestamp)
 
             call_record_obj = CallRecord(
-                user, other_user, direction, duration, timestamp)
+                user, other_user, direction, duration, timestamp, cell_id, cost)
             call_records.append(call_record_obj)
         call_dataset_obj = CallDataSet(call_records, fieldnames)
 
