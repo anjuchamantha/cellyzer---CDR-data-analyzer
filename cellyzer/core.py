@@ -5,6 +5,7 @@ Main classes are modeled here
 
 from . import tools
 from . import visualization
+from operator import itemgetter
 
 
 # Classes for Records
@@ -130,10 +131,10 @@ class CallDataSet(DataSet):
         for record in super().get_records():
             user = record.get_user()
             other_user = record.get_other_user()
-            if(user1 is None) and (user2 is None):
+            if (user1 is None) and (user2 is None):
                 # calls the function of Dataset class
                 return super().get_records()
-            if(user1 is not None) and (user2 is None):
+            if (user1 is not None) and (user2 is None):
                 # returns a list of CallRecord objects where the given user is involved
                 if user1 == user or user1 == other_user:
                     connection_reords.append(record)
@@ -181,8 +182,14 @@ class CallDataSet(DataSet):
         connections = self.get_connections()
         visualization.network_graph(connections, directed)
 
-    def get_close_contacts(self):
-        print("close contacts")
+    def get_close_contacts(self, user, top_contact=5):
+        connected_users = self.get_connected_users(user)
+        contacts_dict = {}
+        for user2 in connected_users:
+            records = self.get_records(user, user2)
+            contacts_dict[user2] = len(records)
+        close_contacts = dict(sorted(contacts_dict.items(), key=itemgetter(1), reverse=True)[:top_contact])
+        return close_contacts
 
     def get_most_active_time(self):
         print("most active time")

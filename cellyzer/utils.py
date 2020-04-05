@@ -26,3 +26,14 @@ def print_dataset(dataset_obj, notebook=False, name="Dataset"):
         print(tabulate.tabulate(rows, header, tablefmt='html'))
     else:
         print(tabulate.tabulate(rows, header, tablefmt='pretty'))
+
+
+def print_close_contacts(close_contact_dict):
+    # print close contacts as a dictionary
+    header = ["contact no", "no of calls between users"]
+    rows = []
+    for key, value in close_contact_dict.items():
+        row = [key, value]
+        rows.append(row)
+    print(tabulate.tabulate(rows, header, tablefmt='pretty'))
+
