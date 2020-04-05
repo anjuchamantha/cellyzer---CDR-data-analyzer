@@ -6,13 +6,16 @@ altering datasets (removing columns etc.)
 
 """
 
+import csv
+from .core import DataSet, MessageDataSet, CallDataSet, Record, CallRecord, MessageRecord, CellRecord
+
 
 def io_func():
     print("I am from io")
     return
 
 
-def read_csv():
+def read_csv(filepath):
     print("         from a CSV file ...")
 
     """
@@ -24,13 +27,51 @@ def read_csv():
         Path of the file.
 
     """
-    pass
+    try:
+        with open(filepath, 'r') as csv_file:
+            records = csv.DictReader(csv_file)
+
+            fieldnames = records.fieldnames
+            record_list = []
+            for val in records:
+                record = dict()
+                for f in fieldnames:
+                    record[f] = val[f]
+                record_list.append(record)
+
+            for c in record_list:
+                print(c)
+
+            dataset_object = DataSet(record_list, fieldnames)
+            return dataset_object
+
+    except IOError:
+        print("IO Error :", IOError)
+        pass
 
 
-def read_call(type):
+def read_call(file_path):
     print("[x]  Reading Call Data")
-    if type=="csv":
-        read_csv()
+
+    try:
+        with open(file_path, 'r') as csv_file:
+            reader = csv.DictReader(csv_file)
+
+            fieldnames = reader.fieldnames
+            call_list = []
+            for val in reader:
+                call = dict()
+                for f in fieldnames:
+                    call[f] = val[f]
+                call_list.append(call)
+
+            for c in call_list:
+                print(c)
+
+            create_call_obj(call_list, fieldnames)
+    except IOError:
+        print("IO Error :", IOError)
+        pass
 
     """
      Load call records from a file.
@@ -48,9 +89,25 @@ def read_call(type):
     pass
 
 
-def read_msg():
-    print("[x]  Reading Message Data")
-    read_csv()
+def read_msg(file_path):
+    # print("[x]  Reading Message Data...")
+
+    try:
+        with open(file_path, 'r') as csv_file:
+            reader = csv.DictReader(csv_file)
+
+            fieldnames = reader.fieldnames
+            messages_list = []
+            for val in reader:
+                message = dict()
+                for f in fieldnames:
+                    message[f] = val[f]
+                messages_list.append(message)
+
+            return create_msg_obj(messages_list, fieldnames)
+    except IOError:
+        print("IO Error :", IOError)
+        pass
 
     """
      Load message records from a file.
@@ -65,7 +122,6 @@ def read_msg():
 
 
     """
-    pass
 
 
 def read_cell():
@@ -96,3 +152,61 @@ def to_json():
 def to_csv():
     print("[x]  Writing to csv file ...")
     pass
+
+
+def create_call_obj(calls, fieldnames):
+    if calls is not None:
+
+        call_records = []
+        for call in calls:
+            user = other_user = direction = duration = timestamp = antenna_id = cost = None
+
+            for key in call:
+                if 'user' == key:
+                    user = call["user"]
+                elif 'other' in key:
+                    other_user = call[key]
+                elif 'dir' in key:
+                    direction = call[key]
+                elif 'dur' in key:
+                    duration = call[key]
+                elif 'time' in key:
+                    timestamp = call[key]
+            # print(user, other_user, direction, length, timestamp)
+
+            call_record_obj = CallRecord(
+                user, other_user, direction, duration, timestamp)
+            call_records.append(call_record_obj)
+        call_dataset_obj = CallDataSet(call_records, fieldnames)
+
+        # print("[x]  Objects creation successful\n")
+        return call_dataset_obj
+
+
+def create_msg_obj(messages, fieldnames):
+    if messages is not None:
+
+        msg_records = []
+        for msg in messages:
+            user = other_user = direction = length = timestamp = None
+
+            for key in msg:
+                if 'user' == key:
+                    user = msg["user"]
+                elif 'other' in key:
+                    other_user = msg[key]
+                elif 'dir' in key:
+                    direction = msg[key]
+                elif 'len' in key:
+                    length = msg[key]
+                elif 'time' in key:
+                    timestamp = msg[key]
+            # print(user, other_user, direction, length, timestamp)
+
+            message_record_obj = MessageRecord(
+                user, other_user, direction, length, timestamp)
+            msg_records.append(message_record_obj)
+        message_dataset_obj = MessageDataSet(msg_records, fieldnames)
+
+        # print("[x]  Objects creation successful\n")
+        return message_dataset_obj
