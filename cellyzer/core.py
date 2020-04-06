@@ -34,7 +34,7 @@ class CallRecord(Record):
         return self._direction
 
     def get_duration(self):
-        return self._direction
+        return self._duration
 
     def get_timestamp(self):
         return self._timestamp
@@ -174,7 +174,9 @@ class CallDataSet(DataSet):
     def get_connections(self):
         connections = []
         for record in self.get_records():
-            connection = [record.get_user(), record.get_other_user()]
+            connection, direction = [record.get_user(), record.get_other_user()], record.get_direction()
+            if direction == "Incoming":
+                connection.reverse()
             connections.append(connection)
         return connections
 
@@ -183,11 +185,14 @@ class CallDataSet(DataSet):
         visualization.network_graph(connections, directed)
 
     def get_close_contacts(self, user, top_contact=5):
-        connected_users = self.get_connected_users(user)
+        # get top contacts who have most number of calls and longest call duration with the user
         contacts_dict = {}
-        for user2 in connected_users:
-            records = self.get_records(user, user2)
-            contacts_dict[user2] = len(records)
+        for user2 in self.get_connected_users(user):
+            valid_records = []
+            for record in self.get_records(user, user2):
+                if int(record.get_duration()) > 0:
+                    valid_records.append(record)
+            contacts_dict[user2] = len(valid_records)
         close_contacts = dict(sorted(contacts_dict.items(), key=itemgetter(1), reverse=True)[:top_contact])
         return close_contacts
 
@@ -195,7 +200,6 @@ class CallDataSet(DataSet):
         print("most active time")
         a = []
         return a
-
 
     def get_call_details(self):
         print("call details")
