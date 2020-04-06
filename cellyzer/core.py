@@ -193,6 +193,9 @@ class CallDataSet(DataSet):
 
     def get_most_active_time(self):
         print("most active time")
+        a = []
+        return a
+
 
     def get_call_details(self):
         print("call details")
@@ -264,7 +267,9 @@ class MessageDataSet(DataSet):
     def get_connections(self):
         connections = []
         for record in self.get_records():
-            connection = [record.get_user(), record.get_other_user()]
+            connection, direction = [record.get_user(), record.get_other_user()], record.get_direction()
+            if direction == "Incoming":
+                connection.reverse()
             connections.append(connection)
         return connections
 

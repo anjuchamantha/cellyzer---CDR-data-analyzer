@@ -65,3 +65,4 @@ callDataSet.print_connection_matrix()
 close_contacts = callDataSet.get_close_contacts(search_user_call_1, top_contact=2)
 print(">> close contacts of %s : %s" % (search_user_call_1, close_contacts))
 cz.utils.print_close_contacts(close_contacts)
+
