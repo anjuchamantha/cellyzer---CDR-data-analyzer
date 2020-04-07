@@ -173,6 +173,8 @@ class DataSet:
         return matrix, headers
 
     def get_connections(self):
+        # returns a list of lists of [user1,user2]
+        # user1 makes a call to user2
         connections = []
         for record in self.get_records():
             connection, direction = [record.get_user(), record.get_other_user()], record.get_direction()
@@ -183,7 +185,8 @@ class DataSet:
 
     def visualize_connection_network(self, directed=True):
         connections = self.get_connections()
-        visualization.network_graph(connections, directed)
+        weighted_edge_list = tools.get_weighted_edge_list(connections, directed)
+        visualization.network_graph(weighted_edge_list, directed)
         return connections, directed
 
     def get_close_contacts(self, user, top_contact=5):
