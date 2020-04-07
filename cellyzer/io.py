@@ -13,8 +13,10 @@ from dateutil.parser import parse
 from datetime import datetime
 
 from .core import DataSet, MessageDataSet, CallDataSet, Record, CallRecord, MessageRecord, CellRecord
+from .tools import ColorHandler
 
 log.getLogger().setLevel(log.WARN)
+log.getLogger().addHandler(ColorHandler())
 
 
 def io_func():
@@ -316,6 +318,7 @@ def filter_messages(call_records):
 
 
 def parse_records(records, fieldnames):
+    _level = log.getLogger().level
     if 'duration' in fieldnames:
         filtered_records, ignored_list, bad_records = filter_calls(records)
 
@@ -329,7 +332,6 @@ def parse_records(records, fieldnames):
             if k != 'all' and ignored_list[k] != 0:
                 w += "\n" + " " * 9 + "%s: %i record(s) with " \
                                       "incomplete values" % (k, ignored_list[k])
-        print(w)
-    print('End of parse_record function')
-
+        log.warning(w)
+    log.getLogger().setLevel(_level)
     return filtered_records, bad_records
