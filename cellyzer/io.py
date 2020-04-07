@@ -8,6 +8,7 @@ altering datasets (removing columns etc.)
 
 import csv
 from collections import OrderedDict
+from dateutil.parser import parse
 from datetime import datetime
 
 from .core import DataSet, MessageDataSet, CallDataSet, Record, CallRecord, MessageRecord, CellRecord
@@ -42,14 +43,10 @@ def read_csv(filepath):
                     record[f] = val[f]
                 record_list.append(record)
 
-            # for c in record_list:
-            # print(c)
-
-            filterrecords, bad_records, calldictionary, messagedictionary, celldictionary = filter_records(record_list,
-                                                                                                           fieldnames)
-            print(calldictionary)
-            # dataset_object = DataSet(record_list, fieldnames)
-            # return dataset_object
+            for c in record_list:
+                print(c)
+            dataset_object = DataSet(record_list, fieldnames)
+            return dataset_object
 
     except IOError:
         print("IO Error :", IOError)
@@ -71,8 +68,8 @@ def read_call(file_path):
                     call[f] = val[f]
                 call_list.append(call)
 
-            for c in call_list:
-                print(c)
+            # for c in call_list:
+            #  print(c)
 
             create_call_obj(call_list, fieldnames)
     except IOError:
@@ -165,7 +162,7 @@ def create_call_obj(calls, fieldnames):
 
         call_records = []
         for call in calls:
-            user = other_user = direction = duration = timestamp = antenna_id = cost = None
+            user = other_user = direction = duration = timestamp = None
 
             for key in call:
                 if 'user' == key:
@@ -183,7 +180,12 @@ def create_call_obj(calls, fieldnames):
             call_record_obj = CallRecord(
                 user, other_user, direction, duration, timestamp)
             call_records.append(call_record_obj)
-        call_dataset_obj = CallDataSet(call_records, fieldnames)
+
+        filtered_call_records, ignored_list, bad_records = filter_calls(call_records)
+        print(ignored_list)
+        for record in filtered_call_records:
+            print(record.get_user(), record.get_timestamp())
+        call_dataset_obj = CallDataSet(filtered_call_records, fieldnames)
 
         # print("[x]  Objects creation successful\n")
         return call_dataset_obj
@@ -218,96 +220,48 @@ def create_msg_obj(messages, fieldnames):
         return message_dataset_obj
 
 
-def filter_records(records, fieldnames):
-    def filter_calls(record):
+def filter_calls(call_records):
+    def is_date(string, fuzzy=False):
+        try:
+            parse(string, fuzzy=fuzzy)
+            return True
+
+        except ValueError:
+            return False
+
+    def scheme(r):
         return {
-            'user': isinstance(record['user'], int),
-            'other': isinstance(record['other'], int),
-            'direction': record['direction'] in ['incoming', 'outgoing'],
-            'duration': isinstance(record['duration'], int),
-            'timestamp': isinstance(record['timestamp'], datetime),
-            'antenna_id': isinstance(record['antenna_id'], int),
-            'cost': isinstance(record['cost'], int)
+            'user': True if len(r._user) != 0 and r._user.isdigit() else False,
+            'other': True if len(r._other_user) != 0 and r._other_user.isdigit() else False,
+            'direction': True if r._direction in ['Incoming', 'Outgoing', 'Missed'] else False,
+            'duration': True if len(r._duration) != 0 and r._duration.isdigit() else False,
+            'timestamp': is_date(r._timestamp),
         }
 
-    def filter_messages(r):
-        return {
-            'user': isinstance(r.user, int),
-            'other': isinstance(r.other, int),
-            'direction': r.direction in ['incoming', 'outgoing'],
-            'length': isinstance(r.length, int),
-            'timestamp': isinstance(r.timestamp, datetime),
-        }
-
-    def filter_cells(r):
-        return {
-            'antenna_id': isinstance(r.antenna_id, int),
-            'latitude': isinstance(r.latitude, float),
-            'longitude': isinstance(r.longitude, float)
-        }
-
-    # calldictionary = {"all": 0, "user": 0, "other": 0, "direction": 0, "duration": 0, "timestamp": 0, "antenna_id": 0,
-                      # "cost": 0}
-    messagedictionary = {"all": 0, "user": 0, "other": 0, "direction": 0, "length": 0, "timestamp": 0}
-    celldictionary = {"all": 0, "antenna_id": 0, "latitude": 0, "longitude": 0}
-    bad_records = []
-
-    calldictionary = OrderedDict([
+    ignored = OrderedDict([
         ('all', 0),
         ('user', 0),
         ('other', 0),
         ('direction', 0),
         ('duration', 0),
         ('timestamp', 0),
-        ('antenna_id', 0),
-        ('cost', 0),
     ])
 
-    def _filter(records, fieldnames):
-        if 'duration' in fieldnames:
-            for record in records:
-                valid = True
-                print(record)
-                for key, valid_key in filter_calls(record).items():
-                    if not valid_key:
-                        calldictionary[key] += 1
-                        bad_records.append(record)
-                        # Not breaking, to count all fields with errors
-                        valid = False
+    bad_records = []
 
-                    if valid:
-                        yield record
-                    else:
-                        calldictionary["all"] += 1
+    def _filter(records):
+        for r in records:
+            valid = True
+            for key, valid_key in scheme(r).items():
+                if not valid_key:
+                    ignored[key] += 1
+                    bad_records.append(r)
+                    # Not breaking, to count all fields with errors
+                    valid = False
 
-        elif 'length' in fieldnames:
-            for record in records:
-                valid = True
-                for key, valid_key in filter_messages(record).items:
-                    if not valid_key:
-                        messagedictionary[key] += 1
-                        bad_records.append(record)
-                        # Not breaking, to count all fields with errors
-                        valid = False
+            if valid:
+                yield r
+            else:
+                ignored['all'] += 1
 
-                    if valid:
-                        yield record
-                    else:
-                        messagedictionary["all"] += 1
-
-        elif 'antenna_id' in fieldnames:
-            for record in records:
-                valid = True
-                for key, valid_key in filter_cells(record).items:
-                    if not valid_key:
-                        celldictionary[key] += 1
-                        bad_records.append(record)
-                        # Not breaking, to count all fields with errors
-                        valid = False
-
-                    if valid:
-                        yield record
-                    else:
-                        celldictionary["all"] += 1
-
-    return list(_filter(records, fieldnames)), bad_records, calldictionary, messagedictionary, celldictionary
+    return list(_filter(call_records)), ignored, bad_records
