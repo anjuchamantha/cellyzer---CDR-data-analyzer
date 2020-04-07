@@ -62,6 +62,8 @@ def read_call(file_path):
     print("[x]  Reading Call Data")
 
     try:
+        # dataset_object = read_csv(file_path)
+        # return create_call_obj(dataset_object.get_records(), dataset_object.fieldnames)
         with open(file_path, 'r') as csv_file:
             reader = csv.DictReader(csv_file)
 
@@ -75,8 +77,7 @@ def read_call(file_path):
 
             # for c in call_list:
             #  print(c)
-
-            create_call_obj(call_list, fieldnames)
+            return create_call_obj(call_list, fieldnames)
     except IOError:
         print("IO Error :", IOError)
         pass
@@ -101,6 +102,8 @@ def read_msg(file_path):
     # print("[x]  Reading Message Data...")
 
     try:
+        # dataset_object = read_csv(file_path)
+        # return create_message_obj(dataset_object.get_records(), dataset_object.fieldnames)
         with open(file_path, 'r') as csv_file:
             reader = csv.DictReader(csv_file)
 
