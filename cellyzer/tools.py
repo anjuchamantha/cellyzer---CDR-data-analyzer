@@ -2,14 +2,7 @@ import datetime
 import tabulate
 
 
-def print_matrix(_2dlist, headers):
-    matrix = []
-    for i in range(0, len(_2dlist)):
-        _2dlist[i].insert(0, headers[i])
-        matrix.append(_2dlist[i])
-    headers.insert(0, "")
-    # print (matrix)
-    # print (headers)
+def print_matrix(matrix, headers):
     print(tabulate.tabulate(matrix, headers=headers, tablefmt='pretty'))
 
 

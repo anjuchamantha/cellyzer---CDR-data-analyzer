@@ -3,9 +3,10 @@ Main classes are modeled here
 
 """
 
+from operator import itemgetter
+
 from . import tools
 from . import visualization
-from operator import itemgetter
 
 
 # Classes for Records
@@ -96,9 +97,6 @@ class DataSet:
         else:
             self._records = records
 
-    def get_records(self):
-        return self._records
-
     def add_records(self, data):
         self._records.append(data)
 
@@ -111,12 +109,10 @@ class DataSet:
     def get_rows(self):
         print("rows")
 
-
-class CallDataSet(DataSet):
     def get_all_users(self):
         # return all the different users in the CallDataSet
         all_users = []
-        for record in super().get_records():
+        for record in self.get_records():
             user = record.get_user()
             other_user = record.get_other_user()
             if user not in all_users:
@@ -127,22 +123,24 @@ class CallDataSet(DataSet):
 
     def get_records(self, user1=None, user2=None):
         # filter records using given user(s)
-        connection_reords = []
-        for record in super().get_records():
+        records = []
+        if (user1 is None) and (user2 is None):
+            # calls the function of Dataset class
+            # return all the records : List of Record objects
+            return self._records
+
+        for record in self._records:
             user = record.get_user()
             other_user = record.get_other_user()
-            if (user1 is None) and (user2 is None):
-                # calls the function of Dataset class
-                return super().get_records()
             if (user1 is not None) and (user2 is None):
-                # returns a list of CallRecord objects where the given user is involved
+                # returns a list of Record objects where the given user is involved
                 if user1 == user or user1 == other_user:
-                    connection_reords.append(record)
+                    records.append(record)
             if (user1 is not None) and (user2 is not None):
-                # returns a list of CallRecord objects where the gicen 2 users are involved
+                # returns a list of Record objects where the given 2 users are involved
                 if (user1 == user and user2 == other_user) or (user1 == other_user and user2 == user):
-                    connection_reords.append(record)
-        return connection_reords
+                    records.append(record)
+        return records
 
     def get_connected_users(self, user):
         # returns the list of users that are connected to the given user
@@ -161,7 +159,7 @@ class CallDataSet(DataSet):
         all_users = self.get_all_users()
         for u1 in all_users:
             connected_users = self.get_connected_users(u1)
-            row = []
+            row = [u1]
             for u2 in all_users:
                 if u2 in connected_users:
                     weight = len(self.get_records(u1, u2))
@@ -169,7 +167,10 @@ class CallDataSet(DataSet):
                 else:
                     row.append(".")
             matrix.append(row)
-        tools.print_matrix(matrix, all_users)
+        headers = all_users
+        headers.insert(0, "")
+        tools.print_matrix(matrix, headers)
+        return matrix, headers
 
     def get_connections(self):
         connections = []
@@ -183,6 +184,7 @@ class CallDataSet(DataSet):
     def visualize_connection_network(self, directed=True):
         connections = self.get_connections()
         visualization.network_graph(connections, directed)
+        return connections, directed
 
     def get_close_contacts(self, user, top_contact=5):
         # get top contacts who have most number of calls and longest call duration with the user
@@ -196,6 +198,8 @@ class CallDataSet(DataSet):
         close_contacts = dict(sorted(contacts_dict.items(), key=itemgetter(1), reverse=True)[:top_contact])
         return close_contacts
 
+
+class CallDataSet(DataSet):
     def get_most_active_time(self):
         print("most active time")
         a = []
@@ -206,83 +210,6 @@ class CallDataSet(DataSet):
 
 
 class MessageDataSet(DataSet):
-
-    def get_all_users(self):
-        # return all the different users in the MessageDataSet
-        all_users = []
-        for record in super().get_records():
-            user = record.get_user()
-            other_user = record.get_other_user()
-            if user not in all_users:
-                all_users.append(user)
-            if other_user not in all_users:
-                all_users.append(other_user)
-
-        return all_users
-
-    def get_records(self, user1=None, user2=None):
-        # filter records using given user(s)
-        connection_records = []
-        for record in super().get_records():
-            user = record.get_user()
-            other_user = record.get_other_user()
-            if (user1 is None) and (user2 is None):
-                # calls the function of DataSet class
-                return super().get_records()
-            if (user1 is not None) and (user2 is None):
-                # returns a list of MessageRecord objects where the given user is involved
-                if user1 == user or user1 == other_user:
-                    connection_records.append(record)
-            if (user1 is not None) and (user2 is not None):
-                # returns a list of MessageRecord objects where the given 2 users are involved(connected)
-                if (user1 == user and user2 == other_user) or (user1 == other_user and user2 == user):
-                    connection_records.append(record)
-        return connection_records
-
-    def get_connected_users(self, user):
-        # returns the list of users that are connected to the given user
-        connected_users = []
-        for record in self.get_records(user):
-            user1 = record.get_user()
-            user2 = record.get_other_user()
-            if (user1 not in connected_users) and (user1 != user):
-                connected_users.append(user1)
-            if (user2 not in connected_users) and (user2 != user):
-                connected_users.append(user2)
-        return connected_users
-
-    def print_connection_matrix(self):
-
-        matrix = []
-        all_users = self.get_all_users()
-        for u1 in all_users:
-            connected_users = self.get_connected_users(u1)
-            row = []
-            for u2 in all_users:
-                if u2 in connected_users:
-
-                    weight = len(self.get_records(u1, u2))
-                    row.append(weight)
-                else:
-                    row.append(".")
-            matrix.append(row)
-        tools.print_matrix(matrix, all_users)
-
-    def get_connections(self):
-        connections = []
-        for record in self.get_records():
-            connection, direction = [record.get_user(), record.get_other_user()], record.get_direction()
-            if direction == "Incoming":
-                connection.reverse()
-            connections.append(connection)
-        return connections
-
-    def visualize_connection_network(self, directed=True):
-        connections = self.get_connections()
-        visualization.network_graph(connections, directed)
-
-    def get_close_contacts(self):
-        print("close contacts")
 
     def get_frequenct_conversations(self):
         print("Frequent conversations between ")
