@@ -7,11 +7,14 @@ altering datasets (removing columns etc.)
 """
 
 import csv
+import logging as log
 from collections import OrderedDict
 from dateutil.parser import parse
 from datetime import datetime
 
 from .core import DataSet, MessageDataSet, CallDataSet, Record, CallRecord, MessageRecord, CellRecord
+
+log.getLogger().setLevel(log.WARN)
 
 
 def io_func():
@@ -181,10 +184,7 @@ def create_call_obj(calls, fieldnames):
                 user, other_user, direction, duration, timestamp)
             call_records.append(call_record_obj)
 
-        filtered_call_records, ignored_list, bad_records = filter_calls(call_records)
-        print(ignored_list)
-        for record in filtered_call_records:
-            print(record.get_user(), record.get_timestamp())
+        filtered_call_records, bad_records = parse_records(call_records, fieldnames)
         call_dataset_obj = CallDataSet(filtered_call_records, fieldnames)
 
         # print("[x]  Objects creation successful\n")
@@ -214,7 +214,8 @@ def create_msg_obj(messages, fieldnames):
             message_record_obj = MessageRecord(
                 user, other_user, direction, length, timestamp)
             msg_records.append(message_record_obj)
-        message_dataset_obj = MessageDataSet(msg_records, fieldnames)
+        filtered_message_records, bad_records = parse_records(msg_records, fieldnames)
+        message_dataset_obj = MessageDataSet(filtered_message_records, fieldnames)
 
         # print("[x]  Objects creation successful\n")
         return message_dataset_obj
@@ -265,3 +266,70 @@ def filter_calls(call_records):
                 ignored['all'] += 1
 
     return list(_filter(call_records)), ignored, bad_records
+
+
+def filter_messages(call_records):
+    def is_date(string, fuzzy=False):
+        try:
+            parse(string, fuzzy=fuzzy)
+            return True
+
+        except ValueError:
+            return False
+
+    def scheme(r):
+        return {
+            'user': True if len(r._user) != 0 and r._user.isdigit() else False,
+            'other': True if len(r._other_user) != 0 and r._other_user.isdigit() else False,
+            'direction': True if r._direction in ['Incoming', 'Outgoing'] else False,
+            'length': True if len(r._length) != 0 and r._length.isdigit() else False,
+            'timestamp': is_date(r._timestamp),
+        }
+
+    ignored = OrderedDict([
+        ('all', 0),
+        ('user', 0),
+        ('other', 0),
+        ('direction', 0),
+        ('length', 0),
+        ('timestamp', 0),
+    ])
+
+    bad_records = []
+
+    def _filter(records):
+        for r in records:
+            valid = True
+            for key, valid_key in scheme(r).items():
+                if not valid_key:
+                    ignored[key] += 1
+                    bad_records.append(r)
+                    # Not breaking, to count all fields with errors
+                    valid = False
+
+            if valid:
+                yield r
+            else:
+                ignored['all'] += 1
+
+    return list(_filter(call_records)), ignored, bad_records
+
+
+def parse_records(records, fieldnames):
+    if 'duration' in fieldnames:
+        filtered_records, ignored_list, bad_records = filter_calls(records)
+
+    elif 'length' in fieldnames:
+        filtered_records, ignored_list, bad_records = filter_messages(records)
+
+    if ignored_list['all'] != 0:
+        w = "{} record(s) were removed due to " \
+            "missing or incomplete fields.".format(ignored_list['all'])
+        for k in ignored_list.keys():
+            if k != 'all' and ignored_list[k] != 0:
+                w += "\n" + " " * 9 + "%s: %i record(s) with " \
+                                      "incomplete values" % (k, ignored_list[k])
+        print(w)
+    print('End of parse_record function')
+
+    return filtered_records, bad_records
