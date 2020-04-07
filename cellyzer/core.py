@@ -196,10 +196,15 @@ class CallDataSet(DataSet):
         close_contacts = dict(sorted(contacts_dict.items(), key=itemgetter(1), reverse=True)[:top_contact])
         return close_contacts
 
-    def get_most_active_time(self):
-        print("most active time")
-        a = []
-        return a
+    def get_most_active_time(self, user):
+        keys = []
+        for i in range(24):
+            keys.append(i)
+        active_time = {key: 0 for key in keys}
+        for record in self.get_records(user1=user):
+            time = int(record.get_timestamp().split()[3][:2])
+            active_time[time] += 1
+        return active_time
 
     def get_call_details(self):
         print("call details")

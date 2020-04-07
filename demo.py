@@ -63,6 +63,9 @@ user_call_dataset = cz.MessageDataSet(user_call_record_list)
 # callDataSet.visualize_connection_network()
 
 close_contacts = callDataSet.get_close_contacts(search_user_call_1, top_contact=2)
-print(">> close contacts of %s : %s" % (search_user_call_1, close_contacts))
-cz.utils.print_close_contacts(close_contacts)
+# print(">> close contacts of %s : %s" % (search_user_call_1, close_contacts))
+# cz.utils.print_close_contacts(close_contacts)
 
+active_time = callDataSet.get_most_active_time(search_user_call_1)
+print(">> most active times during day of %s - %s"%(search_user_call_1,active_time))
+cz.visualization.active_time_bar_chart(active_time)
