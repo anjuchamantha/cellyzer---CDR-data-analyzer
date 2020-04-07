@@ -2,14 +2,49 @@ import datetime
 import tabulate
 
 
-def print_matrix(_2dlist, headers):
-    matrix = []
-    for i in range(0, len(_2dlist)):
-        _2dlist[i].insert(0, headers[i])
-        matrix.append(_2dlist[i])
-    headers.insert(0, "")
-    # print (matrix)
-    # print (headers)
+def get_weighted_edge_list(edge_list, directed):
+    weighted_edge_list = []
+
+    if not directed:
+        # only the connections are cared.
+        # return a list of lists of [user1,use2,number_of_connections]
+        for edge in edge_list:
+            count = edge_list.count(edge)
+            reversed_edge = edge.copy()
+            reversed_edge.reverse()
+            r_count = edge_list.count(reversed_edge)
+            weight = count + r_count
+            weighted_edge = edge.copy()
+            weighted_edge.append(weight)
+
+            not_added = True
+            for i in weighted_edge_list:
+                if (edge == [i[0], i[1]]) or (reversed_edge == [i[0], i[1]]):
+                    not_added = False
+                    break
+            if not_added:
+                weighted_edge_list.append(weighted_edge)
+
+        return weighted_edge_list
+    if directed:
+        # return a list of lists of [user1,use2,number_of_connections]
+        for edge in edge_list:
+            weight = edge_list.count(edge)
+            weighted_edge = edge.copy()
+            weighted_edge.append(weight)
+
+            not_added = True
+            for i in weighted_edge_list:
+                if edge == [i[0], i[1]]:
+                    not_added = False
+                    break
+            if not_added:
+                weighted_edge_list.append(weighted_edge)
+
+        return weighted_edge_list
+
+
+def print_matrix(matrix, headers):
     print(tabulate.tabulate(matrix, headers=headers, tablefmt='pretty'))
 
 
