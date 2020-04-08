@@ -65,6 +65,20 @@ def read_csv(filepath):
 def read_call(file_path):
     print("[x]  Reading Call Data")
 
+    """
+     Load call records from a file.
+
+    Parameters
+    ----------
+    path : str
+        Path of the file.
+
+    type : str
+        Type of the file. (CSV,xls,json etc)
+
+
+    """
+
     try:
         # dataset_object = read_csv(file_path)
         # return create_call_obj(dataset_object.get_records(), dataset_object.fieldnames)
@@ -86,24 +100,23 @@ def read_call(file_path):
         print("IO Error :", IOError)
         pass
 
+
+def read_msg(file_path):
+    print("[x]  Reading Message Data...")
+
     """
-     Load call records from a file.
+     Load message records from a file.
 
     Parameters
     ----------
     path : str
         Path of the file.
-        
+
     type : str
         Type of the file. (CSV,xls,json etc)
-        
-    
+
+
     """
-    pass
-
-
-def read_msg(file_path):
-    # print("[x]  Reading Message Data...")
 
     try:
         # dataset_object = read_csv(file_path)
@@ -123,20 +136,6 @@ def read_msg(file_path):
     except IOError:
         print("IO Error :", IOError)
         pass
-
-    """
-     Load message records from a file.
-
-    Parameters
-    ----------
-    path : str
-        Path of the file.
-
-    type : str
-        Type of the file. (CSV,xls,json etc)
-
-
-    """
 
 
 def read_cell():
@@ -162,6 +161,18 @@ def read_cell():
 def to_json(dataset_object, filename):
     print("[x]  Writing to JSON file ...")
 
+    """
+         write dataset object to a json file.
+
+        Parameters
+        ----------
+        objects : list
+            List of objects to be exported.
+        filename : string
+            File to export to.
+
+        """
+
     if '.JSON' or '.json' not in filename:
         filename = filename + '.json'
 
@@ -177,13 +188,25 @@ def to_json(dataset_object, filename):
 
 
 def to_csv(dataset_object, filename):
+    print("[x]  Writing to CSV file ...")
+
+    """
+            write dataset object to a csv file.
+
+            Parameters
+            ----------
+            objects : list
+                List of objects to be exported.
+            filename : string
+                File to export to.
+
+            """
+
     data = [flatten(obj) for obj in dataset_object.get_records()]
     fieldnames = dataset_object.fieldnames
 
     if '.csv' not in filename:
         filename = filename + '.csv'
-
-    print("[x]  Writing to csv file ...")
 
     with open(filename, 'w') as f:
         w = csv.writer(f)
@@ -232,7 +255,7 @@ def create_call_obj(calls, fieldnames):
         filtered_call_records, bad_records = parse_records(call_records, fieldnames)
         call_dataset_obj = CallDataSet(filtered_call_records, fieldnames)
 
-        # print("[x]  Objects creation successful\n")
+        print("[x]  Objects creation successful\n")
         return call_dataset_obj
 
 
@@ -262,7 +285,7 @@ def create_msg_obj(messages, fieldnames):
         filtered_message_records, bad_records = parse_records(msg_records, fieldnames)
         message_dataset_obj = MessageDataSet(filtered_message_records, fieldnames)
 
-        # print("[x]  Objects creation successful\n")
+        print("[x]  Objects creation successful\n")
         return message_dataset_obj
 
 
