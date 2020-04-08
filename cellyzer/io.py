@@ -27,6 +27,76 @@ def io_func():
     return
 
 
+def to_json(dataset_object, filename):
+    print("[x]  Writing to JSON file ...")
+
+    """
+         write dataset object to a json file.
+
+        Parameters
+        ----------
+        objects : list
+            List of objects to be exported.
+        filename : string
+            File to export to.
+
+        """
+
+    if '.JSON' or '.json' not in filename:
+        filename = filename + '.json'
+
+    i = 0
+    records = dataset_object.get_records()
+    obj_dict = OrderedDict([('Record:' + str(records.index(obj)), obj) for obj in records])
+
+    with open(filename, 'w') as f:
+        f.write(dumps(obj_dict, indent=4, separators=(',', ': ')))
+
+    print("Successfully exported {} object(s) to {}".format(len(records),
+                                                            filename))
+
+
+def to_csv(dataset_object, filename):
+    print("[x]  Writing to CSV file ...")
+
+    """
+            write dataset object to a csv file.
+
+            Parameters
+            ----------
+            objects : list
+                List of objects to be exported.
+            filename : string
+                File to export to.
+
+            """
+
+    data = [flatten(obj) for obj in dataset_object.get_records()]
+    fieldnames = dataset_object.fieldnames
+
+    if '.csv' not in filename:
+        filename = filename + '.csv'
+
+    with open(filename, 'w') as f:
+        w = csv.writer(f)
+        w.writerow(fieldnames)
+
+        def make_repr(item):
+            if item is None:
+                return None
+            elif isinstance(item, float):
+                return repr(round(item, 5))
+            else:
+                return str(item)
+
+        for row in data:
+            row = dict((k, make_repr(v)) for k, v in row.items())
+            w.writerow([make_repr(row.get(k, None)) for k in fieldnames])
+
+    print("Successfully exported {} object(s) to {}".format(len(dataset_object.get_records()),
+                                                            filename))
+
+
 def read_csv(filepath):
     print("         from a CSV file ...")
 
@@ -138,12 +208,11 @@ def read_msg(file_path):
         pass
 
 
-def read_cell():
+def read_cell(file_path):
     print("[x]  Reading Cell Data")
-    read_csv()
 
     """
-     Load cell records from a file.
+    Load cell records from a file.
 
     Parameters
     ----------
@@ -155,77 +224,22 @@ def read_cell():
 
 
     """
-    pass
+    try:
+        with open(file_path, 'r') as csv_file:
+            reader = csv.DictReader(csv_file)
 
+            fieldnames = reader.fieldnames
+            cell_list = []
+            for val in reader:
+                cell = dict()
+                for f in fieldnames:
+                    cell[f] = val[f]
+                cell_list.append(cell)
 
-def to_json(dataset_object, filename):
-    print("[x]  Writing to JSON file ...")
-
-    """
-         write dataset object to a json file.
-
-        Parameters
-        ----------
-        objects : list
-            List of objects to be exported.
-        filename : string
-            File to export to.
-
-        """
-
-    if '.JSON' or '.json' not in filename:
-        filename = filename + '.json'
-
-    i = 0
-    records = dataset_object.get_records()
-    obj_dict = OrderedDict([('Record:' + str(records.index(obj)), obj) for obj in records])
-
-    with open(filename, 'w') as f:
-        f.write(dumps(obj_dict, indent=4, separators=(',', ': ')))
-
-    print("Successfully exported {} object(s) to {}".format(len(records),
-                                                            filename))
-
-
-def to_csv(dataset_object, filename):
-    print("[x]  Writing to CSV file ...")
-
-    """
-            write dataset object to a csv file.
-
-            Parameters
-            ----------
-            objects : list
-                List of objects to be exported.
-            filename : string
-                File to export to.
-
-            """
-
-    data = [flatten(obj) for obj in dataset_object.get_records()]
-    fieldnames = dataset_object.fieldnames
-
-    if '.csv' not in filename:
-        filename = filename + '.csv'
-
-    with open(filename, 'w') as f:
-        w = csv.writer(f)
-        w.writerow(fieldnames)
-
-        def make_repr(item):
-            if item is None:
-                return None
-            elif isinstance(item, float):
-                return repr(round(item, 5))
-            else:
-                return str(item)
-
-        for row in data:
-            row = dict((k, make_repr(v)) for k, v in row.items())
-            w.writerow([make_repr(row.get(k, None)) for k in fieldnames])
-
-    print("Successfully exported {} object(s) to {}".format(len(dataset_object.get_records()),
-                                                            filename))
+            return create_cell_obj(cell_list, fieldnames)
+    except IOError:
+        print("IO Error :", IOError)
+        pass
 
 
 def create_call_obj(calls, fieldnames):
@@ -287,6 +301,32 @@ def create_msg_obj(messages, fieldnames):
 
         print("[x]  Objects creation successful\n")
         return message_dataset_obj
+
+
+def create_cell_obj(cells, fieldnames):
+    if cells is not None:
+
+        cell_records = []
+        for cell in cells:
+            antenna_id = latitude = longitude = None
+
+            for key in cell:
+                if 'antenna_id' == key:
+                    cell_id = cell["antenna_id"]
+                elif 'latitude' in key:
+                    latitude = cell[key]
+                elif 'longitude' in key:
+                    longitude = cell[key]
+            # print(user, other_user, direction, length, timestamp)
+
+            cell_record_obj = CellRecord(
+                cell_id, latitude, longitude)
+            cell_records.append(cell_record_obj)
+        filtered_cell_records, bad_records = parse_records(cell_records, fieldnames)
+        cell_dataset_obj = MessageDataSet(filtered_cell_records, fieldnames)
+
+        print("[x]  Objects creation successful\n")
+        return cell_dataset_obj
 
 
 def filter_calls(call_records):
@@ -383,6 +423,59 @@ def filter_messages(call_records):
     return list(_filter(call_records)), ignored, bad_records
 
 
+def filter_cells(cell_records):
+    def is_float(string):
+        if '-' in string:
+            try:
+                if float(string[1:]) and not string[1:].isdigit():
+                    return True
+                else:
+                    return False
+            except ValueError:
+                return False
+        else:
+            try:
+                if float(string) and not string.isdigit():
+                    return True
+                else:
+                    return False
+            except ValueError:
+                return False
+
+    def scheme(r):
+        return {
+            'cell_id': True if len(r._cell_id) != 0 and r._cell_id.isdigit() else False,
+            'latitude': True if len(r._latitude) != 0 and is_float(r._latitude) else False,
+            'longitude': True if len(r._longitude) != 0 and is_float(r._longitude) else False,
+        }
+
+    ignored = OrderedDict([
+        ('all', 0),
+        ('cell_id', 0),
+        ('latitude', 0),
+        ('longitude', 0),
+    ])
+
+    bad_records = []
+
+    def _filter(records):
+        for r in records:
+            valid = True
+            for key, valid_key in scheme(r).items():
+                if not valid_key:
+                    ignored[key] += 1
+                    bad_records.append(r)
+                    # Not breaking, to count all fields with errors
+                    valid = False
+
+            if valid:
+                yield r
+            else:
+                ignored['all'] += 1
+
+    return list(_filter(cell_records)), ignored, bad_records
+
+
 def parse_records(records, fieldnames):
     _level = log.getLogger().level
     if 'duration' in fieldnames:
@@ -390,6 +483,9 @@ def parse_records(records, fieldnames):
 
     elif 'length' in fieldnames:
         filtered_records, ignored_list, bad_records = filter_messages(records)
+
+    elif 'latitude' in fieldnames:
+        filtered_records, ignored_list, bad_records = filter_cells(records)
 
     if ignored_list['all'] != 0:
         w = "{} record(s) were removed due to " \
