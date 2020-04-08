@@ -2,7 +2,17 @@ import unittest
 import cellyzer.core as core
 
 
-class TestCore(unittest.TestCase):
+class TestDataSet(unittest.TestCase):
+    def test_get_all_users(self):
+        print("test - get_all_users")
 
-    def test_get_most_active_time(self):
-        print("test - most active time")
+
+class TestMessageDataSet(unittest.TestCase):
+
+    def test_get_frequent_conversations(self):
+        print("test - frequent conversations")
+
+
+if __name__ == '__main__':
+    unittest.main()
+
