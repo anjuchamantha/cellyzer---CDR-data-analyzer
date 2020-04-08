@@ -9,11 +9,14 @@ altering datasets (removing columns etc.)
 import csv
 import logging as log
 from collections import OrderedDict
+from json import dumps
+
 from dateutil.parser import parse
 from datetime import datetime
 
 from .core import DataSet, MessageDataSet, CallDataSet, Record, CallRecord, MessageRecord, CellRecord
 from .tools import ColorHandler
+from .utils import flatten
 
 log.getLogger().setLevel(log.WARN)
 log.getLogger().addHandler(ColorHandler())
@@ -51,6 +54,7 @@ def read_csv(filepath):
             for c in record_list:
                 print(c)
             dataset_object = DataSet(record_list, fieldnames)
+
             return dataset_object
 
     except IOError:
@@ -155,14 +159,50 @@ def read_cell():
     pass
 
 
-def to_json():
+def to_json(dataset_object, filename):
     print("[x]  Writing to JSON file ...")
-    pass
+
+    if '.JSON' or '.json' not in filename:
+        filename = filename + '.json'
+
+    i = 0
+    records = dataset_object.get_records()
+    obj_dict = OrderedDict([('Record:' + str(records.index(obj)), obj) for obj in records])
+
+    with open(filename, 'w') as f:
+        f.write(dumps(obj_dict, indent=4, separators=(',', ': ')))
+
+    print("Successfully exported {} object(s) to {}".format(len(records),
+                                                            filename))
 
 
-def to_csv():
+def to_csv(dataset_object, filename):
+    data = [flatten(obj) for obj in dataset_object.get_records()]
+    fieldnames = dataset_object.fieldnames
+
+    if '.csv' not in filename:
+        filename = filename + '.csv'
+
     print("[x]  Writing to csv file ...")
-    pass
+
+    with open(filename, 'w') as f:
+        w = csv.writer(f)
+        w.writerow(fieldnames)
+
+        def make_repr(item):
+            if item is None:
+                return None
+            elif isinstance(item, float):
+                return repr(round(item, 5))
+            else:
+                return str(item)
+
+        for row in data:
+            row = dict((k, make_repr(v)) for k, v in row.items())
+            w.writerow([make_repr(row.get(k, None)) for k in fieldnames])
+
+    print("Successfully exported {} object(s) to {}".format(len(dataset_object.get_records()),
+                                                            filename))
 
 
 def create_call_obj(calls, fieldnames):
