@@ -43,3 +43,4 @@ def active_time_bar_chart(time_dict):
     plt.xlabel("Hours")
     plt.title("Most active times during day")
     plt.show()
+

@@ -7,7 +7,7 @@ altering datasets (removing columns etc.)
 """
 
 import csv
-from .core import DataSet, MessageDataSet, CallDataSet, Record, CallRecord, MessageRecord, CellRecord
+from .core import DataSet, MessageDataSet, CallDataSet, CellDataSet, Record, CallRecord, MessageRecord, CellRecord
 
 
 def io_func():
@@ -120,10 +120,22 @@ def read_msg(file_path):
     """
 
 
-def read_cell():
-    print("[x]  Reading Cell Data")
-    read_csv()
+def read_cell(file_path):
+    try:
+        with open(file_path, 'r') as csv_file:
+            reader = csv.DictReader(csv_file)
 
+            fieldnames = reader.fieldnames
+            cell_list = []
+            for val in reader:
+                cell = dict()
+                for f in fieldnames:
+                    cell[f] = val[f]
+                cell_list.append(cell)
+            return create_cell_obj(cell_list, fieldnames)
+    except IOError:
+        print('IO Error :', IOError)
+        pass
     """
      Load cell records from a file.
 
@@ -137,7 +149,6 @@ def read_cell():
 
 
     """
-    pass
 
 
 def to_json():
@@ -158,7 +169,7 @@ def create_call_obj(calls, fieldnames):
             user = other_user = direction = duration = timestamp = cell_id = cost = None
 
             for key in call:
-                if 'user' == key:
+                if 'user' in key:
                     user = call["user"]
                 elif 'other' in key:
                     other_user = call[key]
@@ -192,8 +203,8 @@ def create_msg_obj(messages, fieldnames):
             user = other_user = direction = length = timestamp = None
 
             for key in msg:
-                if 'user' == key:
-                    user = msg["user"]
+                if 'user' in key:
+                    user = msg[key]
                 elif 'other' in key:
                     other_user = msg[key]
                 elif 'dir' in key:
@@ -211,3 +222,27 @@ def create_msg_obj(messages, fieldnames):
 
         # print("[x]  Objects creation successful\n")
         return message_dataset_obj
+
+
+def create_cell_obj(cells, fieldnames):
+    if cells is not None:
+
+        cell_records = []
+        for cell in cells:
+            cell_id = latitude = longitude = None
+
+            for key in cell:
+                if 'antenna_id' in key or 'cell_id' in key:
+                    cell_id = cell[key]
+                elif 'latitude' in key:
+                    latitude = cell[key]
+                elif 'longitude' in key:
+                    longitude = cell[key]
+
+            cell_record_obj = CellRecord(
+                cell_id, latitude, longitude
+            )
+            cell_records.append(cell_record_obj)
+        cell_dataset_obj = CellDataSet(cell_records, fieldnames)
+
+        return cell_dataset_obj

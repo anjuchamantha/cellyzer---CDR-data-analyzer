@@ -4,12 +4,15 @@ import cellyzer.io as io
 
 
 class TestCallDataSet(unittest.TestCase):
+
     @classmethod
     def setUpClass(cls):
         # before all the tests
         cls.user1 = "7163185791"
         cls.user2 = "7187432175"
-        cls.call_obj = core.CallDataSet()
+        cls.callDataSet = core.CallDataSet()
+        call_file_path = "../../dataset/my_test_data/calls.csv"
+        cls.callDataSet = io.read_call(call_file_path)
         print("setup class")
 
     @classmethod
@@ -26,8 +29,9 @@ class TestCallDataSet(unittest.TestCase):
         print("Teardown")
 
     def test_get_most_active_time(self):
-        result = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0, 11: 0, 12: 0, 13: 0, 14: 0, 15: 0, 16: 0, 17: 0, 18: 0, 19: 0, 20: 0, 21: 0, 22: 0, 23: 0}
-        self.assertEqual(self.call_obj.get_most_active_time(user=self.user1), result)
+        result = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0, 11: 1, 12: 1, 13: 1, 14: 0, 15: 5,
+                  16: 0, 17: 0, 18: 4, 19: 0, 20: 0, 21: 1, 22: 0, 23: 0}
+        self.assertEqual(self.callDataSet.get_most_active_time(user=self.user1), result)
         print("test - most active time")
 
 
