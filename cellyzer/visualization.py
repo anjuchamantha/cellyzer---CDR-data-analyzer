@@ -7,6 +7,10 @@ Graphing - matplotlib, networkx
 import networkx as nx
 import matplotlib.pyplot as plt
 import numpy as np
+import folium
+from folium.plugins import MarkerCluster
+import os
+import webbrowser
 
 
 def network_graph(edge_list, directed):
@@ -43,4 +47,22 @@ def active_time_bar_chart(time_dict):
     plt.xlabel("Hours")
     plt.title("Most active times during day")
     plt.show()
+
+
+def cell_population_visualization(cell_list, filepath):
+    location = [cell_list[0]['latitude'], cell_list[0]['longitude']]
+    map1 = folium.Map(location=location, tiles='CartoDB dark_matter', zoom_start=13)
+    marker_cluster = folium.plugins.MarkerCluster().add_to(map1)
+    location_list = []
+    for cell in cell_list:
+        cell_location = [cell['latitude'], cell['longitude']]
+        for i in range(int(cell['population_around_cell'])):
+            location_list.append(cell_location)
+    for point in location_list:
+        folium.Marker(location=point,
+                      popup='nothing').add_to(marker_cluster)
+    # visualize in web browser
+    filepath = filepath+'map.html'
+    map1.save(filepath)
+    webbrowser.open('file://' + filepath)
 

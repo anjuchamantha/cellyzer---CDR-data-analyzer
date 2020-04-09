@@ -251,7 +251,7 @@ class CellDataSet(DataSet):
             antenna_dict = {'cell_id': cell_id,
                             'latitude': antenna_record.get_latitude(),
                             'longitude': antenna_record.get_longitude(),
-                            'population around cell': len(call_records)
+                            'population_around_cell': len(call_records)
                             }
             return antenna_dict
 

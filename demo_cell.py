@@ -17,9 +17,10 @@ antennaDataSet = cz.read_cell(antenna_file_path)
 # for i in all_records:
 #     print('demo class all records : ', i.get_cell_id())
 
-pop = antennaDataSet.get_population(callDataSet)
-print(pop)
+population = antennaDataSet.get_population(callDataSet)
+print(population)
 
-cz.utils.print_population_around_cell(pop)
+cz.utils.print_population_around_cell(population)
 
-# cz.visualization.cell_population_visualization(pop)
+filepath_to_save = "F:/SEMESTER 5/CS3202 - SE Project/maps/"
+cz.visualization.cell_population_visualization(population, filepath_to_save)
