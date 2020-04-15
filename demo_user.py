@@ -23,8 +23,9 @@ filepath_to_save = "F:/SEMESTER 5/CS3202 - SE Project/maps/"
 
 location_home = user1.get_home_location()
 print('>> home location : ', location_home)
-cz.visualization.view_home_location(location_home, filepath_to_save)
 
 location_office = user1.get_work_location()
 print('>> work location : ', location_office)
-cz.visualization.view_work_location(location_office, filepath_to_save)
+
+cz.visualization.view_home_work_locations(filepath=filepath_to_save, home_location=location_home,
+                                          work_location=location_office)
