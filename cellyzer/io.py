@@ -7,6 +7,7 @@ altering datasets (removing columns etc.)
 """
 
 import csv
+import xlrd
 import logging as log
 from collections import OrderedDict
 from json import dumps
@@ -208,7 +209,7 @@ def read_msg(file_path):
         pass
 
 
-def read_cell(file_path):
+def read_cell(file_path, file_type='.csv'):
     print("[x]  Reading Cell Data")
 
     """
@@ -225,21 +226,51 @@ def read_cell(file_path):
 
     """
     try:
-        with open(file_path, 'r') as csv_file:
-            reader = csv.DictReader(csv_file)
+        if file_type.lower() == '.csv':
+            with open(file_path, 'r') as csv_file:
+                reader = csv.DictReader(csv_file)
 
-            fieldnames = reader.fieldnames
-            cell_list = []
-            for val in reader:
-                cell = dict()
-                for f in fieldnames:
-                    cell[f] = val[f]
-                cell_list.append(cell)
+                fieldnames = reader.fieldnames
+                cell_list = []
+                for val in reader:
+                    cell = dict()
+                    for f in fieldnames:
+                        cell[f] = val[f]
+                    cell_list.append(cell)
 
-            return create_cell_obj(cell_list, fieldnames)
+                return create_cell_obj(cell_list, fieldnames)
+        elif file_type.lower() == 'xls' or file_type.lower() == 'xlsx':
+            return read_xls(file_path)
+        else:
+            print('Invalid Format')
     except IOError:
         print("IO Error :", IOError)
         pass
+
+
+def read_xls(filepath):
+    print("[x]  Reading Data From Excel File")
+
+    """
+    Load records from a excel file.
+
+    Parameters
+    ----------
+    path : str
+        Path of the file.
+
+    """
+    sample, fieldnames = xls_to_dict(filepath)
+    _level = log.getLogger().level
+    if 'latitude' in fieldnames and len(fieldnames) == 3:
+        return create_cell_obj(sample, fieldnames)
+    elif 'duration' in fieldnames and len(fieldnames) == 7:
+        return create_call_obj(sample, fieldnames)
+    elif 'length' in fieldnames and len(fieldnames) == 5:
+        return create_msg_obj(sample, fieldnames)
+    else:
+        log.warning('Invalid Input')
+        log.getLogger().setLevel(_level)
 
 
 def create_call_obj(calls, fieldnames):
@@ -497,3 +528,41 @@ def parse_records(records, fieldnames):
         log.warning(w)
     log.getLogger().setLevel(_level)
     return filtered_records, bad_records
+
+
+def make_json_from_data(column_names, row_data):
+    row_list = []
+    for item in row_data:
+        json_obj = {}
+        for i in range(0, column_names.__len__()):
+            json_obj[column_names[i]] = item[i]
+        row_list.append(json_obj)
+    return row_list
+
+
+def xls_to_dict(workbook_url):
+    book = xlrd.open_workbook(workbook_url)
+    sheet = book.sheet_by_index(0)
+
+    columns = sheet.row_values(0)
+    rows = []
+    for row_index in range(1, sheet.nrows):
+        row = sheet.row_values(row_index)
+        filteredlist = float_to_int(row)
+        rows.append(filteredlist)
+    sheet_data = make_json_from_data(columns, rows)
+    return sheet_data, columns
+
+
+def float_to_int(listobject):
+    newlist = []
+    for object in listobject:
+        try:
+            splittedobject = str(object).split('.')
+            if splittedobject[1] == '0':
+                newlist.append(splittedobject[0])
+            else:
+                newlist.append(str(object))
+        except IndexError:
+            newlist.append(object)
+    return newlist
