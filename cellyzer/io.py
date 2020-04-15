@@ -199,8 +199,6 @@ def read_msg(file_path, file_type='csv'):
 
     try:
         if file_type.lower() == 'csv':
-            # dataset_object = read_csv(file_path)
-            # return create_message_obj(dataset_object.get_records(), dataset_object.fieldnames)
             with open(file_path, 'r') as csv_file:
                 reader = csv.DictReader(csv_file)
 
