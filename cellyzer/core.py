@@ -91,7 +91,7 @@ class CellRecord(Record):
 # classes for DataSet
 class DataSet:
     def __init__(self, records=None, fieldnames=None):
-        self.fieldnames = fieldnames
+        self._fieldnames = fieldnames
         if records is None:
             self._records = []
         else:
@@ -103,14 +103,8 @@ class DataSet:
     def get_records(self):
         return self._records
 
-    def get_max(self):
-        return self._records
-
-    def get_columns(self):
-        print("columns")
-
-    def get_rows(self):
-        print("rows")
+    def get_fieldnames(self):
+        return self._fieldnames
 
 
 class CallMessageDataSet(DataSet):
@@ -162,6 +156,7 @@ class CallMessageDataSet(DataSet):
         return connected_users
 
     def print_connection_matrix(self):
+        # returns a 2D list with which user is connected to who and the number of calls/messages between them
         matrix = []
         all_users = self.get_all_users()
         for u1 in all_users:
@@ -191,6 +186,7 @@ class CallMessageDataSet(DataSet):
         return connections
 
     def visualize_connection_network(self, directed=True):
+        # generates a directed graph of connected users
         connections = self.get_connections()
         weighted_edge_list = tools.get_weighted_edge_list(connections, directed)
         visualization.network_graph(weighted_edge_list, directed)
@@ -227,9 +223,6 @@ class CallDataSet(CallMessageDataSet):
             if record.get_cell_id() == str(cell_id):
                 records.append(record)
         return records
-
-    def get_call_details(self):
-        print("call details")
 
 
 class MessageDataSet(CallMessageDataSet):
