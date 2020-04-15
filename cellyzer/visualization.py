@@ -61,8 +61,36 @@ def cell_population_visualization(cell_list, filepath):
         folium.Marker(location=point,
                       popup='nothing').add_to(marker_cluster)
     # visualize in web browser
-    new_filepath = filepath+'map.html'
+    new_filepath = filepath + 'population_map.html'
     map1.save(new_filepath)
     webbrowser.open('file://' + new_filepath)
 
 
+def view_home_location(location, filepath):
+    map1 = folium.Map(location=location,
+                      zoom_start=18)
+    tooltip = 'Home location'
+    folium.Marker(location=location,
+                  popup='home',
+                  icon=folium.Icon(color='green', icon_color='white', icon='home', angle=0, prefix='fa'),
+                  tooltip=tooltip
+                  ).add_to(map1)
+    # visualize in web browser
+    new_filepath = filepath + 'home_location.html'
+    map1.save(new_filepath)
+    webbrowser.open('file://' + new_filepath)
+
+
+def view_work_location(location, filepath):
+    map1 = folium.Map(location=location,
+                      zoom_start=18)
+    tooltip = 'Work location'
+    folium.Marker(location=location,
+                  popup='Work Location',
+                  icon=folium.Icon(color='darkblue', icon_color='white', icon='building', angle=0, prefix='fa'),
+                  tooltip=tooltip
+                  ).add_to(map1)
+    # visualize in web browser
+    new_filepath = filepath + 'work_location.html'
+    map1.save(new_filepath)
+    webbrowser.open('file://' + new_filepath)

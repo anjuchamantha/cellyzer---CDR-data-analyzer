@@ -8,6 +8,8 @@ from operator import itemgetter
 from . import tools
 from . import visualization
 
+import datetime
+
 
 # Classes for Records
 class Record:
@@ -271,20 +273,71 @@ class CellDataSet(DataSet):
 
 # class User
 class User:
-    def __init__(self, contact_no):
+    def __init__(self, callDataSet, cellDataSet, contact_no):
         self._contact_no = contact_no
+        self._night_start = datetime.time(19)
+        self._night_end = datetime.time(7)
+        self._userCallDataSet = self.get_user_calldata(callDataSet)
+        self.cellDataSet = cellDataSet
+        self._home = self.compute_home()
+        self._work_location = self.compute_work_location()
 
     def get_contact_no(self):
         return self._contact_no
 
-    def get_trip(self):
-        print("trips")
+    def get_user_calldata(self, calldataset):
+        # return call data set of this user obj
+        return calldataset.get_records(self._contact_no)
+
+    def compute_home(self):
+        location_dict = {}
+        for call_record in self._userCallDataSet:
+            at_home = self.check_timestamp_for_home(call_record)
+            if at_home:
+                cell_record = self.cellDataSet.get_cell_records(call_record.get_cell_id())
+                location = str(cell_record.get_latitude()) + ',' + str(cell_record.get_longitude())
+                if location in location_dict:
+                    location_dict[location] += 1
+                else:
+                    location_dict[location] = 1
+        latitude, longitude = map(float, max(location_dict, key=location_dict.get).split(','))
+        home = [latitude, longitude]
+        return home
+
+    def compute_work_location(self):
+        location_dict = {}
+        for call_record in self._userCallDataSet:
+            at_work = not (self.check_timestamp_for_home(call_record))
+            if at_work:
+                cell_record = self.cellDataSet.get_cell_records(call_record.get_cell_id())
+                location = str(cell_record.get_latitude()) + ',' + str(cell_record.get_longitude())
+                if location in location_dict:
+                    location_dict[location] += 1
+                else:
+                    location_dict[location] = 1
+        latitude, longitude = map(float, max(location_dict, key=location_dict.get).split(','))
+        work_place = [latitude, longitude]
+        return work_place
+
+    def check_timestamp_for_home(self, record):
+        day = tools.get_index_of_day(record.get_timestamp())
+        date = tools.get_date_from_timestamp(record.get_timestamp())
+        if day > 5:  # weekend - at home
+            return True
+        else:  # weekday
+            if self._night_start.hour >= date.hour > self._night_end.hour:  # at work place
+                return False
+            else:  # at home
+                return True
 
     def get_home_location(self):
-        print("home location = xxx . xxx")
+        return self._home
 
     def get_work_location(self):
-        print("work location = xxx . xxx")
+        return self._work_location
+
+    def get_trip(self):
+        print("trips")
 
     def get_ignored_calls(self):
         print("ignored calls = 111222333")

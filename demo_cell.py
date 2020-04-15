@@ -22,5 +22,6 @@ print(population)
 
 cz.utils.print_population_around_cell(population)
 
-filepath_to_save = "D:\SE Project sem5"
+#filepath_to_save = "D:\SE Project sem5"
+filepath_to_save = "F:/SEMESTER 5/CS3202 - SE Project/maps/"
 cz.visualization.cell_population_visualization(population, filepath_to_save)
