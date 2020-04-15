@@ -50,11 +50,11 @@ def read_csv(filepath):
         pass
 
 
-def read_call(file_path):
+def read_call(call_file_path):
     # print("[x]  Reading Call Data")
 
     try:
-        with open(file_path, 'r') as csv_file:
+        with open(call_file_path, 'r') as csv_file:
             reader = csv.DictReader(csv_file)
 
             fieldnames = reader.fieldnames
@@ -64,7 +64,6 @@ def read_call(file_path):
                 for f in fieldnames:
                     call[f] = val[f]
                 call_list.append(call)
-
             return create_call_obj(call_list, fieldnames)
     except IOError:
         print("IO Error :", IOError)
@@ -120,7 +119,7 @@ def read_msg(file_path):
     """
 
 
-def read_cell(file_path):
+def read_cell(file_path, call_csv_path=None, call_dataset_obj=None):
     try:
         with open(file_path, 'r') as csv_file:
             reader = csv.DictReader(csv_file)
@@ -132,7 +131,13 @@ def read_cell(file_path):
                 for f in fieldnames:
                     cell[f] = val[f]
                 cell_list.append(cell)
-            return create_cell_obj(cell_list, fieldnames)
+            if call_csv_path is not None:
+                call_data_set = read_call(call_csv_path)
+            if call_dataset_obj is not None:
+                call_data_set = call_dataset_obj
+            else:
+                call_data_set = None
+            return create_cell_obj(cell_list, fieldnames, call_data_set)
     except IOError:
         print('IO Error :', IOError)
         pass
@@ -224,7 +229,7 @@ def create_msg_obj(messages, fieldnames):
         return message_dataset_obj
 
 
-def create_cell_obj(cells, fieldnames):
+def create_cell_obj(cells, fieldnames, call_data_set):
     if cells is not None:
 
         cell_records = []
@@ -243,6 +248,6 @@ def create_cell_obj(cells, fieldnames):
                 cell_id, latitude, longitude
             )
             cell_records.append(cell_record_obj)
-        cell_dataset_obj = CellDataSet(cell_records, fieldnames)
+        cell_dataset_obj = CellDataSet(cell_records, fieldnames, call_data_set)
 
         return cell_dataset_obj

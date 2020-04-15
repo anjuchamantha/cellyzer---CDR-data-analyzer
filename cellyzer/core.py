@@ -231,6 +231,27 @@ class MessageDataSet(CallMessageDataSet):
 
 
 class CellDataSet(DataSet):
+    def __init__(self, records, fieldnames, call_data_set):
+        self._call_data_Set = call_data_set
+        super().__init__(records, fieldnames)
+
+    def get_population(self, cell_id=None):
+        if cell_id is None:
+            population = []
+            for record in self.get_cell_records():
+                antenna_dict = self.get_population(cell_id=record.get_cell_id())
+                population.append(antenna_dict)
+            return population
+        else:
+            antenna_record = self.get_cell_records(cell_id)
+            call_records = self._call_data_Set.get_call_records_by_antenna_id(cell_id)
+            antenna_dict = {'cell_id': cell_id,
+                            'latitude': antenna_record.get_latitude(),
+                            'longitude': antenna_record.get_longitude(),
+                            'population_around_cell': len(call_records)
+                            }
+            return antenna_dict
+
     def get_cell_records(self, cell_id=None):
         if cell_id is None:
             return self._records
@@ -238,23 +259,6 @@ class CellDataSet(DataSet):
             for record in self._records:
                 if int(cell_id) == int(record.get_cell_id()):
                     return record
-
-    def get_population(self, callDataset, cell_id=None):
-        if cell_id is None:
-            population = []
-            for record in self.get_cell_records():
-                antenna_dict = self.get_population(callDataset, cell_id=record.get_cell_id())
-                population.append(antenna_dict)
-            return population
-        else:
-            antenna_record = self.get_cell_records(cell_id)
-            call_records = callDataset.get_call_records_by_antenna_id(cell_id)
-            antenna_dict = {'cell_id': cell_id,
-                            'latitude': antenna_record.get_latitude(),
-                            'longitude': antenna_record.get_longitude(),
-                            'population_around_cell': len(call_records)
-                            }
-            return antenna_dict
 
 
 # class User
