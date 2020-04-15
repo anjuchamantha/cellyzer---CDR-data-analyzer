@@ -346,7 +346,7 @@ class User:
 
     def check_timestamp_for_home(self, record):
         day = tools.get_index_of_day(record.get_timestamp())
-        date = tools.get_date_from_timestamp(record.get_timestamp())
+        date = tools.get_datetime_from_timestamp(record.get_timestamp())
         if day > 5:  # weekend - at home
             return True
         else:  # weekday
