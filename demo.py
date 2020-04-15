@@ -5,8 +5,8 @@ This is for manual testing the library
 import cellyzer as cz
 
 # reading message dataset and creating a message dataset object
-msg_file_path = "dataset/my_test_data/messages.csv"
-messageDataSet = cz.read_msg(msg_file_path)
+msg_file_path = "G:\messages.json"
+messageDataSet = cz.read_msg(msg_file_path, 'json')
 # cz.utils.print_dataset(messageDataSet, name="Message Dataset")
 
 # get all the users in the dataset
@@ -14,8 +14,8 @@ all_users = messageDataSet.get_all_users()
 print("All Users : %s \n" % all_users)
 
 # getting a list of users who are connected to a given user
-search_user1 = "7681546436"
-search_user2 = "7641036117"
+search_user1 = "7610039694"
+search_user2 = "7610039890"
 connected_users = messageDataSet.get_connected_users(search_user1)
 print("Users connected to %s : %s \n" % (search_user1, connected_users))
 

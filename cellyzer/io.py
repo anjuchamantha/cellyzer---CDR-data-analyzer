@@ -8,6 +8,7 @@ altering datasets (removing columns etc.)
 
 import csv
 import xlrd
+import json
 import logging as log
 from collections import OrderedDict
 from json import dumps
@@ -133,7 +134,7 @@ def read_csv(filepath):
         pass
 
 
-def read_call(file_path):
+def read_call(file_path, file_type='csv'):
     print("[x]  Reading Call Data")
 
     """
@@ -151,28 +152,35 @@ def read_call(file_path):
     """
 
     try:
-        # dataset_object = read_csv(file_path)
-        # return create_call_obj(dataset_object.get_records(), dataset_object.fieldnames)
-        with open(file_path, 'r') as csv_file:
-            reader = csv.DictReader(csv_file)
+        if file_type.lower() == 'csv':
+            # dataset_object = read_csv(file_path)
+            # return create_call_obj(dataset_object.get_records(), dataset_object.fieldnames)
+            with open(file_path, 'r') as csv_file:
+                reader = csv.DictReader(csv_file)
 
-            fieldnames = reader.fieldnames
-            call_list = []
-            for val in reader:
-                call = dict()
-                for f in fieldnames:
-                    call[f] = val[f]
-                call_list.append(call)
+                fieldnames = reader.fieldnames
+                call_list = []
+                for val in reader:
+                    call = dict()
+                    for f in fieldnames:
+                        call[f] = val[f]
+                    call_list.append(call)
 
-            # for c in call_list:
-            #  print(c)
-            return create_call_obj(call_list, fieldnames)
+                # for c in call_list:
+                #  print(c)
+                return create_call_obj(call_list, fieldnames)
+        elif file_type.lower() == 'xls' or file_type.lower() == 'xlsx':
+            return read_xls(file_path)
+        elif file_type.lower() == 'json':
+            return read_json(file_path)
+        else:
+            print('Invalid Format')
     except IOError:
         print("IO Error :", IOError)
         pass
 
 
-def read_msg(file_path):
+def read_msg(file_path, file_type='csv'):
     print("[x]  Reading Message Data...")
 
     """
@@ -190,26 +198,33 @@ def read_msg(file_path):
     """
 
     try:
-        # dataset_object = read_csv(file_path)
-        # return create_message_obj(dataset_object.get_records(), dataset_object.fieldnames)
-        with open(file_path, 'r') as csv_file:
-            reader = csv.DictReader(csv_file)
+        if file_type.lower() == 'csv':
+            # dataset_object = read_csv(file_path)
+            # return create_message_obj(dataset_object.get_records(), dataset_object.fieldnames)
+            with open(file_path, 'r') as csv_file:
+                reader = csv.DictReader(csv_file)
 
-            fieldnames = reader.fieldnames
-            messages_list = []
-            for val in reader:
-                message = dict()
-                for f in fieldnames:
-                    message[f] = val[f]
-                messages_list.append(message)
+                fieldnames = reader.fieldnames
+                messages_list = []
+                for val in reader:
+                    message = dict()
+                    for f in fieldnames:
+                        message[f] = val[f]
+                    messages_list.append(message)
 
-            return create_msg_obj(messages_list, fieldnames)
+                return create_msg_obj(messages_list, fieldnames)
+        elif file_type.lower() == 'xls' or file_type.lower() == 'xlsx':
+            return read_xls(file_path)
+        elif file_type.lower() == 'json':
+            return read_json(file_path)
+        else:
+            print('Invalid Format')
     except IOError:
         print("IO Error :", IOError)
         pass
 
 
-def read_cell(file_path, file_type='.csv'):
+def read_cell(file_path, file_type='csv'):
     print("[x]  Reading Cell Data")
 
     """
@@ -226,7 +241,7 @@ def read_cell(file_path, file_type='.csv'):
 
     """
     try:
-        if file_type.lower() == '.csv':
+        if file_type.lower() == 'csv':
             with open(file_path, 'r') as csv_file:
                 reader = csv.DictReader(csv_file)
 
@@ -241,6 +256,8 @@ def read_cell(file_path, file_type='.csv'):
                 return create_cell_obj(cell_list, fieldnames)
         elif file_type.lower() == 'xls' or file_type.lower() == 'xlsx':
             return read_xls(file_path)
+        elif file_type.lower() == 'json':
+            return read_json(file_path)
         else:
             print('Invalid Format')
     except IOError:
@@ -271,6 +288,51 @@ def read_xls(filepath):
     else:
         log.warning('Invalid Input')
         log.getLogger().setLevel(_level)
+
+
+def read_json(filepath):
+    print("[x]  Reading Data From JSON File")
+
+    """
+    Load records from a JSON file.
+
+    Parameters
+    ----------
+    path : str
+        Path of the file.
+
+    """
+    record_list = []
+    try:
+        with open(filepath) as json_file:
+            try:
+                data = json.load(json_file)
+                for key in data:
+                    if key.lower() == 'callrecords':
+                        fieldnames = data[key][0].keys()
+                        for records in data[key]:
+                            record_list.append(records)
+                        print(record_list)
+                        return create_call_obj(record_list, fieldnames)
+                    elif key.lower() == 'messagerecords':
+                        fieldnames = data[key][0].keys()
+                        for records in data[key]:
+                            record_list.append(records)
+                        print(record_list)
+                        return create_msg_obj(record_list, fieldnames)
+                    elif key.lower() == 'cellrecords':
+                        fieldnames = data[key][0].keys()
+                        for records in data[key]:
+                            record_list.append(records)
+                        print(record_list)
+                        return create_cell_obj(record_list, fieldnames)
+                    else:
+                        log.warning("This File Has Invalid Inputs")
+            except ValueError:  # includes simplejson.decoder.JSONDecodeError
+                print('Decoding JSON has failed. Please Check The JSON File Again')
+    except IOError:
+        print("IO Error :", IOError)
+        pass
 
 
 def create_call_obj(calls, fieldnames):
@@ -551,6 +613,7 @@ def xls_to_dict(workbook_url):
         filteredlist = float_to_int(row)
         rows.append(filteredlist)
     sheet_data = make_json_from_data(columns, rows)
+    print(sheet_data)
     return sheet_data, columns
 
 

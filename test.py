@@ -1,3 +1,4 @@
 import cellyzer as cz
 
-cz.read_xls('G:\Book1.xlsx')
+records = cz.read_call('G:\messages.xlsx','xlsx')
+print(records.get_all_users())
