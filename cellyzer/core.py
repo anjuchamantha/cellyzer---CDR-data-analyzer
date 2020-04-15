@@ -235,6 +235,14 @@ class CellDataSet(DataSet):
         self._call_data_Set = call_data_set
         super().__init__(records, fieldnames)
 
+    def get_cell_records(self, cell_id=None):
+        if cell_id is None:
+            return self._records
+        else:
+            for record in self._records:
+                if int(cell_id) == int(record.get_cell_id()):
+                    return record
+
     def get_population(self, cell_id=None):
         if cell_id is None:
             population = []
@@ -251,14 +259,6 @@ class CellDataSet(DataSet):
                             'population_around_cell': len(call_records)
                             }
             return antenna_dict
-
-    def get_cell_records(self, cell_id=None):
-        if cell_id is None:
-            return self._records
-        else:
-            for record in self._records:
-                if int(cell_id) == int(record.get_cell_id()):
-                    return record
 
 
 # class User

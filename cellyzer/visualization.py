@@ -62,7 +62,6 @@ def cell_population_visualization(cell_list, filepath):
         folium.Marker(location=point,
                       popup='nothing').add_to(marker_cluster)
     # visualize in web browser
-    filepath = filepath+'map.html'
+    filepath = filepath + 'map.html'
     map1.save(filepath)
     webbrowser.open('file://' + filepath)
-
