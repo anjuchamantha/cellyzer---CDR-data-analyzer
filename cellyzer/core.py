@@ -248,12 +248,20 @@ class CellDataSet(DataSet):
         else:
             antenna_record = self.get_cell_records(cell_id)
             call_records = callDataset.get_call_records_by_antenna_id(cell_id)
+            unique_users = self.get_unique_users_arround_cell(call_records)
             antenna_dict = {'cell_id': cell_id,
                             'latitude': antenna_record.get_latitude(),
                             'longitude': antenna_record.get_longitude(),
-                            'population_around_cell': len(call_records)
+                            'population_around_cell': len(unique_users)
                             }
             return antenna_dict
+
+    def get_unique_users_arround_cell(self, call_records):
+        unique_users = []
+        for record in call_records:
+            if record.get_user() not in unique_users:
+                unique_users.append(record.get_user())
+        return unique_users
 
 
 # class User
