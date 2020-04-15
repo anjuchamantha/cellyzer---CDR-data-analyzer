@@ -48,7 +48,7 @@ def active_time_bar_chart(time_dict):
     plt.show()
 
 
-def cell_population_visualization(cell_list, filepath):
+def cell_population_visualization(cell_list, filepath=""):
     location = [cell_list[0]['latitude'], cell_list[0]['longitude']]
     map1 = folium.Map(location=location, zoom_start=13)
     marker_cluster = folium.plugins.MarkerCluster().add_to(map1)
@@ -93,3 +93,26 @@ def view_home_work_locations(filepath, home_location=None, work_location=None):
         new_filepath = filepath + 'home&work_locations.html'
         map1.save(new_filepath)
         webbrowser.open('file://' + new_filepath)
+
+
+def create_marked_map(location_list, location="location", value="timestamp"):
+    initial_location = location_list[0][location]
+    marked_map = folium.Map(location=initial_location, tiles="OpenStreetMap", zoom_start=13)
+    marker_cluster = folium.plugins.MarkerCluster().add_to(marked_map)
+
+    for item in location_list:
+        loc = item[location]
+        val = item[value].strftime('%d.%m.%Y %H:%M:%S')
+        folium.Marker(location=loc, popup=val).add_to(marker_cluster)
+    return marked_map
+
+
+def trip_visualization(locations, map_name="trip_map"):
+    marked_map = create_marked_map(locations, value="timestamp")
+    location_list = []
+    for item in locations:
+        location_list.append(item["location"])
+
+    folium.PolyLine(location_list, color='red', weight=12, opacity=0.5).add_to(marked_map)
+    marked_map.save(map_name + '.html')
+    webbrowser.open(map_name + '.html')

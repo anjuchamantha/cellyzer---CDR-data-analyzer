@@ -7,6 +7,7 @@ from operator import itemgetter
 
 from . import tools
 from . import visualization
+from . import utils
 
 import datetime
 
@@ -19,34 +20,34 @@ class Record:
 class CallRecord(Record):
 
     def __init__(self, user, other_user, direction, duration, timestamp, cell_id, cost):
-        self._user = user
-        self._other_user = other_user
-        self._direction = direction
-        self._duration = duration
-        self._timestamp = timestamp
-        self._cell_id = cell_id
-        self._cost = cost
+        self.user = user
+        self.other_user = other_user
+        self.direction = direction
+        self.duration = duration
+        self.timestamp = timestamp
+        self.cell_id = cell_id
+        self.cost = cost
 
     def get_user(self):
-        return self._user
+        return self.user
 
     def get_other_user(self):
-        return self._other_user
+        return self.other_user
 
     def get_direction(self):
-        return self._direction
+        return self.direction
 
     def get_duration(self):
-        return self._duration
+        return self.duration
 
     def get_timestamp(self):
-        return self._timestamp
+        return self.timestamp
 
     def get_cell_id(self):
-        return self._cell_id
+        return self.cell_id
 
     def get_cost(self):
-        return self._cost
+        return self.cost
 
 
 class MessageRecord(Record):
@@ -245,6 +246,11 @@ class CellDataSet(DataSet):
                 if int(cell_id) == int(record.get_cell_id()):
                     return record
 
+    def get_location(self, cell_id):
+        antenna_record = self.get_cell_records(cell_id)
+        location_tuple = (float(antenna_record.get_latitude()), float(antenna_record.get_longitude()))
+        return location_tuple
+
     def get_population(self, cell_id=None):
         if cell_id is None:
             population = []
@@ -269,6 +275,25 @@ class CellDataSet(DataSet):
             if record.get_user() not in unique_users:
                 unique_users.append(record.get_user())
         return unique_users
+
+    def get_trip_details(self, user, console_print=False, tabulate=False):
+        trips = []
+        user_records = self._call_data_Set.get_records(user)
+        # utils.print_record_lists(user_records)
+        for record in user_records:
+            trip = dict()
+            if user == record.get_user():
+                trip["timestamp"] = tools.get_datetime_from_timestamp(record.get_timestamp())
+                trip["duration"] = record.get_duration()
+                trip["cell_id"] = record.get_cell_id()
+                trip["location"] = self.get_location(record.get_cell_id())
+                trips.append(trip)
+        sorted_trips = sorted(trips, key=itemgetter('timestamp'))
+        if tabulate:
+            utils.tabulate_list_of_dictionaries(sorted_trips)
+        if console_print:
+            print(sorted_trips)
+        return sorted_trips
 
 
 # class User

@@ -48,7 +48,7 @@ def print_matrix(matrix, headers):
     print(tabulate.tabulate(matrix, headers=headers, tablefmt='pretty'))
 
 
-def get_date_from_timestamp(timestamp):
+def get_datetime_from_timestamp(timestamp):
     timestamp.strip()
     day, month, date, time, zone, year = timestamp.split()
     date, month, year = map(int, [date, month_string_to_number(month), year])
