@@ -91,7 +91,7 @@ class CellRecord(Record):
 # classes for DataSet
 class DataSet:
     def __init__(self, records=None, fieldnames=None):
-        self.fieldnames = fieldnames
+        self._fieldnames = fieldnames
         if records is None:
             self._records = []
         else:
@@ -100,14 +100,36 @@ class DataSet:
     def add_records(self, data):
         self._records.append(data)
 
-    def get_max(self):
+    def get_records(self):
         return self._records
 
-    def get_columns(self):
-        print("columns")
+    def get_fieldnames(self):
+        return self._fieldnames
 
-    def get_rows(self):
-        print("rows")
+
+class CallMessageDataSet(DataSet):
+
+    def get_records(self, user1=None, user2=None):
+        # filter records using given user(s)
+        all_records = super().get_records()
+        records = []
+        if (user1 is None) and (user2 is None):
+            # calls the function of Dataset class
+            # return all the records : List of Record objects
+            return all_records
+
+        for record in all_records:
+            user = record.get_user()
+            other_user = record.get_other_user()
+            if (user1 is not None) and (user2 is None):
+                # returns a list of Record objects where the given user is involved
+                if user1 == user or user1 == other_user:
+                    records.append(record)
+            if (user1 is not None) and (user2 is not None):
+                # returns a list of Record objects where the given 2 users are involved
+                if (user1 == user and user2 == other_user) or (user1 == other_user and user2 == user):
+                    records.append(record)
+        return records
 
     def get_all_users(self):
         # return all the different users in the CallDataSet
@@ -120,27 +142,6 @@ class DataSet:
             if other_user not in all_users:
                 all_users.append(other_user)
         return all_users
-
-    def get_records(self, user1=None, user2=None):
-        # filter records using given user(s)
-        records = []
-        if (user1 is None) and (user2 is None):
-            # calls the function of Dataset class
-            # return all the records : List of Record objects
-            return self._records
-
-        for record in self._records:
-            user = record.get_user()
-            other_user = record.get_other_user()
-            if (user1 is not None) and (user2 is None):
-                # returns a list of Record objects where the given user is involved
-                if user1 == user or user1 == other_user:
-                    records.append(record)
-            if (user1 is not None) and (user2 is not None):
-                # returns a list of Record objects where the given 2 users are involved
-                if (user1 == user and user2 == other_user) or (user1 == other_user and user2 == user):
-                    records.append(record)
-        return records
 
     def get_connected_users(self, user):
         # returns the list of users that are connected to the given user
@@ -155,6 +156,7 @@ class DataSet:
         return connected_users
 
     def print_connection_matrix(self):
+        # returns a 2D list with which user is connected to who and the number of calls/messages between them
         matrix = []
         all_users = self.get_all_users()
         for u1 in all_users:
@@ -184,6 +186,7 @@ class DataSet:
         return connections
 
     def visualize_connection_network(self, directed=True):
+        # generates a directed graph of connected users
         connections = self.get_connections()
         weighted_edge_list = tools.get_weighted_edge_list(connections, directed)
         visualization.network_graph(weighted_edge_list, directed)
@@ -201,8 +204,6 @@ class DataSet:
         close_contacts = dict(sorted(contacts_dict.items(), key=itemgetter(1), reverse=True)[:top_contact])
         return close_contacts
 
-
-class CallDataSet(DataSet):
     def get_most_active_time(self, user):
         keys = []
         for i in range(24):
@@ -213,6 +214,9 @@ class CallDataSet(DataSet):
             active_time[time] += 1
         return active_time
 
+
+class CallDataSet(CallMessageDataSet):
+
     def get_call_records_by_antenna_id(self, cell_id):
         records = []
         for record in self.get_records():
@@ -220,16 +224,17 @@ class CallDataSet(DataSet):
                 records.append(record)
         return records
 
-    def get_call_details(self):
-        print("call details")
 
-
-class MessageDataSet(DataSet):
+class MessageDataSet(CallMessageDataSet):
     def get_frequenct_conversations(self):
         print("Frequent conversations between ")
 
 
 class CellDataSet(DataSet):
+    def __init__(self, records, fieldnames, call_data_set):
+        self._call_data_Set = call_data_set
+        super().__init__(records, fieldnames)
+
     def get_cell_records(self, cell_id=None):
         if cell_id is None:
             return self._records
@@ -238,16 +243,16 @@ class CellDataSet(DataSet):
                 if int(cell_id) == int(record.get_cell_id()):
                     return record
 
-    def get_population(self, callDataset, cell_id=None):
+    def get_population(self, cell_id=None):
         if cell_id is None:
             population = []
             for record in self.get_cell_records():
-                antenna_dict = self.get_population(callDataset, cell_id=record.get_cell_id())
+                antenna_dict = self.get_population(cell_id=record.get_cell_id())
                 population.append(antenna_dict)
             return population
         else:
             antenna_record = self.get_cell_records(cell_id)
-            call_records = callDataset.get_call_records_by_antenna_id(cell_id)
+            call_records = self._call_data_Set.get_call_records_by_antenna_id(cell_id)
             unique_users = self.get_unique_users_arround_cell(call_records)
             antenna_dict = {'cell_id': cell_id,
                             'latitude': antenna_record.get_latitude(),
