@@ -38,7 +38,7 @@ def print_close_contacts(close_contact_dict):
     print(tabulate.tabulate(rows, header, tablefmt='pretty'))
 
 
-def print_population_around_cell(population_dict):
+def tabulate_list_of_dictionaries(population_dict):
     # print population as a table
     if type(population_dict) == list:
         header = []
@@ -50,4 +50,5 @@ def print_population_around_cell(population_dict):
             for key in cell.keys():
                 row.append(cell[key])
             rows.append(row)
+
         print(tabulate.tabulate(rows, header, tablefmt='pretty'))

@@ -19,7 +19,7 @@ cz.utils.print_record_lists(user_record_list)
 user_message_dataset = cz.MessageDataSet(user_record_list)
 cz.utils.print_dataset(user_message_dataset, name="User Records of %s" % search_user1 + " & " + search_user2)
 
-date = cz.tools.get_date_from_timestamp("Mon Feb 11 07:08:49 +0000 1980")
+date = cz.tools.get_datetime_from_timestamp("Mon Feb 11 07:08:49 +0000 1980")
 print(date)
 
 messageDataSet.print_connection_matrix()
