@@ -16,7 +16,7 @@ from json import dumps
 from dateutil.parser import parse
 from datetime import datetime
 
-from .core import DataSet, MessageDataSet, CallDataSet, Record, CallRecord, MessageRecord, CellRecord
+from .core import DataSet, MessageDataSet, CallDataSet,CellDataSet, Record, CallRecord, MessageRecord, CellRecord
 from .tools import ColorHandler
 from .utils import flatten
 
@@ -438,11 +438,11 @@ def filter_calls(call_records):
 
     def scheme(r):
         return {
-            'user': True if len(r._user) != 0 and r._user.isdigit() else False,
-            'other': True if len(r._other_user) != 0 and r._other_user.isdigit() else False,
-            'direction': True if r._direction in ['Incoming', 'Outgoing', 'Missed'] else False,
-            'duration': True if len(r._duration) != 0 and r._duration.isdigit() else False,
-            'timestamp': is_date(r._timestamp),
+            'user': True if len(r.user) != 0 and r.user.isdigit() else False,
+            'other': True if len(r.other_user) != 0 and r.other_user.isdigit() else False,
+            'direction': True if r.direction in ['Incoming', 'Outgoing', 'Missed'] else False,
+            'duration': True if len(r.duration) != 0 and r.duration.isdigit() else False,
+            'timestamp': is_date(r.timestamp),
         }
 
     ignored = OrderedDict([
