@@ -9,7 +9,6 @@ antenna_file_path = "G:\data\excel\cell.xlsx"
 callDataSet = cz.read_call(call_file_path, 'xlsx')
 
 antennaDataSet = cz.read_cell(antenna_file_path, call_dataset_obj=callDataSet, file_type='xlsx')
-
 # record = antennaDataSet.get_cell_records(cell_id=1)
 # print("cell id - ", record.get_cell_id())
 

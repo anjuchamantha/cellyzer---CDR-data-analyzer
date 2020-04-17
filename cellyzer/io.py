@@ -428,8 +428,8 @@ def create_cell_obj(cells, fieldnames, call_data_set):
                 cell_id, latitude, longitude
             )
             cell_records.append(cell_record_obj)
-        cell_dataset_obj = CellDataSet(cell_records, fieldnames, call_data_set)
-
+        filtered_cell_records, bad_records = parse_records(cell_records, fieldnames)
+        cell_dataset_obj = CellDataSet(filtered_cell_records, fieldnames, call_data_set)
         return cell_dataset_obj
 
 
@@ -449,6 +449,7 @@ def filter_calls(call_records):
             'direction': True if r.direction in ['Incoming', 'Outgoing', 'Missed'] else False,
             'duration': True if len(r.duration) != 0 and r.duration.isdigit() else False,
             'timestamp': is_date(r.timestamp),
+
         }
 
     ignored = OrderedDict([
@@ -496,6 +497,8 @@ def filter_messages(call_records):
             'direction': True if r._direction in ['Incoming', 'Outgoing'] else False,
             'length': True if len(r._length) != 0 and r._length.isdigit() else False,
             'timestamp': is_date(r._timestamp),
+            'cell_id': True if len(r._cell_id) != 0 and r._cell_id.isdigit() else False,
+            'cost': True if len(r.cost) != 0 and r.cost.isdigit() else False,
         }
 
     ignored = OrderedDict([
@@ -505,6 +508,8 @@ def filter_messages(call_records):
         ('direction', 0),
         ('length', 0),
         ('timestamp', 0),
+        ('cell_id', 0),
+        ('cost', 0),
     ])
 
     bad_records = []
@@ -523,7 +528,6 @@ def filter_messages(call_records):
                 yield r
             else:
                 ignored['all'] += 1
-
     return list(_filter(call_records)), ignored, bad_records
 
 
