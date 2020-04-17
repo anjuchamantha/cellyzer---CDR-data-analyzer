@@ -10,6 +10,7 @@ import numpy as np
 import folium
 from folium.plugins import MarkerCluster
 import webbrowser
+import os
 
 
 def network_graph(edge_list, directed):
@@ -48,7 +49,7 @@ def active_time_bar_chart(time_dict):
     plt.show()
 
 
-def cell_population_visualization(cell_list, filepath=""):
+def cell_population_visualization(cell_list, map_name="population_map"):
     location = [cell_list[0]['latitude'], cell_list[0]['longitude']]
     map1 = folium.Map(location=location, zoom_start=13)
     marker_cluster = folium.plugins.MarkerCluster().add_to(map1)
@@ -61,16 +62,14 @@ def cell_population_visualization(cell_list, filepath=""):
         folium.Marker(location=point,
                       popup='nothing').add_to(marker_cluster)
     # visualize in web browser
-    new_filepath = filepath + 'population_map.html'
-    map1.save(new_filepath)
-    webbrowser.open('file://' + new_filepath)
+    file_path = map_name + '.html'
+    map1.save(file_path)
+    webbrowser.open(file_path)
 
 
-def view_home_work_locations(filepath, home_location=None, work_location=None):
+def view_home_work_locations(home_location=None, work_location=None, map_name = "home_work_location"):
     if home_location is None and work_location is None:
         print('XXX home location or work location is not provided with data inputs XXX')
-    elif filepath is None:
-        print('XXX file path is not given with the inputs XXX')
     else:
         map1 = folium.Map(location=home_location,
                           zoom_start=11)
@@ -90,9 +89,9 @@ def view_home_work_locations(filepath, home_location=None, work_location=None):
                           tooltip='Work Location'
                           ).add_to(map1)
         # visualize in web browser
-        new_filepath = filepath + 'home&work_locations.html'
-        map1.save(new_filepath)
-        webbrowser.open('file://' + new_filepath)
+        file_path = map_name + '.html'
+        map1.save(file_path)
+        webbrowser.open(file_path)
 
 
 def create_marked_map(location_list, location="location", value="timestamp"):

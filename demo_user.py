@@ -17,7 +17,7 @@ user2_number = "7610039694"
 # date = cz.tools.get_date_from_timestamp("Mon Feb 11 07:08:49 +0000 1980")
 # print(date)
 
-user1 = cz.User(callDataSet=callDataSet, cellDataSet=cellDataSet, contact_no=user2_number)
+user1 = cz.User(callDataSet=callDataSet, cellDataSet=cellDataSet, contact_no=user_number)
 
 filepath_to_save = "F:/SEMESTER 5/CS3202 - SE Project/maps/"
 
@@ -31,5 +31,4 @@ print('>> work location : ', location_office)
 officeplace_cell_id = user1.get_work_location_related_cell_id()
 print(">> work location -> cell id : ", officeplace_cell_id)
 
-# cz.visualization.view_home_work_locations(filepath=filepath_to_save, home_location=location_home,
-#                                           work_location=location_office)
+cz.visualization.view_home_work_locations(home_location=location_home, work_location=location_office)
