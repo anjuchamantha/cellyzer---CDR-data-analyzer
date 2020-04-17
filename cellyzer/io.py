@@ -222,8 +222,8 @@ def read_msg(file_path, file_type='csv'):
         pass
 
 
-def read_cell(file_path, file_type='csv'):
-    print("[x]  Reading Cell Data")
+def read_cell(file_path, call_csv_path=None, call_dataset_obj=None, file_type='csv'):
+    # print("[x]  Reading Cell Data")
 
     """
     Load cell records from a file.
@@ -250,8 +250,13 @@ def read_cell(file_path, file_type='csv'):
                     for f in fieldnames:
                         cell[f] = val[f]
                     cell_list.append(cell)
-
-                return create_cell_obj(cell_list, fieldnames)
+                if call_csv_path is not None:
+                    call_data_set = read_call(call_csv_path)
+                if call_dataset_obj is not None:
+                    call_data_set = call_dataset_obj
+                else:
+                    call_data_set = None
+                return create_cell_obj(cell_list, fieldnames, call_data_set)
         elif file_type.lower() == 'xls' or file_type.lower() == 'xlsx':
             return read_xls(file_path)
         elif file_type.lower() == 'json':
@@ -394,29 +399,27 @@ def create_msg_obj(messages, fieldnames):
         return message_dataset_obj
 
 
-def create_cell_obj(cells, fieldnames):
+def create_cell_obj(cells, fieldnames, call_data_set):
     if cells is not None:
 
         cell_records = []
         for cell in cells:
-            antenna_id = latitude = longitude = None
+            cell_id = latitude = longitude = None
 
             for key in cell:
-                if 'antenna_id' == key:
-                    cell_id = cell["antenna_id"]
+                if 'antenna_id' in key or 'cell_id' in key:
+                    cell_id = cell[key]
                 elif 'latitude' in key:
                     latitude = cell[key]
                 elif 'longitude' in key:
                     longitude = cell[key]
-            # print(user, other_user, direction, length, timestamp)
 
             cell_record_obj = CellRecord(
-                cell_id, latitude, longitude)
+                cell_id, latitude, longitude
+            )
             cell_records.append(cell_record_obj)
-        filtered_cell_records, bad_records = parse_records(cell_records, fieldnames)
-        cell_dataset_obj = MessageDataSet(filtered_cell_records, fieldnames)
+        cell_dataset_obj = CellDataSet(cell_records, fieldnames, call_data_set)
 
-        print("[x]  Objects creation successful\n")
         return cell_dataset_obj
 
 
