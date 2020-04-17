@@ -258,7 +258,13 @@ def read_cell(file_path, call_csv_path=None, call_dataset_obj=None, file_type='c
                     call_data_set = None
                 return create_cell_obj(cell_list, fieldnames, call_data_set)
         elif file_type.lower() == 'xls' or file_type.lower() == 'xlsx':
-            return read_xls(file_path)
+            if call_csv_path is not None:
+                call_data_set = read_call(call_csv_path, 'xls')
+            if call_dataset_obj is not None:
+                call_data_set = call_dataset_obj
+            else:
+                call_data_set = None
+            return read_xls(file_path, call_data_set)
         elif file_type.lower() == 'json':
             return read_json(file_path)
         else:
@@ -268,7 +274,7 @@ def read_cell(file_path, call_csv_path=None, call_dataset_obj=None, file_type='c
         pass
 
 
-def read_xls(filepath):
+def read_xls(filepath, call_data_set=None):
     print("[x]  Reading Data From Excel File")
 
     """
@@ -283,7 +289,7 @@ def read_xls(filepath):
     sample, fieldnames = xls_to_dict(filepath)
     _level = log.getLogger().level
     if 'latitude' in fieldnames and len(fieldnames) == 3:
-        return create_cell_obj(sample, fieldnames)
+        return create_cell_obj(sample, fieldnames, call_data_set)
     elif 'duration' in fieldnames and len(fieldnames) == 7:
         return create_call_obj(sample, fieldnames)
     elif 'length' in fieldnames and len(fieldnames) == 5:
