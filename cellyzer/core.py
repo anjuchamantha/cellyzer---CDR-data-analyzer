@@ -262,19 +262,34 @@ class CellDataSet(DataSet):
             antenna_record = self.get_cell_records(cell_id)
             call_records = self._call_data_Set.get_call_records_by_antenna_id(cell_id)
             unique_users = self.get_unique_users_arround_cell(call_records)
+            no_of_homes_arround_cell = 0
+            for user in unique_users:
+                if self.check_user_location_matches_cell(user, cell_id):
+                    no_of_homes_arround_cell += 1
+
             antenna_dict = {'cell_id': cell_id,
                             'latitude': antenna_record.get_latitude(),
                             'longitude': antenna_record.get_longitude(),
-                            'population_around_cell': len(unique_users)
+                            'population_around_cell': no_of_homes_arround_cell
                             }
             return antenna_dict
 
     def get_unique_users_arround_cell(self, call_records):
+        # filter given call records to get unique user list
         unique_users = []
         for record in call_records:
             if record.get_user() not in unique_users:
                 unique_users.append(record.get_user())
         return unique_users
+
+    def check_user_location_matches_cell(self, contact_no, cell_id):
+        # return true if user home location and given cell ID is equal
+        # return false if user home location does not matches with the cell ID
+        user = User(self._call_data_Set, self, contact_no)
+        if user.get_home_location_related_cell_id() == cell_id:
+            return True
+        else:
+            return False
 
     def get_trip_details(self, user, console_print=False, tabulate=False):
         trips = []
@@ -303,7 +318,7 @@ class User:
         self._night_start = datetime.time(19)
         self._night_end = datetime.time(7)
         self._userCallDataSet = self.get_user_calldata(callDataSet)
-        self.cellDataSet = cellDataSet
+        self._cellDataSet = cellDataSet
         self._home = self.compute_home()
         self._work_location = self.compute_work_location()
 
@@ -315,36 +330,48 @@ class User:
         return calldataset.get_records(self._contact_no)
 
     def compute_home(self):
+        # find the user home location and return -> [latitude , longitude]
+        # if no records related to home - return work location  - assuming working at home
         location_dict = {}
         for call_record in self._userCallDataSet:
             at_home = self.check_timestamp_for_home(call_record)
             if at_home:
-                cell_record = self.cellDataSet.get_cell_records(call_record.get_cell_id())
+                cell_record = self._cellDataSet.get_cell_records(call_record.get_cell_id())
                 location = str(cell_record.get_latitude()) + ',' + str(cell_record.get_longitude())
                 if location in location_dict:
                     location_dict[location] += 1
                 else:
                     location_dict[location] = 1
-        latitude, longitude = map(float, max(location_dict, key=location_dict.get).split(','))
-        home = [latitude, longitude]
-        return home
+        if len(location_dict) > 0:
+            latitude, longitude = map(float, max(location_dict, key=location_dict.get).split(','))
+            home = [latitude, longitude]
+            return home
+        else:
+            return self.compute_work_location()
 
     def compute_work_location(self):
+        # find the user work location and return -> [latitude , longitude]
+        # if no records related work location - return home location - assuming working from home
         location_dict = {}
         for call_record in self._userCallDataSet:
             at_work = not (self.check_timestamp_for_home(call_record))
             if at_work:
-                cell_record = self.cellDataSet.get_cell_records(call_record.get_cell_id())
+                cell_record = self._cellDataSet.get_cell_records(call_record.get_cell_id())
                 location = str(cell_record.get_latitude()) + ',' + str(cell_record.get_longitude())
                 if location in location_dict:
                     location_dict[location] += 1
                 else:
                     location_dict[location] = 1
-        latitude, longitude = map(float, max(location_dict, key=location_dict.get).split(','))
-        work_place = [latitude, longitude]
-        return work_place
+        if len(location_dict) > 0:
+            latitude, longitude = map(float, max(location_dict, key=location_dict.get).split(','))
+            work_place = [latitude, longitude]
+            return work_place
+        else:
+            return self.compute_home()
 
     def check_timestamp_for_home(self, record):
+        # return True if user call record is in the time period of staying home
+        # else return False
         day = tools.get_index_of_day(record.get_timestamp())
         date = tools.get_datetime_from_timestamp(record.get_timestamp())
         if day > 5:  # weekend - at home
@@ -360,6 +387,19 @@ class User:
 
     def get_work_location(self):
         return self._work_location
+
+    def get_home_location_related_cell_id(self):
+        # return cell id related to the home location
+        for record in self._cellDataSet.get_cell_records():
+            if float(record.get_latitude()) == self._home[0] and float(record.get_longitude()) == self._home[1]:
+                return record.get_cell_id()
+
+    def get_work_location_related_cell_id(self):
+        # return cell if related to the work location
+        for record in self._cellDataSet.get_cell_records():
+            if float(record.get_latitude()) == self._work_location[0] and float(record.get_longitude()) == \
+                    self._work_location[1]:
+                return record.get_cell_id()
 
     def get_trip(self):
         print("trips")

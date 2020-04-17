@@ -25,7 +25,7 @@ cz.utils.tabulate_list_of_dictionaries(population)
 
 #filepath_to_save = "D:\SE Project sem5"
 filepath_to_save = "F:/SEMESTER 5/CS3202 - SE Project/maps/"
-# cz.visualization.cell_population_visualization(population, filepath_to_save)
+cz.visualization.cell_population_visualization(population, filepath_to_save)
 
 # population = antennaDataSet.get_population()
 # print(population)
@@ -33,6 +33,6 @@ filepath_to_save = "F:/SEMESTER 5/CS3202 - SE Project/maps/"
 # filepath_to_save = "D:\SE Project sem5"
 # cz.visualization.cell_population_visualization(population, filepath_to_save)
 #
-call_made_locations = antennaDataSet.get_trip_details("7110730864", console_print=True, tabulate=True)
-cz.visualization.trip_visualization(call_made_locations)
+# call_made_locations = antennaDataSet.get_trip_details("7110730864", console_print=True, tabulate=True)
+# cz.visualization.trip_visualization(call_made_locations)
 
