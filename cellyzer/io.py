@@ -258,7 +258,13 @@ def read_cell(file_path, call_csv_path=None, call_dataset_obj=None, file_type='c
                     call_data_set = None
                 return create_cell_obj(cell_list, fieldnames, call_data_set)
         elif file_type.lower() == 'xls' or file_type.lower() == 'xlsx':
-            return read_xls(file_path)
+            if call_csv_path is not None:
+                call_data_set = read_call(call_csv_path, 'xls')
+            if call_dataset_obj is not None:
+                call_data_set = call_dataset_obj
+            else:
+                call_data_set = None
+            return read_xls(file_path, call_data_set)
         elif file_type.lower() == 'json':
             return read_json(file_path)
         else:
@@ -268,7 +274,7 @@ def read_cell(file_path, call_csv_path=None, call_dataset_obj=None, file_type='c
         pass
 
 
-def read_xls(filepath):
+def read_xls(filepath, call_data_set=None):
     print("[x]  Reading Data From Excel File")
 
     """
@@ -283,7 +289,7 @@ def read_xls(filepath):
     sample, fieldnames = xls_to_dict(filepath)
     _level = log.getLogger().level
     if 'latitude' in fieldnames and len(fieldnames) == 3:
-        return create_cell_obj(sample, fieldnames)
+        return create_cell_obj(sample, fieldnames, call_data_set)
     elif 'duration' in fieldnames and len(fieldnames) == 7:
         return create_call_obj(sample, fieldnames)
     elif 'length' in fieldnames and len(fieldnames) == 5:
@@ -422,8 +428,8 @@ def create_cell_obj(cells, fieldnames, call_data_set):
                 cell_id, latitude, longitude
             )
             cell_records.append(cell_record_obj)
-        cell_dataset_obj = CellDataSet(cell_records, fieldnames, call_data_set)
-
+        filtered_cell_records, bad_records = parse_records(cell_records, fieldnames)
+        cell_dataset_obj = CellDataSet(filtered_cell_records, fieldnames, call_data_set)
         return cell_dataset_obj
 
 
@@ -443,6 +449,7 @@ def filter_calls(call_records):
             'direction': True if r.direction in ['Incoming', 'Outgoing', 'Missed'] else False,
             'duration': True if len(r.duration) != 0 and r.duration.isdigit() else False,
             'timestamp': is_date(r.timestamp),
+
         }
 
     ignored = OrderedDict([
@@ -490,6 +497,8 @@ def filter_messages(call_records):
             'direction': True if r._direction in ['Incoming', 'Outgoing'] else False,
             'length': True if len(r._length) != 0 and r._length.isdigit() else False,
             'timestamp': is_date(r._timestamp),
+            'cell_id': True if len(r._cell_id) != 0 and r._cell_id.isdigit() else False,
+            'cost': True if len(r.cost) != 0 and r.cost.isdigit() else False,
         }
 
     ignored = OrderedDict([
@@ -499,6 +508,8 @@ def filter_messages(call_records):
         ('direction', 0),
         ('length', 0),
         ('timestamp', 0),
+        ('cell_id', 0),
+        ('cost', 0),
     ])
 
     bad_records = []
@@ -517,7 +528,6 @@ def filter_messages(call_records):
                 yield r
             else:
                 ignored['all'] += 1
-
     return list(_filter(call_records)), ignored, bad_records
 
 
