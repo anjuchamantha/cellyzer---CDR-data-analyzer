@@ -49,9 +49,9 @@ def active_time_bar_chart(time_dict):
     plt.show()
 
 
-def cell_population_visualization(cell_list, map_name="population_map"):
+def cell_population_visualization(cell_list, map_name="population_map", notebook=False):
     location = [cell_list[0]['latitude'], cell_list[0]['longitude']]
-    map1 = folium.Map(location=location, zoom_start=13)
+    map1 = folium.Map(location=location, zoom_start=12)
     marker_cluster = folium.plugins.MarkerCluster().add_to(map1)
     location_list = []
     for cell in cell_list:
@@ -61,13 +61,16 @@ def cell_population_visualization(cell_list, map_name="population_map"):
     for point in location_list:
         folium.Marker(location=point,
                       popup='nothing').add_to(marker_cluster)
-    # visualize in web browser
-    file_path = map_name + '.html'
-    map1.save(file_path)
-    webbrowser.open(file_path)
+    if notebook:
+        return map1
+    else:
+        # visualize in web browser
+        file_path = map_name + '.html'
+        map1.save(file_path)
+        webbrowser.open(file_path)
 
 
-def view_home_work_locations(home_location=None, work_location=None, map_name = "home_work_location"):
+def view_home_work_locations(home_location=None, work_location=None, map_name="home_work_location", notebook=False):
     if home_location is None and work_location is None:
         print('XXX home location or work location is not provided with data inputs XXX')
     else:
@@ -88,10 +91,13 @@ def view_home_work_locations(home_location=None, work_location=None, map_name = 
                           icon=folium.Icon(color='darkblue', icon_color='white', icon='building', angle=0, prefix='fa'),
                           tooltip='Work Location'
                           ).add_to(map1)
-        # visualize in web browser
-        file_path = map_name + '.html'
-        map1.save(file_path)
-        webbrowser.open(file_path)
+        if notebook:
+            return map1
+        else:
+            # visualize in web browser
+            file_path = map_name + '.html'
+            map1.save(file_path)
+            webbrowser.open(file_path)
 
 
 def create_marked_map(location_list, location="location", value="timestamp"):
@@ -106,12 +112,15 @@ def create_marked_map(location_list, location="location", value="timestamp"):
     return marked_map
 
 
-def trip_visualization(locations, map_name="trip_map"):
+def trip_visualization(locations, map_name="trip_map", notebook=False):
     marked_map = create_marked_map(locations, value="timestamp")
     location_list = []
     for item in locations:
         location_list.append(item["location"])
 
     folium.PolyLine(location_list, color='red', weight=12, opacity=0.5).add_to(marked_map)
-    marked_map.save(map_name + '.html')
-    webbrowser.open(map_name + '.html')
+    if notebook:
+        return marked_map
+    else:
+        marked_map.save(map_name + '.html')
+        webbrowser.open(map_name + '.html')

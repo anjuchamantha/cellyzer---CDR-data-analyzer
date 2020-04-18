@@ -113,7 +113,17 @@ class DataSet:
 class CallMessageDataSet(DataSet):
 
     def get_records(self, user1=None, user2=None):
-        # filter records using given user(s)
+        """
+        filter records using given user(s)
+
+        :param user1: string or None
+                contact number of user1
+
+        :param user2: string or None
+                contact number of user2
+
+        :return: record(s) : list
+        """
         all_records = super().get_records()
         records = []
         if (user1 is None) and (user2 is None):
@@ -135,7 +145,11 @@ class CallMessageDataSet(DataSet):
         return records
 
     def get_all_users(self):
-        # return all the different users in the CallDataSet
+        """
+        get all the different users in the CallDataSet
+
+        :return: all_users : list
+        """
         all_users = []
         for record in self.get_records():
             user = record.get_user()
@@ -147,7 +161,14 @@ class CallMessageDataSet(DataSet):
         return all_users
 
     def get_connected_users(self, user):
-        # returns the list of users that are connected to the given user
+        """
+        get a list of users that are connected to the given user
+
+        :param user: string
+                contact number of user
+
+        :return: connected_users : list
+        """
         connected_users = []
         for record in self.get_records(user):
             user1 = record.get_user()
@@ -159,7 +180,12 @@ class CallMessageDataSet(DataSet):
         return connected_users
 
     def print_connection_matrix(self):
-        # returns a 2D list with which user is connected to who and the number of calls/messages between them
+        """
+        get a 2D list with which user is connected to who and the number of calls/messages between them
+
+        :return: matrix : list
+                 headers : list
+        """
         matrix = []
         all_users = self.get_all_users()
         for u1 in all_users:
@@ -178,8 +204,12 @@ class CallMessageDataSet(DataSet):
         return matrix, headers
 
     def get_connections(self):
-        # returns a list of lists of [user1,user2]
-        # user1 makes a call to user2
+        """
+        returns a list of lists of [user1,user2]
+        user1 makes a call to user2
+
+        :return: connections : list
+        """
         connections = []
         for record in self.get_records():
             connection, direction = [record.get_user(), record.get_other_user()], record.get_direction()
@@ -189,14 +219,31 @@ class CallMessageDataSet(DataSet):
         return connections
 
     def visualize_connection_network(self, directed=True):
-        # generates a directed graph of connected users
+        """
+        generates a directed graph of connected users
+
+        :param directed: boolean
+
+        :return: connections : list
+                 directed : boolean
+        """
         connections = self.get_connections()
         weighted_edge_list = tools.get_weighted_edge_list(connections, directed)
         visualization.network_graph(weighted_edge_list, directed)
         return connections, directed
 
     def get_close_contacts(self, user, top_contact=5):
-        # get top contacts who have most number of calls and longest call duration with the user
+        """
+        get top contacts who have most number of calls and longest call duration with the user
+
+        :param user: string
+                contact number of the user
+
+        :param top_contact: int
+                number of top close contacts
+
+        :return: close_contacts : dictionary
+        """
         contacts_dict = {}
         for user2 in self.get_connected_users(user):
             valid_records = []
@@ -208,6 +255,14 @@ class CallMessageDataSet(DataSet):
         return close_contacts
 
     def get_most_active_time(self, user):
+        """
+        get most active time of a user during a day
+
+        :param user: string
+                contact number of the user
+
+        :return: active_time : dictionary
+        """
         keys = []
         for i in range(24):
             keys.append(i)
@@ -221,6 +276,13 @@ class CallMessageDataSet(DataSet):
 class CallDataSet(CallMessageDataSet):
 
     def get_call_records_by_antenna_id(self, cell_id):
+        """
+        get call records related to a specific cell
+
+        :param cell_id: string
+
+        :return: records : list
+        """
         records = []
         for record in self.get_records():
             if record.get_cell_id() == str(cell_id):
@@ -239,6 +301,22 @@ class CellDataSet(DataSet):
         super().__init__(records, fieldnames)
 
     def get_cell_records(self, cell_id=None):
+        """
+        Get all cell records or specific cell record to a given cell id
+
+        :param cell_id: int or None
+        :return: cell record object(s)
+
+        Example
+        -------
+        >> import cellyzer as cz
+        >> call_file_path = "dataset/my_test_data/calls.csv"
+        >> antenna_file_path = "dataset/my_test_data/antennas.csv"
+        >> callDataSet = cz.read_call(call_file_path)
+        >> antennaDataSet = cz.read_cell(antenna_file_path, call_dataset_obj=callDataSet, file_type='csv')
+        >> record = antennaDataSet.get_cell_records(cell_id=1)
+        """
+
         if cell_id is None:
             return self._records
         else:
@@ -247,11 +325,43 @@ class CellDataSet(DataSet):
                     return record
 
     def get_location(self, cell_id):
+        """
+        Get cell location tuple for a specific cell ID
+
+        :param cell_id: int
+        :return: tuple : (latitude, longitude)
+
+        Example
+        -------
+        >> import cellyzer as cz
+        >> call_file_path = "dataset/my_test_data/calls.csv"
+        >> antenna_file_path = "dataset/my_test_data/antennas.csv"
+        >> callDataSet = cz.read_call(call_file_path)
+        >> antennaDataSet = cz.read_cell(antenna_file_path, call_dataset_obj=callDataSet, file_type='csv')
+        >> location = antennaDataSet.get_location(cell_id = 1)
+        """
+
         antenna_record = self.get_cell_records(cell_id)
         location_tuple = (float(antenna_record.get_latitude()), float(antenna_record.get_longitude()))
         return location_tuple
 
     def get_population(self, cell_id=None):
+        """
+        get population around all the cells or around a given cell ID
+
+        :param cell_id : int or None
+        :return: dictionary : {'cell_id': 1,'latitude': 15.156464,'longitude': 15.16565,'population_around_cell': 50}
+
+        Example
+        -------
+        >> import cellyzer as cz
+        >> call_file_path = "dataset/my_test_data/calls.csv"
+        >> antenna_file_path = "dataset/my_test_data/antennas.csv"
+        >> callDataSet = cz.read_call(call_file_path)
+        >> antennaDataSet = cz.read_cell(antenna_file_path, call_dataset_obj=callDataSet, file_type='csv')
+        >> population = antennaDataSet.get_population()
+        """
+
         if cell_id is None:
             population = []
             for record in self.get_cell_records():
@@ -292,6 +402,18 @@ class CellDataSet(DataSet):
             return False
 
     def get_trip_details(self, user, console_print=False, tabulate=False):
+        """
+        get/print/tabulate trip details of a specific user
+
+        :param user: string
+                contact number of a user
+
+        :param console_print: boolean
+
+        :param tabulate: boolean
+
+        :return: sorted_trips : dictionary
+        """
         trips = []
         user_records = self._call_data_Set.get_records(user)
         # utils.print_record_lists(user_records)
@@ -323,6 +445,21 @@ class User:
         self._work_location = self.compute_work_location()
 
     def get_contact_no(self):
+        """
+        Get user contact number
+
+        :return: string
+
+        Example
+        -------
+        >> call_file_path = "dataset/my_test_data/calls.csv"
+        >> antenna_file_path = "dataset/my_test_data/antennas.csv"
+        >> callDataSet = cz.read_call(call_file_path)
+        >> cellDataSet = cz.read_cell(antenna_file_path)
+        >> user_number = "7163185791"
+        >> user_obj = cz.User(callDataSet=callDataSet, cellDataSet=cellDataSet, contact_no=user_number)
+        >> user_obj.get_contact_no()
+        """
         return self._contact_no
 
     def get_user_calldata(self, calldataset):
@@ -383,26 +520,83 @@ class User:
                 return True
 
     def get_home_location(self):
+        """
+        get home location of a user object
+
+        :return: list : ['latitude' , 'longitude']
+
+        Example
+        -------
+        >> call_file_path = "dataset/my_test_data/calls.csv"
+        >> antenna_file_path = "dataset/my_test_data/antennas.csv"
+        >> callDataSet = cz.read_call(call_file_path)
+        >> cellDataSet = cz.read_cell(antenna_file_path)
+        >> user_number = "7163185791"
+        >> user_obj = cz.User(callDataSet=callDataSet, cellDataSet=cellDataSet, contact_no=user_number)
+        >> home_location = user_obj.get_home_location()
+        """
         return self._home
 
     def get_work_location(self):
+        """
+        get work location of a user object
+
+        :return: list : ['latitude' , 'longitude']
+
+        Example
+        -------
+        >> call_file_path = "dataset/my_test_data/calls.csv"
+        >> antenna_file_path = "dataset/my_test_data/antennas.csv"
+        >> callDataSet = cz.read_call(call_file_path)
+        >> cellDataSet = cz.read_cell(antenna_file_path)
+        >> user_number = "7163185791"
+        >> user_obj = cz.User(callDataSet=callDataSet, cellDataSet=cellDataSet, contact_no=user_number)
+        >> work_location = user_obj.get_work_location()
+        """
         return self._work_location
 
     def get_home_location_related_cell_id(self):
-        # return cell id related to the home location
+        """
+        get cell ID of the nearest cell to the home location
+
+        :return: int : cell_id
+
+        Example
+        -------
+        >> call_file_path = "dataset/my_test_data/calls.csv"
+        >> antenna_file_path = "dataset/my_test_data/antennas.csv"
+        >> callDataSet = cz.read_call(call_file_path)
+        >> cellDataSet = cz.read_cell(antenna_file_path)
+        >> user_number = "7163185791"
+        >> user_obj = cz.User(callDataSet=callDataSet, cellDataSet=cellDataSet, contact_no=user_number)
+        >> home_location_cell = user_obj.get_home_location_related_cell_id()
+        """
+
         for record in self._cellDataSet.get_cell_records():
             if float(record.get_latitude()) == self._home[0] and float(record.get_longitude()) == self._home[1]:
                 return record.get_cell_id()
 
     def get_work_location_related_cell_id(self):
-        # return cell if related to the work location
+        """
+        get cell ID of the nearest cell to the work location
+
+        :return: int : cell_id
+
+        Example
+        -------
+        >> call_file_path = "dataset/my_test_data/calls.csv"
+        >> antenna_file_path = "dataset/my_test_data/antennas.csv"
+        >> callDataSet = cz.read_call(call_file_path)
+        >> cellDataSet = cz.read_cell(antenna_file_path)
+        >> user_number = "7163185791"
+        >> user_obj = cz.User(callDataSet=callDataSet, cellDataSet=cellDataSet, contact_no=user_number)
+        >> work_location_cell = user_obj.get_work_location_related_cell_id()
+        """
+
         for record in self._cellDataSet.get_cell_records():
             if float(record.get_latitude()) == self._work_location[0] and float(record.get_longitude()) == \
                     self._work_location[1]:
                 return record.get_cell_id()
-
-    def get_trip(self):
-        print("trips")
 
     def get_ignored_calls(self):
         print("ignored calls = 111222333")

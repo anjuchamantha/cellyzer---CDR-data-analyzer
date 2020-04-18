@@ -19,7 +19,7 @@ user2_number = "7610039694"
 
 user1 = cz.User(callDataSet=callDataSet, cellDataSet=cellDataSet, contact_no=user_number)
 
-filepath_to_save = "F:/SEMESTER 5/CS3202 - SE Project/maps/"
+# filepath_to_save = "F:/SEMESTER 5/CS3202 - SE Project/maps/"
 
 location_home = user1.get_home_location()
 print('>> home location : ', location_home)

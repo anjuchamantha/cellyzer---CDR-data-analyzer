@@ -19,6 +19,7 @@ print(population)
 cz.utils.tabulate_list_of_dictionaries(population)
 cz.visualization.cell_population_visualization(population)
 
-# call_made_locations = antennaDataSet.get_trip_details("7110730864", console_print=True, tabulate=True)
-# cz.visualization.trip_visualization(call_made_locations)
+call_made_locations = antennaDataSet.get_trip_details("7110730864", console_print=True, tabulate=True)
+cz.visualization.trip_visualization(call_made_locations, notebook=False)
+
 
