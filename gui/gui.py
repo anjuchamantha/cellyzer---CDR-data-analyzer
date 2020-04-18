@@ -331,16 +331,25 @@ index_cell_dataset=html.Div([
     ],
     className='index_cell_dataset_Dashboard_div'
     ),
+    html.Div([
         html.Div([
-            html.Div([
-                html.H3('ADD  CELL  DATASET', className='index_cell_dataset_addcell')
+            html.H3('ADD  CELL  DATASET', className='index_cell_dataset_addcell')
             ],
-            className='index_cell_dataset_addcell_div'
+        className='index_cell_dataset_addcell_div'
             ),         
-        ]),
-        dcc.Upload(id='upload-data_cell',
-            children=html.Div([
-                html.Button('ADD CELL DATA', className='index_celldata_add_button'
+    ]),
+    html.Div([
+        html.H5('Get File Path:'),
+        dcc.Input(id="filepath_cell", type='text', placeholder='Enter path', style={'width': '500px', 'border': '1px solid black'}),
+        html.Br(),
+        html.P('Enter correct path of adding file', style={'font-size': '15px'})       
+        ],
+        style={
+            'padding-left': '30px'
+        }),
+    dcc.Upload(id='upload-data_cell',
+        children=html.Div([
+            html.Button('ADD CELL DATA', className='index_celldata_add_button'
             )
         ]),
         className='index_cell_dataset_upload_data',
@@ -386,15 +395,16 @@ className='sample_cell_dataset_div'
 
 cell_data_list=[]
 
-@app.callback(dash.dependencies.Output('cell-data', 'children'),
-    [   dash.dependencies.Input('upload-data_cell', 'filename'),
-        dash.dependencies.Input('upload-data_cell', 'contents')
-        ])
-def add_cell_dataset(filename, contents):
-    if contents:
-        contents = contents[0]
-        filename = filename[0]
-        cell_data_list.append([filename, contents])
+@app.callback(Output('cell-data', 'children'),
+            [
+                Input('upload-data_cell', 'filename'),
+                Input('filepath_cell', 'value')
+            ])
+def add_cell_dataset(filename, filepath):
+    try:
+        filename=filename[0]
+        path_File=os.path.join(filepath, filename)
+        cell_data_list.append([filename, path_File])
         output_cell=[]
         for x in cell_data_list:
             a=x[0].split('.')
@@ -402,8 +412,11 @@ def add_cell_dataset(filename, contents):
             output_cell.append(html.Br())
         name_cell=html.Div(
             children=output_cell
-        )
+            )
         return name_cell
+
+    except Exception as e:
+        print(e)
 
 @app.callback(dash.dependencies.Output('page_cell_dataset', 'children'),
             [   dash.dependencies.Input('url_cell_dataset', 'pathname')
@@ -424,24 +437,31 @@ def view_cell_data(n_clicks, click2):
         return None
 
     if n_clicks is not None:
-        contents = cell_data_list[0][1]
+        filepath = cell_data_list[0][1]
         filename = cell_data_list[0][0]
-        df = parse_data(contents, filename)
-        table = html.Div([
+        c=cz.read_csv(filepath)
+        d=c.get_records()
+        key=list(d[0].keys())
+        tab=[]
+        column=[]
+        for i in key:
+            column.append(html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color':'white'}))
+        tab.append(html.Tr(children=column))
+        for j in d:
+            value=list(j.values())
+            row_content=[]
+            for x in value:
+                row_content.append(html.Td(x ,style={'border': '1px solid black', 'padding-left':'10px'}))
+            tab.append(html.Tr(children=row_content, style={'height': '5px'}))
+        table=html.Div([
             html.H2(filename),
-            dash_table.DataTable(
-                data=df.to_dict('rows'),
-                columns=[{'name': i, 'id': i} for i in df.columns]
-            ),
-            html.Hr(),
-            html.Div('Raw Content'),
-            html.Pre(contents[0:200] + '...', style={
-                'whiteSpace': 'pre-wrap',
-                'wordBreak': 'break-all'
-            })
+            html.Table(children=tab, 
+                style={'border-collapse':'collapse',
+                    'border': '1px solid black',
+                    'width': '100%'
+                })
         ])
-
-    return table
+        return table
 
 @app.callback(Output('close_cell', 'n_clicks'),
             [   Input('view_cell', 'n_clicks')
@@ -482,6 +502,15 @@ index_message_dataset=html.Div([
             className='index_message_dataset_addmessage_div'
             ),         
         ]),
+    html.Div([
+        html.H5('Get File Path:'),
+        dcc.Input(id="filepath_message", type='text', placeholder='Enter path', style={'width': '500px', 'border': '1px solid black'}),
+        html.Br(),
+        html.P('Enter correct path of adding file', style={'font-size': '15px'})       
+        ],
+        style={
+            'padding-left': '30px'
+        }),
     dcc.Upload(id='upload-data_message',
         children=html.Div([
         html.Button('ADD MESSAGE DATA', className='index_messagedata_add_button'
@@ -529,15 +558,16 @@ sample_message_data= html.Div([
 
 message_data_list=[]
 
-@app.callback(dash.dependencies.Output('message-data', 'children'),
-    [   dash.dependencies.Input('upload-data_message', 'filename'),
-        dash.dependencies.Input('upload-data_message', 'contents')
-        ])
-def add_message_dataset(filename, contents):
-    if contents:
-        contents = contents[0]
-        filename = filename[0]
-        message_data_list.append([filename, contents])
+@app.callback(Output('message-data', 'children'),
+            [
+                Input('upload-data_message', 'filename'),
+                Input('filepath_message', 'value')
+            ])
+def add_message_dataset(filename, filepath):
+    try:
+        filename=filename[0]
+        path_File=os.path.join(filepath, filename)
+        message_data_list.append([filename, path_File])
         output_message=[]
         for x in message_data_list:
             a=x[0].split('.')
@@ -545,8 +575,11 @@ def add_message_dataset(filename, contents):
             output_message.append(html.Br())
         name_message=html.Div(
             children=output_message
-        )
+            )
         return name_message
+
+    except Exception as e:
+        print(e)
 
 @app.callback(dash.dependencies.Output('page_message_dataset', 'children'),
             [   dash.dependencies.Input('url_message_dataset', 'pathname')
@@ -558,6 +591,7 @@ def display_sample_message_data(pathname):
     else:
         return index_message_dataset
 
+
 @app.callback(Output('show_message_data', 'children'),
             [   Input('view_message', 'n_clicks'), Input('close_message', 'n_clicks')
             ])
@@ -565,25 +599,33 @@ def view_message_data(n_clicks, click2):
     table = html.Div()
     if click2 is not None:
         return None
-    if n_clicks is not None:
-        contents = message_data_list[0][1]
-        filename = message_data_list[0][0]
-        df = parse_data(contents, filename)
-        table = html.Div([
-            html.H2(filename),
-            dash_table.DataTable(
-                data=df.to_dict('rows'),
-                columns=[{'name': i, 'id': i} for i in df.columns]
-            ),
-            html.Hr(),
-            html.Div('Raw Content'),
-            html.Pre(contents[0:200] + '...', style={
-                'whiteSpace': 'pre-wrap',
-                'wordBreak': 'break-all'
-            })
-        ])
 
-    return table
+    if n_clicks is not None:
+        filepath = message_data_list[0][1]
+        filename = message_data_list[0][0]
+        c=cz.read_csv(filepath)
+        d=c.get_records()
+        key=list(d[0].keys())
+        tab=[]
+        column=[]
+        for i in key:
+            column.append(html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color':'white'}))
+        tab.append(html.Tr(children=column))
+        for j in d:
+            value=list(j.values())
+            row_content=[]
+            for x in value:
+                row_content.append(html.Td(x ,style={'border': '1px solid black', 'padding-left':'10px'}))
+            tab.append(html.Tr(children=row_content, style={'height': '5px'}))
+        table=html.Div([
+            html.H2(filename),
+            html.Table(children=tab, 
+                style={'border-collapse':'collapse',
+                    'border': '1px solid black',
+                    'width': '100%'
+                })
+        ])
+        return table
 
 @app.callback(Output('close_message', 'n_clicks'),
             [   Input('view_message', 'n_clicks')
