@@ -232,6 +232,27 @@ class CallMessageDataSet(DataSet):
         visualization.network_graph(weighted_edge_list, directed)
         return connections, directed
 
+    def get_most_active_time(self, user):
+        """
+        get most active time of a user during a day
+
+        :param user: string
+                contact number of the user
+
+        :return: active_time : dictionary
+        """
+        keys = []
+        for i in range(24):
+            keys.append(i)
+        active_time = {key: 0 for key in keys}
+        for record in self.get_records(user1=user):
+            time = int(tools.get_datetime_from_timestamp(record.get_timestamp()).hour)
+            active_time[time] += 1
+        return active_time
+
+
+class CallDataSet(CallMessageDataSet):
+
     def get_close_contacts(self, user, top_contact=5):
         """
         get top contacts who have most number of calls and longest call duration with the user
@@ -254,27 +275,6 @@ class CallMessageDataSet(DataSet):
         close_contacts = dict(sorted(contacts_dict.items(), key=itemgetter(1), reverse=True)[:top_contact])
         return close_contacts
 
-    def get_most_active_time(self, user):
-        """
-        get most active time of a user during a day
-
-        :param user: string
-                contact number of the user
-
-        :return: active_time : dictionary
-        """
-        keys = []
-        for i in range(24):
-            keys.append(i)
-        active_time = {key: 0 for key in keys}
-        for record in self.get_records(user1=user):
-            time = int(record.get_timestamp().split()[3][:2])
-            active_time[time] += 1
-        return active_time
-
-
-class CallDataSet(CallMessageDataSet):
-
     def get_call_records_by_antenna_id(self, cell_id):
         """
         get call records related to a specific cell
@@ -288,6 +288,22 @@ class CallDataSet(CallMessageDataSet):
             if record.get_cell_id() == str(cell_id):
                 records.append(record)
         return records
+
+    def get_ignored_call_details(self, user):
+        records = self.get_records(user1=user)
+        ignored_call_records = []
+        for record in records:
+            if record.get_direction() == 'Incoming' and int(record.get_duration()) == 0:
+                date = tools.get_datetime_from_timestamp(record.get_timestamp())
+                call = {
+                    'other user': record.get_other_user(),
+                    'date': str(date.day).zfill(2) + '-' + str(date.month).zfill(2) + '-' + str(date.year),
+                    'time stamp': str(date.hour).zfill(2) + ':' + str(date.minute).zfill(2) + ':' + str(
+                        date.second).zfill(2),
+                    'cell ID': record.get_cell_id()
+                }
+                ignored_call_records.append(call)
+        return ignored_call_records
 
 
 class MessageDataSet(CallMessageDataSet):
@@ -440,6 +456,7 @@ class User:
         self._night_start = datetime.time(19)
         self._night_end = datetime.time(7)
         self._userCallDataSet = self.get_user_calldata(callDataSet)
+        self.callDataSetObj = callDataSet
         self._cellDataSet = cellDataSet
         self._home = self.compute_home()
         self._work_location = self.compute_work_location()
@@ -598,5 +615,5 @@ class User:
                     self._work_location[1]:
                 return record.get_cell_id()
 
-    def get_ignored_calls(self):
-        print("ignored calls = 111222333")
+    def get_ignored_call_details(self):
+        return self.callDataSetObj.get_ignored_call_details(self._contact_no)

@@ -40,14 +40,20 @@ def print_close_contacts(close_contact_dict):
     print(tabulate.tabulate(rows, header, tablefmt='pretty'))
 
 
-def tabulate_list_of_dictionaries(population_dict):
-    # print population as a table
-    if type(population_dict) == list:
+def tabulate_list_of_dictionaries(dictionary_list):
+    """
+    tabulate the list of dictionaries
+
+    :param dictionary_list: list
+
+    :return: print table
+    """
+    if type(dictionary_list) == list:
         header = []
-        for item in population_dict[0].keys():
+        for item in dictionary_list[0].keys():
             header.append(item)
         rows = []
-        for cell in population_dict:
+        for cell in dictionary_list:
             row = []
             for key in cell.keys():
                 row.append(cell[key])
