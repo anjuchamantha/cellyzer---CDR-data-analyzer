@@ -2,7 +2,6 @@ import base64
 import datetime
 import io
 import plotly.graph_objs as go
-# import cufflinks as cf
 import dash
 from dash.dependencies import Input, Output, State
 import dash_core_components as dcc
@@ -11,7 +10,11 @@ import dash_table
 import folium
 import flask
 import pandas as pd
-import dash_bootstrap_components as dbc
+import os
+import sys
+
+sys.path.insert(0, '../')
+import cellyzer as cz
 
 
 external_stylesheets = [{'external_url': 'https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min'
@@ -22,11 +25,6 @@ server = app.server
 
 app.config.suppress_callback_exceptions = True
 
-# colors = {
-#     "graphBackground": "#F5F5F5",
-#     "background": "#ffffff",
-#     "text": "#000000"
-# }
 image_filename = 'cdr.jpg'
 encoded_mage = base64.b64encode(open(image_filename, 'rb').read())
 
@@ -73,105 +71,46 @@ def parse_data(contents, filename):
 
 ## Front page
 index_page = html.Div([
-    html.H1(
-        children='CELLYZER',
-        style={
-            'textAlign': 'center',
-            'color': 'orange',
-            'background': 'black',
-            'padding-top': '20px',
-            'padding-bottom': '20px'
-        }),
+    html.H1(className='index_page_CELLYZER',
+        children='CELLYZER'
+        ),
     html.Div([
-        html.H2(
-            children='Dashboard',
-            style={
-                'color': 'black',
-                'padding-left': '20px'
-            }
+        html.H2(className='index_page_Dashboard',
+            children='Dashboard'
         ),
-        html.Hr(style={'color': 'white'}),
         html.Div(
-            [
-                dbc.Button(
-                    "ADD A DATASET",
-                    id="collapse-button",
-                    className="mb-3",
-                    color="dark",
-                    style={'margin-left': '1rem'}
-                ),
-                dbc.Collapse(
-                    html.Div([
-                        dcc.Link('Call Dataset', href='/Call_Dataset'),
-                        html.Br(),
-                        dcc.Link('Cell Dataset', href='/Cell_Dataset'),
-                        html.Br(),
-                        dcc.Link('Message Dataset', href='/Message_Dataset')
-                    ],
-                        style={
-                            'padding': '6px 8px 6px 20px',
-                            'text-decration': 'none',
-                            'color': 'orange',
-                            'display': 'block',
-                            'border': '1px solid black'
-                        }
-                    ),
-                    id="collapse",
-                ),
-            ]
-        ),
-
+        [
+            html.H3("Dataset"),
+            dcc.Link('Call Dataset', href='/Call_Dataset'),
+            html.Br(),
+            dcc.Link('Cell Dataset', href='/Cell_Dataset'),
+            html.Br(),
+            dcc.Link('Message Dataset', href='/Message_Dataset')
+        ],
+        className='index_page_dataset_div'
+        )  
     ],
-        style=SIDEBAR_STYLE
+    className='index_page_Dashboard_div'
     ),
     html.Div([
         html.Div([
             html.Img(
-                src='data:image/jpg;base64,{}'.format(encoded_mage.decode()),
-                style={
-                    'width': '100%',
-                    'height': '500px'
-                }),
-            html.Div([
-                html.H1("WELCOME"),
-                html.H1('CDR DATA ANALYSIS')
-            ],
-                style={
-                    'position': 'fixed',
-                    'bottom': '200px',
-                    'background': 'rgb(0,0,0)',
-                    'background': 'rgb(0,0,0, 0.5)',
-                    'color': 'orange',
-                    'width': '80%',
-                    'textAlign': 'center',
-                    'font-weight': '900',
-                    'font-size': '20px'
-                })
+            src='data:image/jpg;base64,{}'.format(encoded_mage.decode()), 
+            className='index_page_Img'
+        ),
+        html.Div([
+            html.H1("WELCOME"),
+            html.H1('CDR DATA ANALYSIS')
         ],
-            style={
-                'max-width': '1300px',
-                'margin': '0 0'
-            })
+        className='index_page_welcome'
+        )
+    ], 
+    className='index_page_welcome_div'
+    )
     ])
-],
-    style={
-        'margin-left': '16rem',
-        'padding': '0px 10px'
-    }
-)
-
-
-@app.callback(
-    Output("collapse", "is_open"),
-    [Input("collapse-button", "n_clicks")],
-    [State("collapse", "is_open")],
-)
-def toggle_collapse(n, is_open):
-    if n:
-        return not is_open
-    return is_open
-
-
+    ], 
+    className='index_page_div'
+    )
 # over front page
 
 #######################################################################
@@ -181,91 +120,45 @@ call_dataset = html.Div([
     html.Div(id='page-dataset')
 ])
 
-index_dataset = html.Div([
-    html.H1(
-        children='CELLYZER',
-        style={
-            'textAlign': 'center',
-            'color': 'orange',
-            'background': 'black',
-            'padding-top': '20px',
-            'padding-bottom': '20px'
-        }),
+index_dataset=html.Div([
+    html.H1(className='index_dataset_CELLYZER',
+        children='CELLYZER'
+    ),
     html.Div([
-        html.H2(
-            children='Dashboard',
-            style={
-                'color': 'white',
-                'padding-left': '20px'
-            }
+        html.H2(className='index_dataset_Dasboard',
+            children='Dashboard'
         ),
         html.Div([
             html.H5("Call Dataset"),
             html.Div(id='call-data')
-        ],
-            style={
-                'padding': '6px 8px 6px 20px',
-                'text-decration': 'none',
-                'font-size': '22px',
-                'color': 'white',
-                'display': 'block'
-            }
-        )
+        ], className='index_dataset_Call_Dataset',
+        )    
     ],
-        style={
-            'height': '100%',
-            'width': '240px',
-            'position': 'fixed',
-            'z-index': '1',
-            'top': '0',
-            'left': '0',
-            'background-color': '#111',
-            'overflow-x': 'hidden',
-            'padding-top': '20px',
-            'margin-top': '8px'
-        }
+    className='index_dataset_Dashboard_div',
     ),
     html.Div([
         html.Div([
-            html.H3('ADD  CALL  DATASET',
-                    style={
-                        'background': 'gray',
-                        'padding-top': '10px',
-                        'padding-bottom': '10px',
-                        'padding-left': '50px',
-                        'color': 'white'
-                    })
-        ],
-            style={
-                'width': '700px',
-                'margin-top': '50px',
-                'padding-left': '30px'
-                # 'position':'fixed'
-            }),
+            html.H3('ADD  CALL  DATASET', className='index_dataset_add_call_data'
+            )
+        ], 
+        className='index_dataset_add_call_data_div'
+        ),         
     ]),
-    dcc.Upload(
-        id='upload-data_call',
-        children=html.Div([
-            html.Button('ADD CALL DATA',
-                        style={
-                            'background-color': '#4CAF50',
-                            'height': '50px',
-                            'border': 'none',
-                            'color': 'white',
-                            'text-align': 'center',
-                            'text-decoration': 'none',
-                            'display': 'inline-block',
-                            'font-size': '16px',
-                            'margin': '4px 6px',
-                            'margin-bottom': '20px',
-                            'cursor': 'pointer'
-                        }
-                        )
-        ]),
+    html.Div([
+        html.H5('Get File Path:'),
+        dcc.Input(id="filepath", type='text', placeholder='Enter path', style={'width': '500px', 'border': '1px solid black'}),
+        html.Br(),
+        html.P('Enter correct path of adding file', style={'font-size': '15px'})       
+        ],
         style={
-            'margin-left': '100px',
-            'margin-top': '50px'
-        },
+            'padding-left': '30px'
+        }),
+    dcc.Upload(id='upload-data_call',
+        children=html.Div([
+            html.Button('ADD CALL DATA', className='index_datatset_calldata_button'
+            )
+        ]),
+        className='index_dataset_upload_data',
         # Allow multiple files to be uploaded
         multiple=True
     ),
@@ -313,119 +206,57 @@ index_dataset = html.Div([
     #     }
     # )
     # ])
-],
-    style={
-        'margin-left': '222px',
-        'padding': '0px 10px'
-    })
+    ], 
+    className='index_dataset_div'
+    )
 
-sample_call_data = html.Div([
-    html.H1(
-        children='CELLYZER',
-        style={
-            'textAlign': 'center',
-            'color': 'orange',
-            'background': 'black',
-            'padding-top': '20px',
-            'padding-bottom': '20px'
-        }),
+sample_call_data= html.Div([
+        html.H1(className='sample_call_data_cellyzer',
+        children='CELLYZER'
+        ),
     html.Div([
-        html.H2(
-            children='Dashboard',
-            style={
-                'color': 'white',
-                'padding-left': '20px'
-            }
+        html.H2(className='sample_call_dataset_Dashboard',
+            children='Dashboard'
         ),
         html.Div([
             html.H5("Call Dataset"),
             # html.Div(id='call-data')
-        ],
-            style={
-                'padding': '6px 8px 6px 20px',
-                'text-decration': 'none',
-                'font-size': '22px',
-                'color': 'white',
-                'display': 'block'
-            }
-        )
+        ], 
+        className='sample_call_dataset_h5'
+        )    
     ],
-        style={
-            'height': '100%',
-            'width': '240px',
-            'position': 'fixed',
-            'z-index': '1',
-            'top': '0',
-            'left': '0',
-            'background-color': '#111',
-            'overflow-x': 'hidden',
-            'padding-top': '20px',
-            'margin-top': '8px'
-        }
+    className='sample_dataset_Dashboard_div' 
     ),
     html.Div([
         html.H4(id="file_name")
     ]),
     html.Div([
-        html.Button('VIEW DATA', id='view',
-                    style={
-                        'background-color': '#4CAF50',
-                        'height': '50px',
-                        'border': 'none',
-                        'color': 'white',
-                        'text-align': 'center',
-                        'text-decoration': 'none',
-                        'display': 'inline-block',
-                        'font-size': '16px',
-                        'margin': '4px 6px',
-                        'margin-bottom': '20px',
-                        'cursor': 'pointer',
-                        'float': 'left'
-                    }
-                    ),
-        html.Button('CLOSED DATA', id='close',
-                    style={
-                        'background-color': '#4CAF50',
-                        'height': '50px',
-                        'border': 'none',
-                        'color': 'white',
-                        'text-align': 'center',
-                        'text-decoration': 'none',
-                        'display': 'inline-block',
-                        'font-size': '16px',
-                        'margin': '4px 6px',
-                        'margin-bottom': '20px',
-                        'cursor': 'pointer',
-                        'float': 'right'
-                    })
-    ],
-        style={
-            'padding-left': '30px'
-        }),
-    html.Div(id='show_data',
-             style={
-                 'padding-left': '20px',
-                 'margin-top': '30px'
-             })
-],
-    style={
-        'margin-left': '222px',
-        'padding': '0px 10px'
-    })
+        html.Button('VIEW DATA', id='view', className='sample_call_dataset_viewdata'
+        ),
+        html.Button('CLOSED DATA', id='close', className='sample_call_dataset_close'
+        )],
+        className='sample_call_dataset_view_div'
+        ),
+    html.Div(id='show_data', className='sample_call_dataset_show'
+    )],
+    className='sample_call_dataset_div'
+    )
 # over call dataset
-call_data_list = []
 
-
-@app.callback(dash.dependencies.Output('call-data', 'children'),
-              [dash.dependencies.Input('upload-data_call', 'filename'),
-               dash.dependencies.Input('upload-data_call', 'contents')
-               ])
-def add_call_dataset(filename, contents):
-    if contents:
-        contents = contents[0]
-        filename = filename[0]
-        call_data_list.append([filename, contents])
-        output_call = []
+call_data_list=[]
+@app.callback(Output('call-data', 'children'),
+            [
+                Input('upload-data_call', 'filename'),
+                Input('filepath', 'value')
+            ])
+def add_call_dataset(filename, filepath):
+    try:
+        print(filename)
+        filename=filename[0]
+        path_File=os.path.join(filepath, filename)
+        call_data_list.append([filename, path_File])
+        print(path_File)
+        output_call=[]
         for x in call_data_list:
             a = x[0].split('.')
             output_call.append(dcc.Link(a[0], href='/Call_Dataset/' + str(a[0])))
@@ -436,6 +267,8 @@ def add_call_dataset(filename, contents):
         )
         return name
 
+    except Exception as e:
+        print(e)
 
 @app.callback(dash.dependencies.Output('page-dataset', 'children'),
               [dash.dependencies.Input('url_dataset', 'pathname')
@@ -457,24 +290,31 @@ def update_table(n_clicks, click2):
         return None
 
     if n_clicks is not None:
-        contents = call_data_list[0][1]
+        filepath = call_data_list[0][1]
         filename = call_data_list[0][0]
-        df = parse_data(contents, filename)
-        table = html.Div([
+        c=cz.read_csv(filepath)
+        d=c.get_records()
+        key=list(d[0].keys())
+        tab=[]
+        column=[]
+        for i in key:
+            column.append(html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color':'white'}))
+        tab.append(html.Tr(children=column))
+        for j in d:
+            value=list(j.values())
+            row_content=[]
+            for x in value:
+                row_content.append(html.Td(x ,style={'border': '1px solid black', 'padding-left':'10px'}))
+            tab.append(html.Tr(children=row_content, style={'height': '5px'}))
+        table=html.Div([
             html.H2(filename),
-            dash_table.DataTable(
-                data=df.to_dict('rows'),
-                columns=[{'name': i, 'id': i} for i in df.columns]
-            ),
-            html.Hr(),
-            html.Div('Raw Content'),
-            html.Pre(contents[0:200] + '...', style={
-                'whiteSpace': 'pre-wrap',
-                'wordBreak': 'break-all'
-            })
+            html.Table(children=tab, 
+                style={'border-collapse':'collapse',
+                    'border': '1px solid black',
+                    'width': '100%'
+                })
         ])
-
-    return table
+        return table
 
 
 @app.callback(Output('close', 'n_clicks'),
@@ -487,220 +327,116 @@ def close_data(n_clicks):
 
 ##############################################################
 ## Page for cell dataset
+
 cell_dataset = html.Div([
     dcc.Location(id='url_cell_dataset', refresh=False),
     html.Div(id='page_cell_dataset')
 ])
 
-index_cell_dataset = html.Div([
-    html.H1(
-        children='CELLYZER',
-        style={
-            'textAlign': 'center',
-            'color': 'orange',
-            'background': 'black',
-            'padding-top': '20px',
-            'padding-bottom': '20px'
-        }),
+index_cell_dataset=html.Div([
+    html.H1(className='index_cell_dataset_cellyzer',
+        children='CELLYZER'
+        ),
     html.Div([
-        html.H2(
-            children='Dashboard',
-            style={
-                'color': 'white',
-                'padding-left': '20px'
-            }
+        html.H2(className='index_cell_dataset_Dashboard',
+            children='Dashboard'
         ),
         html.Div([
             html.H5("Cell Dataset"),
             html.Div(id='cell-data')
         ],
-            style={
-                'padding': '6px 8px 6px 20px',
-                'text-decration': 'none',
-                'font-size': '22px',
-                'color': 'white',
-                'display': 'block'
-            }
-        )
+        className='index_cell_dataset_h5'
+        )    
     ],
-        style={
-            'height': '100%',
-            'width': '240px',
-            'position': 'fixed',
-            'z-index': '1',
-            'top': '0',
-            'left': '0',
-            'background-color': '#111',
-            'overflow-x': 'hidden',
-            'padding-top': '20px',
-            'margin-top': '8px'
-        }
+    className='index_cell_dataset_Dashboard_div'
     ),
     html.Div([
         html.Div([
-            html.H3('ADD  CELL  DATASET',
-                    style={
-                        'background': 'gray',
-                        'padding-top': '10px',
-                        'padding-bottom': '10px',
-                        'padding-left': '50px',
-                        'color': 'white'
-                    })
-        ],
-            style={
-                'width': '700px',
-                'margin-top': '50px',
-                'padding-left': '30px'
-            }),
+            html.H3('ADD  CELL  DATASET', className='index_cell_dataset_addcell')
+            ],
+        className='index_cell_dataset_addcell_div'
+            ),         
     ]),
-    dcc.Upload(
-        id='upload-data_cell',
-        children=html.Div([
-            html.Button('ADD CELL DATA',
-                        style={
-                            'background-color': '#4CAF50',
-                            'height': '50px',
-                            'border': 'none',
-                            'color': 'white',
-                            'text-align': 'center',
-                            'text-decoration': 'none',
-                            'display': 'inline-block',
-                            'font-size': '16px',
-                            'margin': '4px 6px',
-                            'margin-bottom': '20px',
-                            'cursor': 'pointer'
-                        }
-                        )
-        ]),
+    html.Div([
+        html.H5('Get File Path:'),
+        dcc.Input(id="filepath_cell", type='text', placeholder='Enter path', style={'width': '500px', 'border': '1px solid black'}),
+        html.Br(),
+        html.P('Enter correct path of adding file', style={'font-size': '15px'})       
+        ],
         style={
-            'margin-left': '100px',
-            'margin-top': '50px'
-        },
+            'padding-left': '30px'
+        }),
+    dcc.Upload(id='upload-data_cell',
+        children=html.Div([
+            html.Button('ADD CELL DATA', className='index_celldata_add_button'
+            )
+        ]),
+        className='index_cell_dataset_upload_data',
         # Allow multiple files to be uploaded
         multiple=True
-    ),
-],
-    style={
-        'margin-left': '222px',
-        'padding': '0px 10px'
-    })
-
-sample_cell_data = html.Div([
-    html.H1(
-        children='CELLYZER',
-        style={
-            'textAlign': 'center',
-            'color': 'orange',
-            'background': 'black',
-            'padding-top': '20px',
-            'padding-bottom': '20px'
-        }),
-    html.Div([
-        html.H2(
-            children='Dashboard',
-            style={
-                'color': 'white',
-                'padding-left': '20px'
-            }
-        ),
-        html.Div([
-            html.H5("Cell Dataset"),
-            # html.Div(id='cell-data')
-        ],
-            style={
-                'padding': '6px 8px 6px 20px',
-                'text-decration': 'none',
-                'font-size': '22px',
-                'color': 'white',
-                'display': 'block'
-            }
-        )
+    ), 
     ],
-        style={
-            'height': '100%',
-            'width': '240px',
-            'position': 'fixed',
-            'z-index': '1',
-            'top': '0',
-            'left': '0',
-            'background-color': '#111',
-            'overflow-x': 'hidden',
-            'padding-top': '20px',
-            'margin-top': '8px'
-        }
+    className='index_cell_dataset_div'
+    )
+
+sample_cell_data= html.Div([
+    html.H1(className='sample_cell_data_cellyzer',
+        children='CELLYZER' 
+    ),
+    html.Div([
+        html.H2(className='sample_cell_dataset_Dashboard',
+            children='Dashboard'
+         ),
+        html.Div([
+            html.H5("Cell Dataset")
+        ],
+        className='sample_cell_dataset_h5'
+    )    
+    ],
+    className='sample_cell_dataset_Dashboard_div' 
     ),
     html.Div([
         html.H4(id="file_name")
     ]),
     html.Div([
-        html.Button('VIEW DATA', id='view_cell',
-                    style={
-                        'background-color': '#4CAF50',
-                        'height': '50px',
-                        'border': 'none',
-                        'color': 'white',
-                        'text-align': 'center',
-                        'text-decoration': 'none',
-                        'display': 'inline-block',
-                        'font-size': '16px',
-                        'margin': '4px 6px',
-                        'margin-bottom': '20px',
-                        'cursor': 'pointer',
-                        'float': 'left'
-                    }
-                    ),
-        html.Button('CLOSED DATA', id='close_cell',
-                    style={
-                        'background-color': '#4CAF50',
-                        'height': '50px',
-                        'border': 'none',
-                        'color': 'white',
-                        'text-align': 'center',
-                        'text-decoration': 'none',
-                        'display': 'inline-block',
-                        'font-size': '16px',
-                        'margin': '4px 6px',
-                        'margin-bottom': '20px',
-                        'cursor': 'pointer',
-                        'float': 'right'
-                    })
-    ],
-        style={
-            'padding-left': '30px'
-        }),
-    html.Div(id='show_cell_data',
-             style={
-                 'padding-left': '20px',
-                 'margin-top': '30px'
-             })
+        html.Button('VIEW DATA', id='view_cell', className='sample_cell_dataset_viewdata'
+        ),
+        html.Button('CLOSED DATA', id='close_cell', className='sample_cell_dataset_close'
+    )],
+    className='sample_cell_dataset_view_div'
+    ),
+    html.Div(id='show_cell_data', 
+        className='sample_cell_dataset_show'
+    )
 ],
-    style={
-        'margin-left': '222px',
-        'padding': '0px 10px'
-    })
+className='sample_cell_dataset_div'
+)
 
 cell_data_list = []
 
 
-@app.callback(dash.dependencies.Output('cell-data', 'children'),
-              [dash.dependencies.Input('upload-data_cell', 'filename'),
-               dash.dependencies.Input('upload-data_cell', 'contents')
-               ])
-def add_cell_dataset(filename, contents):
-    if contents:
-        contents = contents[0]
-        filename = filename[0]
-        cell_data_list.append([filename, contents])
-        output_cell = []
+@app.callback(Output('cell-data', 'children'),
+            [
+                Input('upload-data_cell', 'filename'),
+                Input('filepath_cell', 'value')
+            ])
+def add_cell_dataset(filename, filepath):
+    try:
+        filename=filename[0]
+        path_File=os.path.join(filepath, filename)
+        cell_data_list.append([filename, path_File])
+        output_cell=[]
         for x in cell_data_list:
             a = x[0].split('.')
             output_cell.append(dcc.Link(a[0], href='/Cell_Dataset/' + str(a[0])))
             output_cell.append(html.Br())
         name_cell = html.Div(
             children=output_cell
-        )
+            )
         return name_cell
 
+    except Exception as e:
+        print(e)
 
 @app.callback(dash.dependencies.Output('page_cell_dataset', 'children'),
               [dash.dependencies.Input('url_cell_dataset', 'pathname')
@@ -722,24 +458,31 @@ def view_cell_data(n_clicks, click2):
         return None
 
     if n_clicks is not None:
-        contents = cell_data_list[0][1]
+        filepath = cell_data_list[0][1]
         filename = cell_data_list[0][0]
-        df = parse_data(contents, filename)
-        table = html.Div([
+        c=cz.read_csv(filepath)
+        d=c.get_records()
+        key=list(d[0].keys())
+        tab=[]
+        column=[]
+        for i in key:
+            column.append(html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color':'white'}))
+        tab.append(html.Tr(children=column))
+        for j in d:
+            value=list(j.values())
+            row_content=[]
+            for x in value:
+                row_content.append(html.Td(x ,style={'border': '1px solid black', 'padding-left':'10px'}))
+            tab.append(html.Tr(children=row_content, style={'height': '5px'}))
+        table=html.Div([
             html.H2(filename),
-            dash_table.DataTable(
-                data=df.to_dict('rows'),
-                columns=[{'name': i, 'id': i} for i in df.columns]
-            ),
-            html.Hr(),
-            html.Div('Raw Content'),
-            html.Pre(contents[0:200] + '...', style={
-                'whiteSpace': 'pre-wrap',
-                'wordBreak': 'break-all'
-            })
+            html.Table(children=tab, 
+                style={'border-collapse':'collapse',
+                    'border': '1px solid black',
+                    'width': '100%'
+                })
         ])
-
-    return table
+        return table
 
 
 @app.callback(Output('close_cell', 'n_clicks'),
@@ -759,215 +502,109 @@ message_dataset = html.Div([
     html.Div(id='page_message_dataset')
 ])
 
-index_message_dataset = html.Div([
-    html.H1(
-        children='CELLYZER',
-        style={
-            'textAlign': 'center',
-            'color': 'orange',
-            'background': 'black',
-            'padding-top': '20px',
-            'padding-bottom': '20px'
-        }),
+index_message_dataset=html.Div([
+    html.H1(className='index_message_dataset_cellyzer',
+        children='CELLYZER'
+        ),
     html.Div([
-        html.H2(
-            children='Dashboard',
-            style={
-                'color': 'white',
-                'padding-left': '20px'
-            }
+        html.H2(className='index_message_dataset_Dashboard',
+            children='Dashboard'
         ),
         html.Div([
             html.H5("Message Dataset"),
             html.Div(id='message-data')
         ],
-            style={
-                'padding': '6px 8px 6px 20px',
-                'text-decration': 'none',
-                'font-size': '22px',
-                'color': 'white',
-                'display': 'block'
-            }
-        )
+        className='index_message_dataset_h5'
+        )    
     ],
-        style={
-            'height': '100%',
-            'width': '240px',
-            'position': 'fixed',
-            'z-index': '1',
-            'top': '0',
-            'left': '0',
-            'background-color': '#111',
-            'overflow-x': 'hidden',
-            'padding-top': '20px',
-            'margin-top': '8px'
-        }
+    className='index_message_dataset_Dashboard_div'   
     ),
     html.Div([
         html.Div([
-            html.H3('ADD  MESSAGE  DATASET',
-                    style={
-                        'background': 'gray',
-                        'padding-top': '10px',
-                        'padding-bottom': '10px',
-                        'padding-left': '50px',
-                        'color': 'white'
-                    })
-        ],
-            style={
-                'width': '700px',
-                'margin-top': '50px',
-                'padding-left': '30px'
-                # 'position':'fixed'
-            }),
-    ]),
-    dcc.Upload(
-        id='upload-data_message',
-        children=html.Div([
-            html.Button('ADD MESSAGE DATA',
-                        style={
-                            'background-color': '#4CAF50',
-                            'height': '50px',
-                            'border': 'none',
-                            'color': 'white',
-                            'text-align': 'center',
-                            'text-decoration': 'none',
-                            'display': 'inline-block',
-                            'font-size': '16px',
-                            'margin': '4px 6px',
-                            'margin-bottom': '20px',
-                            'cursor': 'pointer'
-                        }
-                        )
+            html.H3('ADD  MESSAGE  DATASET', className='index_message_dataset_addmessage'
+            )],
+            className='index_message_dataset_addmessage_div'
+            ),         
         ]),
+    html.Div([
+        html.H5('Get File Path:'),
+        dcc.Input(id="filepath_message", type='text', placeholder='Enter path', style={'width': '500px', 'border': '1px solid black'}),
+        html.Br(),
+        html.P('Enter correct path of adding file', style={'font-size': '15px'})       
+        ],
         style={
-            'margin-left': '100px',
-            'margin-top': '50px'
-        },
+            'padding-left': '30px'
+        }),
+    dcc.Upload(id='upload-data_message',
+        children=html.Div([
+        html.Button('ADD MESSAGE DATA', className='index_messagedata_add_button'
+        )
+        ]),
+        className='index_message_dataset_upload_data',
         # Allow multiple files to be uploaded
         multiple=True
-    ),
-],
-    style={
-        'margin-left': '222px',
-        'padding': '0px 10px'
-    })
+    )],
+    className='index_message_dataset_div'
+    )
 
-sample_message_data = html.Div([
-    html.H1(
-        children='CELLYZER',
-        style={
-            'textAlign': 'center',
-            'color': 'orange',
-            'background': 'black',
-            'padding-top': '20px',
-            'padding-bottom': '20px'
-        }),
+sample_message_data= html.Div([
+    html.H1(className='sample_message_data_cellyzer',
+        children='CELLYZER'
+        ),
     html.Div([
-        html.H2(
-            children='Dashboard',
-            style={
-                'color': 'white',
-                'padding-left': '20px'
-            }
+        html.H2(className='sample_message_dataset_Dashboard',
+            children='Dashboard'
         ),
         html.Div([
             html.H5("Message Dataset")
         ],
-            style={
-                'padding': '6px 8px 6px 20px',
-                'text-decration': 'none',
-                'font-size': '22px',
-                'color': 'white',
-                'display': 'block'
-            }
-        )
+            className='sample_message_dataset_h5'
+        )    
     ],
-        style={
-            'height': '100%',
-            'width': '240px',
-            'position': 'fixed',
-            'z-index': '1',
-            'top': '0',
-            'left': '0',
-            'background-color': '#111',
-            'overflow-x': 'hidden',
-            'padding-top': '20px',
-            'margin-top': '8px'
-        }
+        className='sample_message_dataset_Dashboard_div'  
     ),
     html.Div([
         html.H4(id="file_name")
     ]),
     html.Div([
-        html.Button('VIEW DATA', id='view_message',
-                    style={
-                        'background-color': '#4CAF50',
-                        'height': '50px',
-                        'border': 'none',
-                        'color': 'white',
-                        'text-align': 'center',
-                        'text-decoration': 'none',
-                        'display': 'inline-block',
-                        'font-size': '16px',
-                        'margin': '4px 6px',
-                        'margin-bottom': '20px',
-                        'cursor': 'pointer',
-                        'float': 'left'
-                    }
-                    ),
-        html.Button('CLOSED DATA', id='close_message',
-                    style={
-                        'background-color': '#4CAF50',
-                        'height': '50px',
-                        'border': 'none',
-                        'color': 'white',
-                        'text-align': 'center',
-                        'text-decoration': 'none',
-                        'display': 'inline-block',
-                        'font-size': '16px',
-                        'margin': '4px 6px',
-                        'margin-bottom': '20px',
-                        'cursor': 'pointer',
-                        'float': 'right'
-                    })
+        html.Button('VIEW DATA', id='view_message', className='sample_message_dataset_viewdata'
+        ),
+        html.Button('CLOSED DATA', id='close_message', className='sample_message_dataset_close'
+        )],
+        className='sample_message_dataset_view_div'
+        ),
+    html.Div(id='show_message_data', 
+        className='sample_message_dataset_show'
+        )
     ],
-        style={
-            'padding-left': '30px'
-        }),
-    html.Div(id='show_message_data',
-             style={
-                 'padding-left': '20px',
-                 'margin-top': '30px'
-             })
-],
-    style={
-        'margin-left': '222px',
-        'padding': '0px 10px'
-    })
+    className='sample_message_dataset_div'
+    )
 
 message_data_list = []
 
 
-@app.callback(dash.dependencies.Output('message-data', 'children'),
-              [dash.dependencies.Input('upload-data_message', 'filename'),
-               dash.dependencies.Input('upload-data_message', 'contents')
-               ])
-def add_message_dataset(filename, contents):
-    if contents:
-        contents = contents[0]
-        filename = filename[0]
-        message_data_list.append([filename, contents])
-        output_message = []
+@app.callback(Output('message-data', 'children'),
+            [
+                Input('upload-data_message', 'filename'),
+                Input('filepath_message', 'value')
+            ])
+def add_message_dataset(filename, filepath):
+    try:
+        filename=filename[0]
+        path_File=os.path.join(filepath, filename)
+        message_data_list.append([filename, path_File])
+        output_message=[]
         for x in message_data_list:
             a = x[0].split('.')
             output_message.append(dcc.Link(a[0], href='/Message_Dataset/' + str(a[0])))
             output_message.append(html.Br())
         name_message = html.Div(
             children=output_message
-        )
+            )
         return name_message
 
+    except Exception as e:
+        print(e)
 
 @app.callback(dash.dependencies.Output('page_message_dataset', 'children'),
               [dash.dependencies.Input('url_message_dataset', 'pathname')
@@ -987,25 +624,33 @@ def view_message_data(n_clicks, click2):
     table = html.Div()
     if click2 is not None:
         return None
-    if n_clicks is not None:
-        contents = message_data_list[0][1]
-        filename = message_data_list[0][0]
-        df = parse_data(contents, filename)
-        table = html.Div([
-            html.H2(filename),
-            dash_table.DataTable(
-                data=df.to_dict('rows'),
-                columns=[{'name': i, 'id': i} for i in df.columns]
-            ),
-            html.Hr(),
-            html.Div('Raw Content'),
-            html.Pre(contents[0:200] + '...', style={
-                'whiteSpace': 'pre-wrap',
-                'wordBreak': 'break-all'
-            })
-        ])
 
-    return table
+    if n_clicks is not None:
+        filepath = message_data_list[0][1]
+        filename = message_data_list[0][0]
+        c=cz.read_csv(filepath)
+        d=c.get_records()
+        key=list(d[0].keys())
+        tab=[]
+        column=[]
+        for i in key:
+            column.append(html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color':'white'}))
+        tab.append(html.Tr(children=column))
+        for j in d:
+            value=list(j.values())
+            row_content=[]
+            for x in value:
+                row_content.append(html.Td(x ,style={'border': '1px solid black', 'padding-left':'10px'}))
+            tab.append(html.Tr(children=row_content, style={'height': '5px'}))
+        table=html.Div([
+            html.H2(filename),
+            html.Table(children=tab, 
+                style={'border-collapse':'collapse',
+                    'border': '1px solid black',
+                    'width': '100%'
+                })
+        ])
+        return table
 
 
 @app.callback(Output('close_message', 'n_clicks'),
@@ -1017,27 +662,6 @@ def close_message_data(n_clicks):
 
 
 # over message dataset
-
-# @app.callback(Output('Mygraph', 'figure'),
-#             [
-#                 Input('upload-data', 'contents'),
-#                 Input('upload-data', 'filename')
-#             ])
-# def update_graph(contents, filename):
-#     fig = {
-#         'layout': go.Layout(
-#             plot_bgcolor=colors["graphBackground"],
-#             paper_bgcolor=colors["graphBackground"])
-#     }
-
-#     if contents:
-#         contents = contents[0]
-#         filename = filename[0]
-#         df = parse_data(contents, filename)
-#         df = df.set_index(df.columns[0])
-#         fig['data'] = df.iplot(asFigure=True, kind='scatter', mode='lines+markers', size=1)
-
-#     return fig
 
 @app.callback(dash.dependencies.Output('map_new', 'srcDoc'),
               [dash.dependencies.Input('long', 'value'),
