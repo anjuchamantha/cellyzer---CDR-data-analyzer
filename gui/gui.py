@@ -10,6 +10,11 @@ import dash_table
 import folium
 import flask
 import pandas as pd
+import os
+import sys
+
+sys.path.insert(0, '../')
+import cellyzer as cz
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -116,16 +121,25 @@ index_dataset=html.Div([
     ],
     className='index_dataset_Dashboard_div',
     ),
+    html.Div([
         html.Div([
-            html.Div([
-                html.H3('ADD  CALL  DATASET', className='index_dataset_add_call_data'
-                )
-            ], 
-            className='index_dataset_add_call_data_div'
-            ),         
-        ]),
-        dcc.Upload(id='upload-data_call',
-            children=html.Div([
+            html.H3('ADD  CALL  DATASET', className='index_dataset_add_call_data'
+            )
+        ], 
+        className='index_dataset_add_call_data_div'
+        ),         
+    ]),
+    html.Div([
+        html.H5('Get File Path:'),
+        dcc.Input(id="filepath", type='text', placeholder='Enter path', style={'width': '500px', 'border': '1px solid black'}),
+        html.Br(),
+        html.P('Enter correct path of adding file', style={'font-size': '15px'})       
+        ],
+        style={
+            'padding-left': '30px'
+        }),
+    dcc.Upload(id='upload-data_call',
+        children=html.Div([
             html.Button('ADD CALL DATA', className='index_datatset_calldata_button'
             )
         ]),
@@ -215,25 +229,31 @@ sample_call_data= html.Div([
 # over call dataset
 
 call_data_list=[]
-
-@app.callback(dash.dependencies.Output('call-data', 'children'),
-    [   dash.dependencies.Input('upload-data_call', 'filename'),
-        dash.dependencies.Input('upload-data_call', 'contents')
+@app.callback(Output('call-data', 'children'),
+            [
+                Input('upload-data_call', 'filename'),
+                Input('filepath', 'value')
             ])
-def add_call_dataset(filename, contents):
-    if contents:
-        contents = contents[0]
-        filename = filename[0]
-        call_data_list.append([filename, contents])
+def add_call_dataset(filename, filepath):
+    try:
+        print(filename)
+        filename=filename[0]
+        path_File=os.path.join(filepath, filename)
+        call_data_list.append([filename, path_File])
+        print(path_File)
         output_call=[]
         for x in call_data_list:
             a=x[0].split('.')
             output_call.append(dcc.Link(a[0], href='/Call_Dataset/'+str(a[0])))
             output_call.append(html.Br())
+            # output_call.append(dcc.Link(a[0], href='/Call_Dataset/'+str(a[0]), id='link'))
         name=html.Div(
             children=output_call
             )
         return name
+
+    except Exception as e:
+        print(e)
 
 @app.callback(dash.dependencies.Output('page-dataset', 'children'),
             [   dash.dependencies.Input('url_dataset', 'pathname')
@@ -254,24 +274,31 @@ def update_table(n_clicks, click2):
         return None
 
     if n_clicks is not None:
-        contents = call_data_list[0][1]
+        filepath = call_data_list[0][1]
         filename = call_data_list[0][0]
-        df = parse_data(contents, filename)
-        table = html.Div([
+        c=cz.read_csv(filepath)
+        d=c.get_records()
+        key=list(d[0].keys())
+        tab=[]
+        column=[]
+        for i in key:
+            column.append(html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color':'white'}))
+        tab.append(html.Tr(children=column))
+        for j in d:
+            value=list(j.values())
+            row_content=[]
+            for x in value:
+                row_content.append(html.Td(x ,style={'border': '1px solid black', 'padding-left':'10px'}))
+            tab.append(html.Tr(children=row_content, style={'height': '5px'}))
+        table=html.Div([
             html.H2(filename),
-            dash_table.DataTable(
-                data=df.to_dict('rows'),
-                columns=[{'name': i, 'id': i} for i in df.columns]
-            ),
-            html.Hr(),
-            html.Div('Raw Content'),
-            html.Pre(contents[0:200] + '...', style={
-                'whiteSpace': 'pre-wrap',
-                'wordBreak': 'break-all'
-            })
+            html.Table(children=tab, 
+                style={'border-collapse':'collapse',
+                    'border': '1px solid black',
+                    'width': '100%'
+                })
         ])
-
-    return table
+        return table
 
 @app.callback(Output('close', 'n_clicks'),
             [   Input('view', 'n_clicks')
@@ -281,6 +308,7 @@ def close_data(n_clicks):
         return None
 ##############################################################
 ## Page for cell dataset
+
 cell_dataset = html.Div([
     dcc.Location(id='url_cell_dataset', refresh=False),
     html.Div(id='page_cell_dataset') 
