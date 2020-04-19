@@ -175,7 +175,8 @@ index_dataset = html.Div([
             dbc.Label("File Path", html_for="example-email-row", width=2),
             dbc.Col(
                 dbc.Input(
-                    type="input", id="filepath", placeholder="Enter File Path", style={'width': '500px', 'border': '1px solid black'}
+                    type="input", id="filepath", placeholder="Enter File Path",
+                    style={'width': '500px', 'border': '1px solid black'}
                 ),
                 width=10,
             ),
@@ -186,8 +187,8 @@ index_dataset = html.Div([
         }
     ),
     html.P('Enter correct path of adding file', style={
-            'padding-left': '30px'
-        }),
+        'padding-left': '30px'
+    }),
     html.Br(),
     dbc.FormGroup(
         [
@@ -401,6 +402,7 @@ index_cell_dataset = html.Div([
         html.H2(className='index_cell_dataset_Dashboard',
                 children='Dashboard'
                 ),
+        html.Hr(),
         html.Div([
             html.H5("Cell Dataset"),
             html.Div(id='cell-data')
@@ -412,21 +414,53 @@ index_cell_dataset = html.Div([
     ),
     html.Div([
         html.Div([
-            html.H3('ADD  CELL  DATASET', className='index_cell_dataset_addcell')
-        ],
-            className='index_cell_dataset_addcell_div'
+            html.Div([
+                dbc.Alert("ADD  CELL  DATASET", color="dark"),
+            ],
+                className='index_dataset_add_call_data_div'
+            ),
+        ]),
+        dbc.FormGroup(
+            [
+                dbc.Label("File Path", html_for="example-email-row", width=2),
+                dbc.Col(
+                    dbc.Input(
+                        type="input", id="filepath_cell", placeholder="Enter File Path",
+                        style={'width': '500px', 'border': '1px solid black'}
+                    ),
+                    width=10,
+                ),
+            ],
+            row=True,
+            style={
+                'padding-left': '30px',
+            }
         ),
-    ]),
-    html.Div([
-        html.H5('Get File Path:'),
-        dcc.Input(id="filepath_cell", type='text', placeholder='Enter path',
-                  style={'width': '500px', 'border': '1px solid black'}),
-        html.Br(),
-        html.P('Enter correct path of adding file', style={'font-size': '15px'})
-    ],
-        style={
+        html.P('Enter correct path of adding file', style={
             'padding-left': '30px'
         }),
+        html.Br(),
+        dbc.FormGroup(
+            [
+                dbc.Label("File Types", html_for="example-radios-row", width=2),
+                dbc.Col(
+                    dbc.RadioItems(
+                        id="example-radios-row",
+                        options=[
+                            {"label": "CSV", "value": 1},
+                            {"label": "XLSX", "value": 2},
+                            {"label": "JSON", "value": 3},
+                        ],
+                    ),
+                    width=10,
+                ),
+            ],
+            row=True,
+            style={
+                'padding-left': '30px'
+            }
+        ),
+    ]),
     dcc.Upload(id='upload-data_cell',
                children=html.Div([
                    html.Button('ADD CELL DATA', className='index_celldata_add_button'
@@ -573,6 +607,7 @@ index_message_dataset = html.Div([
         html.H2(className='index_message_dataset_Dashboard',
                 children='Dashboard'
                 ),
+        html.Hr(),
         html.Div([
             html.H5("Message Dataset"),
             html.Div(id='message-data')
@@ -584,21 +619,53 @@ index_message_dataset = html.Div([
     ),
     html.Div([
         html.Div([
-            html.H3('ADD  MESSAGE  DATASET', className='index_message_dataset_addmessage'
-                    )],
-            className='index_message_dataset_addmessage_div'
+            html.Div([
+                dbc.Alert("ADD  MESSAGE  DATASET", color="dark"),
+            ],
+                className='index_dataset_add_call_data_div'
+            ),
+        ]),
+        dbc.FormGroup(
+            [
+                dbc.Label("File Path", html_for="example-email-row", width=2),
+                dbc.Col(
+                    dbc.Input(
+                        type="input", id="filepath_message", placeholder="Enter File Path",
+                        style={'width': '500px', 'border': '1px solid black'}
+                    ),
+                    width=10,
+                ),
+            ],
+            row=True,
+            style={
+                'padding-left': '30px',
+            }
         ),
-    ]),
-    html.Div([
-        html.H5('Get File Path:'),
-        dcc.Input(id="filepath_message", type='text', placeholder='Enter path',
-                  style={'width': '500px', 'border': '1px solid black'}),
-        html.Br(),
-        html.P('Enter correct path of adding file', style={'font-size': '15px'})
-    ],
-        style={
+        html.P('Enter correct path of adding file', style={
             'padding-left': '30px'
         }),
+        html.Br(),
+        dbc.FormGroup(
+            [
+                dbc.Label("File Types", html_for="example-radios-row", width=2),
+                dbc.Col(
+                    dbc.RadioItems(
+                        id="example-radios-row",
+                        options=[
+                            {"label": "CSV", "value": 1},
+                            {"label": "XLSX", "value": 2},
+                            {"label": "JSON", "value": 3},
+                        ],
+                    ),
+                    width=10,
+                ),
+            ],
+            row=True,
+            style={
+                'padding-left': '30px'
+            }
+        ),
+    ]),
     dcc.Upload(id='upload-data_message',
                children=html.Div([
                    html.Button('ADD MESSAGE DATA', className='index_messagedata_add_button'
