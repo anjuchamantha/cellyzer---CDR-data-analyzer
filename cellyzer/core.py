@@ -241,14 +241,17 @@ class CallMessageDataSet(DataSet):
 
         :return: active_time : dictionary
         """
-        keys = []
-        for i in range(24):
-            keys.append(i)
-        active_time = {key: 0 for key in keys}
-        for record in self.get_records(user1=user):
-            time = int(tools.get_datetime_from_timestamp(record.get_timestamp()).hour)
-            active_time[time] += 1
-        return active_time
+        if type(user) != str and type(user) != int:
+            raise TypeError
+        else:
+            keys = []
+            for i in range(24):
+                keys.append(i)
+            active_time = {key: 0 for key in keys}
+            for record in self.get_records(user1=str(user)):
+                time = int(tools.get_datetime_from_timestamp(record.get_timestamp()).hour)
+                active_time[time] += 1
+            return active_time
 
 
 class CallDataSet(CallMessageDataSet):
@@ -265,21 +268,25 @@ class CallDataSet(CallMessageDataSet):
 
         :return: close_contacts : dictionary
         """
-        contacts_dict = {}
-        for user2 in self.get_connected_users(user):
-            valid_records = []
-            for record in self.get_records(user, user2):
-                if int(record.get_duration()) > 0:
-                    valid_records.append(record)
-            contacts_dict[user2] = len(valid_records)
-        close_contacts = dict(sorted(contacts_dict.items(), key=itemgetter(1), reverse=True)[:top_contact])
-        return close_contacts
+        if type(user) != str and type(user) != int:
+            raise TypeError
+        else:
+            contacts_dict = {}
+            user = str(user)
+            for user2 in self.get_connected_users(user):
+                valid_records = []
+                for record in self.get_records(user, user2):
+                    if int(record.get_duration()) > 0:
+                        valid_records.append(record)
+                contacts_dict[user2] = len(valid_records)
+            close_contacts = dict(sorted(contacts_dict.items(), key=itemgetter(1), reverse=True)[:top_contact])
+            return close_contacts
 
     def get_call_records_by_antenna_id(self, cell_id):
         """
         get call records related to a specific cell
 
-        :param cell_id: string
+        :param cell_id: string/int
 
         :return: records : list
         """
@@ -290,20 +297,31 @@ class CallDataSet(CallMessageDataSet):
         return records
 
     def get_ignored_call_details(self, user):
-        records = self.get_records(user1=user)
-        ignored_call_records = []
-        for record in records:
-            if record.get_direction() == 'Incoming' and int(record.get_duration()) == 0:
-                date = tools.get_datetime_from_timestamp(record.get_timestamp())
-                call = {
-                    'other user': record.get_other_user(),
-                    'date': str(date.day).zfill(2) + '-' + str(date.month).zfill(2) + '-' + str(date.year),
-                    'time stamp': str(date.hour).zfill(2) + ':' + str(date.minute).zfill(2) + ':' + str(
-                        date.second).zfill(2),
-                    'cell ID': record.get_cell_id()
-                }
-                ignored_call_records.append(call)
-        return ignored_call_records
+        """
+        get ignored call details of a specific user
+
+        :param user: string
+
+        :return: ignored_call_records : list
+        """
+        if type(user) != str and type(user) != int:
+            raise TypeError
+        else:
+            user = str(user)
+            records = self.get_records(user1=user)
+            ignored_call_records = []
+            for record in records:
+                if record.get_direction() == 'Incoming' and int(record.get_duration()) == 0:
+                    date = tools.get_datetime_from_timestamp(record.get_timestamp())
+                    call = {
+                        'other user': record.get_other_user(),
+                        'date': str(date.day).zfill(2) + '-' + str(date.month).zfill(2) + '-' + str(date.year),
+                        'time stamp': str(date.hour).zfill(2) + ':' + str(date.minute).zfill(2) + ':' + str(
+                            date.second).zfill(2),
+                        'cell ID': record.get_cell_id()
+                    }
+                    ignored_call_records.append(call)
+            return ignored_call_records
 
 
 class MessageDataSet(CallMessageDataSet):
@@ -636,4 +654,9 @@ class User:
                 return record.get_cell_id()
 
     def get_ignored_call_details(self):
+        """
+        get user ignored call details
+
+        :return: list of dictionaries
+        """
         return self.callDataSetObj.get_ignored_call_details(self._contact_no)
