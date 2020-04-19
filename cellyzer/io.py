@@ -68,7 +68,7 @@ def read_call(file_path):
             for c in call_list:
                 print(c)
 
-            create_call_obj(call_list, fieldnames)
+            return create_call_obj(call_list, fieldnames)
     except IOError:
         print("IO Error :", IOError)
         pass

@@ -352,28 +352,36 @@ def update_table(n_clicks, click2):
     if n_clicks is not None:
         filepath = call_data_list[0][1]
         filename = call_data_list[0][0]
-        c = cz.read_csv(filepath)
-        d = c.get_records()
-        key = list(d[0].keys())
-        tab = []
-        column = []
-        for i in key:
-            column.append(
-                html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
+        c=cz.read_call(filepath)
+        dict_list = []
+        for record in c.get_records():
+            dict_list.append(vars(record))
+        header = list(dict_list[0].keys())
+        # d=c.get_records()
+        # key=list(d[0].keys())
+        tab=[]
+        column=[]
+        for i in header:
+            column.append(html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color':'white'}))
         tab.append(html.Tr(children=column))
-        for j in d:
-            value = list(j.values())
-            row_content = []
+        count=0
+        for j in dict_list:
+            value=list(j.values())
+            count+=1       
+            row_content=[]
+            if count>100:
+                break
+            row_content=[]
             for x in value:
-                row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
+                row_content.append(html.Td(x ,style={'border': '1px solid black', 'padding-left':'10px'}))
             tab.append(html.Tr(children=row_content, style={'height': '5px'}))
-        table = html.Div([
+        table=html.Div([
             html.H2(filename),
-            html.Table(children=tab,
-                       style={'border-collapse': 'collapse',
-                              'border': '1px solid black',
-                              'width': '100%'
-                              })
+            html.Table(children=tab, 
+                style={'border-collapse':'collapse',
+                    'border': '1px solid black',
+                    'width': '100%'
+                })
         ])
         return table
 
