@@ -255,7 +255,7 @@ class CallDataSet(CallMessageDataSet):
 
     def get_close_contacts(self, user, top_contact=5):
         """
-        get top contacts who have most number of calls and longest call duration with the user
+        get top contacts who have most number of calls and longest call duration with a specific user
 
         :param user: string
                 contact number of the user
@@ -307,6 +307,26 @@ class CallDataSet(CallMessageDataSet):
 
 
 class MessageDataSet(CallMessageDataSet):
+
+    def get_close_contacts(self, user, top_contact=5):
+        """
+        get top contacts who have most number of messages with a specific user
+
+        :param user: string
+                contact number of the user
+
+        :param top_contact: int
+                number of top close contacts
+
+        :return: close_contacts : dictionary
+        """
+        contacts_dict = {}
+        for user2 in self.get_connected_users(user):
+            records = self.get_records(user, user2)
+            contacts_dict[user2] = len(records)
+        close_contacts = dict(sorted(contacts_dict.items(), key=itemgetter(1), reverse=True)[:top_contact])
+        return close_contacts
+
     def get_frequenct_conversations(self):
         print("Frequent conversations between ")
 
