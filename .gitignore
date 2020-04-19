@@ -1,2 +1,7 @@
-
 connection_network.png
+*.pyc
+route_map.html
+
+trip_map.html
+
+cellyzer/__pycache__/
