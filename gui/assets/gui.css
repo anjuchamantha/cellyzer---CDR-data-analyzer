@@ -9,14 +9,16 @@
 .index_page_Dashboard {
     color: white;
     padding-left: 20px;
+    font-size: 36px;
 }
 
 .index_page_dataset_div {
     padding: 6px 8px 6px 20px;
     text-decoration: none;
-    font-size: 22px;
+    font-size: 18px;
     color: orange;
     display: block;
+    margin-left: 1.5rem;
 }
 
 .index_page_Dashboard_div {
@@ -29,7 +31,15 @@
     background-color:#111;
     overflow-x: hidden;
     padding-top: 20px;
-    margin-top: 8px;
+}
+
+.horizontal-lines {
+    color: #4CAF50;
+    line-height: 1px;
+}
+
+.dashboard-button {
+    margin-left: 1rem;
 }
 
 .index_page_Img {
@@ -75,7 +85,7 @@
 .index_dataset_Call_Dataset {
     padding: 6px 8px 6px 20px;
     text-decoration: none;
-    font-size: 22px;
+    font-size: 18px;
     color: white;
     display: block;
 }
@@ -90,7 +100,6 @@
     background-color:#111;
     overflow-x: hidden;
     padding-top: 20px;
-    margin-top: 8px;
 }
 
 .index_dataset_add_call_data {
@@ -102,9 +111,10 @@
 }
 
 .index_dataset_add_call_data_div {
-    width: 700px;
+    width: 100%;
     margin-top: 50px;
     padding-left: 30px;
+    text-align: center;
 }
 
 .index_datatset_calldata_button {

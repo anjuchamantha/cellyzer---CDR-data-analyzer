@@ -6,6 +6,7 @@ import dash
 from dash.dependencies import Input, Output, State
 import dash_core_components as dcc
 import dash_html_components as html
+import dash_bootstrap_components as dbc
 import dash_table
 import folium
 import flask
@@ -16,9 +17,7 @@ import sys
 sys.path.insert(0, '../')
 import cellyzer as cz
 
-
-external_stylesheets = [{'external_url': 'https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min'
-                                         '.css'}]
+external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP, external_stylesheets])
 server = app.server
@@ -72,45 +71,72 @@ def parse_data(contents, filename):
 ## Front page
 index_page = html.Div([
     html.H1(className='index_page_CELLYZER',
-        children='CELLYZER'
-        ),
+            children='CELLYZER'
+            ),
     html.Div([
         html.H2(className='index_page_Dashboard',
-            children='Dashboard'
-        ),
+                children='Dashboard'
+                ),
+
+        html.Hr(className='horizontal-lines'),
         html.Div(
-        [
-            html.H3("Dataset"),
-            dcc.Link('Call Dataset', href='/Call_Dataset'),
-            html.Br(),
-            dcc.Link('Cell Dataset', href='/Cell_Dataset'),
-            html.Br(),
-            dcc.Link('Message Dataset', href='/Message_Dataset')
-        ],
-        className='index_page_dataset_div'
-        )  
+            [
+                dbc.Button(
+                    "Add a Dataset",
+                    id="collapse-button",
+                    className="dashboard-button",
+                    color="dark",
+                ),
+                dbc.Collapse(
+                    html.Div(
+                        [
+                            dcc.Link('Call Dataset', href='/Call_Dataset'),
+                            html.Br(),
+                            dcc.Link('Cell Dataset', href='/Cell_Dataset'),
+                            html.Br(),
+                            dcc.Link('Message Dataset', href='/Message_Dataset')
+                        ],
+                        className='index_page_dataset_div'
+                    ),
+                    id="collapse",
+                ),
+            ],
+        ),
     ],
-    className='index_page_Dashboard_div'
+        className='index_page_Dashboard_div'
     ),
     html.Div([
         html.Div([
             html.Img(
-            src='data:image/jpg;base64,{}'.format(encoded_mage.decode()), 
-            className='index_page_Img'
-        ),
-        html.Div([
-            html.H1("WELCOME"),
-            html.H1('CDR DATA ANALYSIS')
+                src='data:image/jpg;base64,{}'.format(encoded_mage.decode()),
+                className='index_page_Img'
+            ),
+            html.Div([
+                html.H1("WELCOME"),
+                html.H1('CDR DATA ANALYSIS')
+            ],
+                className='index_page_welcome'
+            )
         ],
-        className='index_page_welcome'
+            className='index_page_welcome_div'
         )
-    ], 
-    className='index_page_welcome_div'
-    )
     ])
-    ], 
+],
     className='index_page_div'
-    )
+)
+
+
+@app.callback(
+    Output("collapse", "is_open"),
+    [Input("collapse-button", "n_clicks")],
+    [State("collapse", "is_open")],
+)
+def toggle_collapse(n, is_open):
+    if n:
+        return not is_open
+    return is_open
+
+
 # over front page
 
 #######################################################################
@@ -120,48 +146,78 @@ call_dataset = html.Div([
     html.Div(id='page-dataset')
 ])
 
-index_dataset=html.Div([
+index_dataset = html.Div([
     html.H1(className='index_dataset_CELLYZER',
-        children='CELLYZER'
-    ),
+            children='CELLYZER'
+            ),
     html.Div([
         html.H2(className='index_dataset_Dasboard',
-            children='Dashboard'
-        ),
+                children='Dashboard'
+                ),
+        html.Hr(className='horizontal-lines'),
         html.Div([
             html.H5("Call Dataset"),
             html.Div(id='call-data')
         ], className='index_dataset_Call_Dataset',
-        )    
+        )
     ],
-    className='index_dataset_Dashboard_div',
+        className='index_dataset_Dashboard_div',
     ),
     html.Div([
         html.Div([
-            html.H3('ADD  CALL  DATASET', className='index_dataset_add_call_data'
-            )
-        ], 
-        className='index_dataset_add_call_data_div'
-        ),         
-    ]),
-    html.Div([
-        html.H5('Get File Path:'),
-        dcc.Input(id="filepath", type='text', placeholder='Enter path', style={'width': '500px', 'border': '1px solid black'}),
-        html.Br(),
-        html.P('Enter correct path of adding file', style={'font-size': '15px'})       
+            dbc.Alert("ADD  CALL  DATASET", color="dark"),
         ],
+            className='index_dataset_add_call_data_div'
+        ),
+    ]),
+    dbc.FormGroup(
+        [
+            dbc.Label("File Path", html_for="example-email-row", width=2),
+            dbc.Col(
+                dbc.Input(
+                    type="input", id="filepath", placeholder="Enter File Path", style={'width': '500px', 'border': '1px solid black'}
+                ),
+                width=10,
+            ),
+        ],
+        row=True,
         style={
+            'padding-left': '30px',
+        }
+    ),
+    html.P('Enter correct path of adding file', style={
             'padding-left': '30px'
         }),
-    dcc.Upload(id='upload-data_call',
-        children=html.Div([
-            html.Button('ADD CALL DATA', className='index_datatset_calldata_button'
-            )
-        ]),
-        className='index_dataset_upload_data',
-        # Allow multiple files to be uploaded
-        multiple=True
+    html.Br(),
+    dbc.FormGroup(
+        [
+            dbc.Label("File Types", html_for="example-radios-row", width=2),
+            dbc.Col(
+                dbc.RadioItems(
+                    id="example-radios-row",
+                    options=[
+                        {"label": "CSV", "value": 1},
+                        {"label": "XLSX", "value": 2},
+                        {"label": "JSON", "value": 3},
+                    ],
+                ),
+                width=10,
+            ),
+        ],
+        row=True,
+        style={
+            'padding-left': '30px'
+        }
     ),
+    dcc.Upload(id='upload-data_call',
+               children=html.Div([
+                   html.Button('ADD CALL DATA', className='index_datatset_calldata_button'
+                               )
+               ]),
+               className='index_dataset_upload_data',
+               # Allow multiple files to be uploaded
+               multiple=True
+               ),
     # html.Div([
     #     html.H3(
     #     children='Map Visualization',
@@ -206,57 +262,59 @@ index_dataset=html.Div([
     #     }
     # )
     # ])
-    ], 
+],
     className='index_dataset_div'
-    )
+)
 
-sample_call_data= html.Div([
-        html.H1(className='sample_call_data_cellyzer',
-        children='CELLYZER'
-        ),
+sample_call_data = html.Div([
+    html.H1(className='sample_call_data_cellyzer',
+            children='CELLYZER'
+            ),
     html.Div([
         html.H2(className='sample_call_dataset_Dashboard',
-            children='Dashboard'
-        ),
+                children='Dashboard'
+                ),
         html.Div([
             html.H5("Call Dataset"),
             # html.Div(id='call-data')
-        ], 
-        className='sample_call_dataset_h5'
-        )    
+        ],
+            className='sample_call_dataset_h5'
+        )
     ],
-    className='sample_dataset_Dashboard_div' 
+        className='sample_dataset_Dashboard_div'
     ),
     html.Div([
         html.H4(id="file_name")
     ]),
     html.Div([
         html.Button('VIEW DATA', id='view', className='sample_call_dataset_viewdata'
-        ),
+                    ),
         html.Button('CLOSED DATA', id='close', className='sample_call_dataset_close'
-        )],
+                    )],
         className='sample_call_dataset_view_div'
-        ),
+    ),
     html.Div(id='show_data', className='sample_call_dataset_show'
-    )],
+             )],
     className='sample_call_dataset_div'
-    )
+)
 # over call dataset
 
-call_data_list=[]
+call_data_list = []
+
+
 @app.callback(Output('call-data', 'children'),
-            [
-                Input('upload-data_call', 'filename'),
-                Input('filepath', 'value')
-            ])
+              [
+                  Input('upload-data_call', 'filename'),
+                  Input('filepath', 'value')
+              ])
 def add_call_dataset(filename, filepath):
     try:
         print(filename)
-        filename=filename[0]
-        path_File=os.path.join(filepath, filename)
+        filename = filename[0]
+        path_File = os.path.join(filepath, filename)
         call_data_list.append([filename, path_File])
         print(path_File)
-        output_call=[]
+        output_call = []
         for x in call_data_list:
             a = x[0].split('.')
             output_call.append(dcc.Link(a[0], href='/Call_Dataset/' + str(a[0])))
@@ -269,6 +327,7 @@ def add_call_dataset(filename, filepath):
 
     except Exception as e:
         print(e)
+
 
 @app.callback(dash.dependencies.Output('page-dataset', 'children'),
               [dash.dependencies.Input('url_dataset', 'pathname')
@@ -292,27 +351,28 @@ def update_table(n_clicks, click2):
     if n_clicks is not None:
         filepath = call_data_list[0][1]
         filename = call_data_list[0][0]
-        c=cz.read_csv(filepath)
-        d=c.get_records()
-        key=list(d[0].keys())
-        tab=[]
-        column=[]
+        c = cz.read_csv(filepath)
+        d = c.get_records()
+        key = list(d[0].keys())
+        tab = []
+        column = []
         for i in key:
-            column.append(html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color':'white'}))
+            column.append(
+                html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
         tab.append(html.Tr(children=column))
         for j in d:
-            value=list(j.values())
-            row_content=[]
+            value = list(j.values())
+            row_content = []
             for x in value:
-                row_content.append(html.Td(x ,style={'border': '1px solid black', 'padding-left':'10px'}))
+                row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
             tab.append(html.Tr(children=row_content, style={'height': '5px'}))
-        table=html.Div([
+        table = html.Div([
             html.H2(filename),
-            html.Table(children=tab, 
-                style={'border-collapse':'collapse',
-                    'border': '1px solid black',
-                    'width': '100%'
-                })
+            html.Table(children=tab,
+                       style={'border-collapse': 'collapse',
+                              'border': '1px solid black',
+                              'width': '100%'
+                              })
         ])
         return table
 
@@ -333,110 +393,112 @@ cell_dataset = html.Div([
     html.Div(id='page_cell_dataset')
 ])
 
-index_cell_dataset=html.Div([
+index_cell_dataset = html.Div([
     html.H1(className='index_cell_dataset_cellyzer',
-        children='CELLYZER'
-        ),
+            children='CELLYZER'
+            ),
     html.Div([
         html.H2(className='index_cell_dataset_Dashboard',
-            children='Dashboard'
-        ),
+                children='Dashboard'
+                ),
         html.Div([
             html.H5("Cell Dataset"),
             html.Div(id='cell-data')
         ],
-        className='index_cell_dataset_h5'
-        )    
+            className='index_cell_dataset_h5'
+        )
     ],
-    className='index_cell_dataset_Dashboard_div'
+        className='index_cell_dataset_Dashboard_div'
     ),
     html.Div([
         html.Div([
             html.H3('ADD  CELL  DATASET', className='index_cell_dataset_addcell')
-            ],
-        className='index_cell_dataset_addcell_div'
-            ),         
+        ],
+            className='index_cell_dataset_addcell_div'
+        ),
     ]),
     html.Div([
         html.H5('Get File Path:'),
-        dcc.Input(id="filepath_cell", type='text', placeholder='Enter path', style={'width': '500px', 'border': '1px solid black'}),
+        dcc.Input(id="filepath_cell", type='text', placeholder='Enter path',
+                  style={'width': '500px', 'border': '1px solid black'}),
         html.Br(),
-        html.P('Enter correct path of adding file', style={'font-size': '15px'})       
-        ],
+        html.P('Enter correct path of adding file', style={'font-size': '15px'})
+    ],
         style={
             'padding-left': '30px'
         }),
     dcc.Upload(id='upload-data_cell',
-        children=html.Div([
-            html.Button('ADD CELL DATA', className='index_celldata_add_button'
-            )
-        ]),
-        className='index_cell_dataset_upload_data',
-        # Allow multiple files to be uploaded
-        multiple=True
-    ), 
-    ],
+               children=html.Div([
+                   html.Button('ADD CELL DATA', className='index_celldata_add_button'
+                               )
+               ]),
+               className='index_cell_dataset_upload_data',
+               # Allow multiple files to be uploaded
+               multiple=True
+               ),
+],
     className='index_cell_dataset_div'
-    )
+)
 
-sample_cell_data= html.Div([
+sample_cell_data = html.Div([
     html.H1(className='sample_cell_data_cellyzer',
-        children='CELLYZER' 
-    ),
+            children='CELLYZER'
+            ),
     html.Div([
         html.H2(className='sample_cell_dataset_Dashboard',
-            children='Dashboard'
-         ),
+                children='Dashboard'
+                ),
         html.Div([
             html.H5("Cell Dataset")
         ],
-        className='sample_cell_dataset_h5'
-    )    
+            className='sample_cell_dataset_h5'
+        )
     ],
-    className='sample_cell_dataset_Dashboard_div' 
+        className='sample_cell_dataset_Dashboard_div'
     ),
     html.Div([
         html.H4(id="file_name")
     ]),
     html.Div([
         html.Button('VIEW DATA', id='view_cell', className='sample_cell_dataset_viewdata'
-        ),
+                    ),
         html.Button('CLOSED DATA', id='close_cell', className='sample_cell_dataset_close'
-    )],
-    className='sample_cell_dataset_view_div'
+                    )],
+        className='sample_cell_dataset_view_div'
     ),
-    html.Div(id='show_cell_data', 
-        className='sample_cell_dataset_show'
-    )
+    html.Div(id='show_cell_data',
+             className='sample_cell_dataset_show'
+             )
 ],
-className='sample_cell_dataset_div'
+    className='sample_cell_dataset_div'
 )
 
 cell_data_list = []
 
 
 @app.callback(Output('cell-data', 'children'),
-            [
-                Input('upload-data_cell', 'filename'),
-                Input('filepath_cell', 'value')
-            ])
+              [
+                  Input('upload-data_cell', 'filename'),
+                  Input('filepath_cell', 'value')
+              ])
 def add_cell_dataset(filename, filepath):
     try:
-        filename=filename[0]
-        path_File=os.path.join(filepath, filename)
+        filename = filename[0]
+        path_File = os.path.join(filepath, filename)
         cell_data_list.append([filename, path_File])
-        output_cell=[]
+        output_cell = []
         for x in cell_data_list:
             a = x[0].split('.')
             output_cell.append(dcc.Link(a[0], href='/Cell_Dataset/' + str(a[0])))
             output_cell.append(html.Br())
         name_cell = html.Div(
             children=output_cell
-            )
+        )
         return name_cell
 
     except Exception as e:
         print(e)
+
 
 @app.callback(dash.dependencies.Output('page_cell_dataset', 'children'),
               [dash.dependencies.Input('url_cell_dataset', 'pathname')
@@ -460,27 +522,28 @@ def view_cell_data(n_clicks, click2):
     if n_clicks is not None:
         filepath = cell_data_list[0][1]
         filename = cell_data_list[0][0]
-        c=cz.read_csv(filepath)
-        d=c.get_records()
-        key=list(d[0].keys())
-        tab=[]
-        column=[]
+        c = cz.read_csv(filepath)
+        d = c.get_records()
+        key = list(d[0].keys())
+        tab = []
+        column = []
         for i in key:
-            column.append(html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color':'white'}))
+            column.append(
+                html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
         tab.append(html.Tr(children=column))
         for j in d:
-            value=list(j.values())
-            row_content=[]
+            value = list(j.values())
+            row_content = []
             for x in value:
-                row_content.append(html.Td(x ,style={'border': '1px solid black', 'padding-left':'10px'}))
+                row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
             tab.append(html.Tr(children=row_content, style={'height': '5px'}))
-        table=html.Div([
+        table = html.Div([
             html.H2(filename),
-            html.Table(children=tab, 
-                style={'border-collapse':'collapse',
-                    'border': '1px solid black',
-                    'width': '100%'
-                })
+            html.Table(children=tab,
+                       style={'border-collapse': 'collapse',
+                              'border': '1px solid black',
+                              'width': '100%'
+                              })
         ])
         return table
 
@@ -502,109 +565,111 @@ message_dataset = html.Div([
     html.Div(id='page_message_dataset')
 ])
 
-index_message_dataset=html.Div([
+index_message_dataset = html.Div([
     html.H1(className='index_message_dataset_cellyzer',
-        children='CELLYZER'
-        ),
+            children='CELLYZER'
+            ),
     html.Div([
         html.H2(className='index_message_dataset_Dashboard',
-            children='Dashboard'
-        ),
+                children='Dashboard'
+                ),
         html.Div([
             html.H5("Message Dataset"),
             html.Div(id='message-data')
         ],
-        className='index_message_dataset_h5'
-        )    
+            className='index_message_dataset_h5'
+        )
     ],
-    className='index_message_dataset_Dashboard_div'   
+        className='index_message_dataset_Dashboard_div'
     ),
     html.Div([
         html.Div([
             html.H3('ADD  MESSAGE  DATASET', className='index_message_dataset_addmessage'
-            )],
+                    )],
             className='index_message_dataset_addmessage_div'
-            ),         
-        ]),
+        ),
+    ]),
     html.Div([
         html.H5('Get File Path:'),
-        dcc.Input(id="filepath_message", type='text', placeholder='Enter path', style={'width': '500px', 'border': '1px solid black'}),
+        dcc.Input(id="filepath_message", type='text', placeholder='Enter path',
+                  style={'width': '500px', 'border': '1px solid black'}),
         html.Br(),
-        html.P('Enter correct path of adding file', style={'font-size': '15px'})       
-        ],
+        html.P('Enter correct path of adding file', style={'font-size': '15px'})
+    ],
         style={
             'padding-left': '30px'
         }),
     dcc.Upload(id='upload-data_message',
-        children=html.Div([
-        html.Button('ADD MESSAGE DATA', className='index_messagedata_add_button'
-        )
-        ]),
-        className='index_message_dataset_upload_data',
-        # Allow multiple files to be uploaded
-        multiple=True
-    )],
+               children=html.Div([
+                   html.Button('ADD MESSAGE DATA', className='index_messagedata_add_button'
+                               )
+               ]),
+               className='index_message_dataset_upload_data',
+               # Allow multiple files to be uploaded
+               multiple=True
+               )],
     className='index_message_dataset_div'
-    )
+)
 
-sample_message_data= html.Div([
+sample_message_data = html.Div([
     html.H1(className='sample_message_data_cellyzer',
-        children='CELLYZER'
-        ),
+            children='CELLYZER'
+            ),
     html.Div([
         html.H2(className='sample_message_dataset_Dashboard',
-            children='Dashboard'
-        ),
+                children='Dashboard'
+                ),
         html.Div([
             html.H5("Message Dataset")
         ],
             className='sample_message_dataset_h5'
-        )    
+        )
     ],
-        className='sample_message_dataset_Dashboard_div'  
+        className='sample_message_dataset_Dashboard_div'
     ),
     html.Div([
         html.H4(id="file_name")
     ]),
     html.Div([
         html.Button('VIEW DATA', id='view_message', className='sample_message_dataset_viewdata'
-        ),
+                    ),
         html.Button('CLOSED DATA', id='close_message', className='sample_message_dataset_close'
-        )],
+                    )],
         className='sample_message_dataset_view_div'
-        ),
-    html.Div(id='show_message_data', 
-        className='sample_message_dataset_show'
-        )
-    ],
+    ),
+    html.Div(id='show_message_data',
+             className='sample_message_dataset_show'
+             )
+],
     className='sample_message_dataset_div'
-    )
+)
 
 message_data_list = []
 
 
 @app.callback(Output('message-data', 'children'),
-            [
-                Input('upload-data_message', 'filename'),
-                Input('filepath_message', 'value')
-            ])
+              [
+                  Input('upload-data_message', 'filename'),
+                  Input('filepath_message', 'value')
+              ])
 def add_message_dataset(filename, filepath):
     try:
-        filename=filename[0]
-        path_File=os.path.join(filepath, filename)
+        filename = filename[0]
+        path_File = os.path.join(filepath, filename)
         message_data_list.append([filename, path_File])
-        output_message=[]
+        output_message = []
         for x in message_data_list:
             a = x[0].split('.')
             output_message.append(dcc.Link(a[0], href='/Message_Dataset/' + str(a[0])))
             output_message.append(html.Br())
         name_message = html.Div(
             children=output_message
-            )
+        )
         return name_message
 
     except Exception as e:
         print(e)
+
 
 @app.callback(dash.dependencies.Output('page_message_dataset', 'children'),
               [dash.dependencies.Input('url_message_dataset', 'pathname')
@@ -628,27 +693,28 @@ def view_message_data(n_clicks, click2):
     if n_clicks is not None:
         filepath = message_data_list[0][1]
         filename = message_data_list[0][0]
-        c=cz.read_csv(filepath)
-        d=c.get_records()
-        key=list(d[0].keys())
-        tab=[]
-        column=[]
+        c = cz.read_csv(filepath)
+        d = c.get_records()
+        key = list(d[0].keys())
+        tab = []
+        column = []
         for i in key:
-            column.append(html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color':'white'}))
+            column.append(
+                html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
         tab.append(html.Tr(children=column))
         for j in d:
-            value=list(j.values())
-            row_content=[]
+            value = list(j.values())
+            row_content = []
             for x in value:
-                row_content.append(html.Td(x ,style={'border': '1px solid black', 'padding-left':'10px'}))
+                row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
             tab.append(html.Tr(children=row_content, style={'height': '5px'}))
-        table=html.Div([
+        table = html.Div([
             html.H2(filename),
-            html.Table(children=tab, 
-                style={'border-collapse':'collapse',
-                    'border': '1px solid black',
-                    'width': '100%'
-                })
+            html.Table(children=tab,
+                       style={'border-collapse': 'collapse',
+                              'border': '1px solid black',
+                              'width': '100%'
+                              })
         ])
         return table
 
