@@ -46,8 +46,6 @@ class TestCallDataSet(unittest.TestCase):
         print("test - get connections")
 
     def test_get_most_active_time(self):
-        print("test - most active time")
-
         user1_result = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0, 11: 1, 12: 1, 13: 1, 14: 0,
                         15: 5, 16: 0, 17: 0, 18: 4, 19: 0, 20: 0, 21: 1, 22: 0, 23: 0}
         self.assertEqual(self.callDataSet.get_most_active_time(user=self.user1), user1_result)
@@ -66,8 +64,6 @@ class TestCallDataSet(unittest.TestCase):
             self.callDataSet.get_most_active_time({})
 
     def test_get_close_contacts(self):
-        print('test - close contacts')
-
         user1_result = {'7187432175': 4, '7230262224': 1}
         self.assertEqual(self.callDataSet.get_close_contacts(user=self.user1, top_contact=2), user1_result)
 
@@ -83,8 +79,6 @@ class TestCallDataSet(unittest.TestCase):
             self.callDataSet.get_close_contacts({})
 
     def test_get_call_records_by_antenna_id(self):
-        print('test - get call records by antenna id')
-
         cell1_result = 8
         self.assertEqual(len(self.callDataSet.get_call_records_by_antenna_id(cell_id=1)), cell1_result)
 
@@ -94,8 +88,6 @@ class TestCallDataSet(unittest.TestCase):
         self.assertEqual(len(self.callDataSet.get_call_records_by_antenna_id(cell_id=20)), 0)
 
     def test_get_ignored_call_details(self):
-        print("test - get ignored call details")
-
         self.assertEqual(self.callDataSet.get_ignored_call_details(user=self.user1), [])
         self.assertEqual(self.callDataSet.get_ignored_call_details(user=self.user2), [])
 

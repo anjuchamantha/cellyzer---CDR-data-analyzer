@@ -34,8 +34,20 @@ print(">> work location -> cell id : ", officeplace_cell_id)
 # cz.visualization.view_home_work_locations(home_location=location_home, work_location=location_office)
 
 user3_number = '7641036117'
-user3 = cz.User(callDataSet=callDataSet, cellDataSet=cellDataSet, contact_no=user3_number)
+user3 = cz.User(callDataSet=callDataSet, cellDataSet=cellDataSet, contact_no=user3_number, work_start_time=15,
+                work_end_time=22)
 ignored_call_details = user3.get_ignored_call_details()
 print(">> ignored calls details : ")
 print(ignored_call_details)
 cz.utils.tabulate_list_of_dictionaries(ignored_call_details)
+
+
+location_home = user3.get_home_location()
+print('>> home location : ', location_home)
+home_cell_id = user3.get_home_location_related_cell_id()
+print(">> home location -> cell id : ", home_cell_id)
+
+location_office = user3.get_work_location()
+print('>> work location : ', location_office)
+officeplace_cell_id = user3.get_work_location_related_cell_id()
+print(">> work location -> cell id : ", officeplace_cell_id)

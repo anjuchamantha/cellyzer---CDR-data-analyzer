@@ -489,10 +489,10 @@ class CellDataSet(DataSet):
 
 # class User
 class User:
-    def __init__(self, callDataSet, cellDataSet, contact_no):
+    def __init__(self, callDataSet, cellDataSet, contact_no, work_start_time=7, work_end_time=19):
         self._contact_no = contact_no
-        self._night_start = datetime.time(19)
-        self._night_end = datetime.time(7)
+        self._night_start = datetime.time(work_end_time)
+        self._night_end = datetime.time(work_start_time)
         self._userCallDataSet = self.get_user_calldata(callDataSet)
         self.callDataSetObj = callDataSet
         self._cellDataSet = cellDataSet
@@ -629,7 +629,7 @@ class User:
 
         for record in self._cellDataSet.get_cell_records():
             if float(record.get_latitude()) == self._home[0] and float(record.get_longitude()) == self._home[1]:
-                return record.get_cell_id()
+                return int(record.get_cell_id())
 
     def get_work_location_related_cell_id(self):
         """
@@ -651,7 +651,7 @@ class User:
         for record in self._cellDataSet.get_cell_records():
             if float(record.get_latitude()) == self._work_location[0] and float(record.get_longitude()) == \
                     self._work_location[1]:
-                return record.get_cell_id()
+                return int(record.get_cell_id())
 
     def get_ignored_call_details(self):
         """
