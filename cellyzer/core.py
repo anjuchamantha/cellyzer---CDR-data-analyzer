@@ -370,12 +370,13 @@ class CellDataSet(DataSet):
         >> antennaDataSet = cz.read_cell(antenna_file_path, call_dataset_obj=callDataSet, file_type='csv')
         >> record = antennaDataSet.get_cell_records(cell_id=1)
         """
-
         if cell_id is None:
             return self._records
+        elif type(cell_id) != str and type(cell_id) != int and type(cell_id) != float:
+            raise TypeError
         else:
             for record in self._records:
-                if int(cell_id) == int(record.get_cell_id()):
+                if str(cell_id) == str(record.get_cell_id()):
                     return record
 
     def get_location(self, cell_id):
@@ -394,10 +395,13 @@ class CellDataSet(DataSet):
         >> antennaDataSet = cz.read_cell(antenna_file_path, call_dataset_obj=callDataSet, file_type='csv')
         >> location = antennaDataSet.get_location(cell_id = 1)
         """
-
-        antenna_record = self.get_cell_records(cell_id)
-        location_tuple = (float(antenna_record.get_latitude()), float(antenna_record.get_longitude()))
-        return location_tuple
+        if type(cell_id) != str and type(cell_id) != int and type(cell_id) != float:
+            raise TypeError
+        else:
+            antenna_record = self.get_cell_records(cell_id)
+            if antenna_record is not None:
+                location_tuple = (float(antenna_record.get_latitude()), float(antenna_record.get_longitude()))
+                return location_tuple
 
     def get_population(self, cell_id=None):
         """
@@ -422,23 +426,26 @@ class CellDataSet(DataSet):
                 antenna_dict = self.get_population(cell_id=record.get_cell_id())
                 population.append(antenna_dict)
             return population
+        elif type(cell_id) != str and type(cell_id) != int and type(cell_id) != float:
+            raise TypeError
         else:
             antenna_record = self.get_cell_records(cell_id)
-            call_records = self._call_data_Set.get_call_records_by_antenna_id(cell_id)
-            unique_users = self.get_unique_users_arround_cell(call_records)
-            no_of_homes_arround_cell = 0
-            for user in unique_users:
-                if self.check_user_location_matches_cell(user, cell_id):
-                    no_of_homes_arround_cell += 1
+            if antenna_record is not None:
+                call_records = self._call_data_Set.get_call_records_by_antenna_id(cell_id)
+                unique_users = self.get_unique_users_around_cell(call_records)
+                no_of_homes_arround_cell = 0
+                for user in unique_users:
+                    if self.check_user_location_matches_cell(user, cell_id):
+                        no_of_homes_arround_cell += 1
 
-            antenna_dict = {'cell_id': cell_id,
-                            'latitude': antenna_record.get_latitude(),
-                            'longitude': antenna_record.get_longitude(),
-                            'population_around_cell': no_of_homes_arround_cell
-                            }
-            return antenna_dict
+                antenna_dict = {'cell_id': cell_id,
+                                'latitude': antenna_record.get_latitude(),
+                                'longitude': antenna_record.get_longitude(),
+                                'population_around_cell': no_of_homes_arround_cell
+                                }
+                return antenna_dict
 
-    def get_unique_users_arround_cell(self, call_records):
+    def get_unique_users_around_cell(self, call_records):
         # filter given call records to get unique user list
         unique_users = []
         for record in call_records:
@@ -449,11 +456,24 @@ class CellDataSet(DataSet):
     def check_user_location_matches_cell(self, contact_no, cell_id):
         # return true if user home location and given cell ID is equal
         # return false if user home location does not matches with the cell ID
-        user = User(self._call_data_Set, self, contact_no)
-        if user.get_home_location_related_cell_id() == cell_id:
-            return True
+        if type(cell_id) != str and type(cell_id) != int and type(cell_id) != float:
+            raise TypeError
+        elif type(contact_no) != str and type(contact_no) != int:
+            raise TypeError
         else:
-            return False
+            contact_exist = False
+            for call_record in self._call_data_Set.get_records():
+                if str(call_record.get_user()) == str(contact_no):
+                    contact_exist = True
+                    break
+            if contact_exist:
+                user = User(self._call_data_Set, self, contact_no)
+                if str(user.get_home_location_related_cell_id()) == str(cell_id):
+                    return True
+                else:
+                    return False
+            else:
+                return False
 
     def get_trip_details(self, user, console_print=False, tabulate=False):
         """
@@ -468,29 +488,34 @@ class CellDataSet(DataSet):
 
         :return: sorted_trips : dictionary
         """
-        trips = []
-        user_records = self._call_data_Set.get_records(user)
-        # utils.print_record_lists(user_records)
-        for record in user_records:
-            trip = dict()
-            if user == record.get_user():
-                trip["timestamp"] = tools.get_datetime_from_timestamp(record.get_timestamp())
-                trip["duration"] = record.get_duration()
-                trip["cell_id"] = record.get_cell_id()
-                trip["location"] = self.get_location(record.get_cell_id())
-                trips.append(trip)
-        sorted_trips = sorted(trips, key=itemgetter('timestamp'))
-        if tabulate:
-            utils.tabulate_list_of_dictionaries(sorted_trips)
-        if console_print:
-            print(sorted_trips)
-        return sorted_trips
+        if type(user) != str and type(user) != int:
+            raise TypeError
+        elif type(console_print) != bool or type(tabulate) != bool:
+            raise TypeError
+        else:
+            trips = []
+            user_records = self._call_data_Set.get_records(str(user))
+            # utils.print_record_lists(user_records)
+            for record in user_records:
+                trip = dict()
+                if str(user) == record.get_user():
+                    trip["timestamp"] = tools.get_datetime_from_timestamp(record.get_timestamp())
+                    trip["duration"] = record.get_duration()
+                    trip["cell_id"] = record.get_cell_id()
+                    trip["location"] = self.get_location(record.get_cell_id())
+                    trips.append(trip)
+            sorted_trips = sorted(trips, key=itemgetter('timestamp'))
+            if tabulate:
+                utils.tabulate_list_of_dictionaries(sorted_trips)
+            if console_print:
+                print(sorted_trips)
+            return sorted_trips
 
 
 # class User
 class User:
     def __init__(self, callDataSet, cellDataSet, contact_no, work_start_time=7, work_end_time=19):
-        self._contact_no = contact_no
+        self._contact_no = str(contact_no)
         self._night_start = datetime.time(work_end_time)
         self._night_end = datetime.time(work_start_time)
         self._userCallDataSet = self.get_user_calldata(callDataSet)
@@ -629,7 +654,7 @@ class User:
 
         for record in self._cellDataSet.get_cell_records():
             if float(record.get_latitude()) == self._home[0] and float(record.get_longitude()) == self._home[1]:
-                return int(record.get_cell_id())
+                return record.get_cell_id()
 
     def get_work_location_related_cell_id(self):
         """
@@ -651,7 +676,7 @@ class User:
         for record in self._cellDataSet.get_cell_records():
             if float(record.get_latitude()) == self._work_location[0] and float(record.get_longitude()) == \
                     self._work_location[1]:
-                return int(record.get_cell_id())
+                return record.get_cell_id()
 
     def get_ignored_call_details(self):
         """

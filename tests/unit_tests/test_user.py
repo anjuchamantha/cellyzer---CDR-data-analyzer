@@ -77,16 +77,16 @@ class TestUser(unittest.TestCase):
         self.assertEqual(self.user3_new.get_work_location(), [42.345, -71.09])
 
     def test_get_home_location_related_cell_id(self):
-        self.assertEqual(self.user1.get_home_location_related_cell_id(), 10)
-        self.assertEqual(self.user2.get_home_location_related_cell_id(), 2)
-        self.assertEqual(self.user3.get_home_location_related_cell_id(), 10)
-        self.assertEqual(self.user3_new.get_home_location_related_cell_id(), 10)
+        self.assertEqual(self.user1.get_home_location_related_cell_id(), "10")
+        self.assertEqual(self.user2.get_home_location_related_cell_id(), "2")
+        self.assertEqual(self.user3.get_home_location_related_cell_id(), "10")
+        self.assertEqual(self.user3_new.get_home_location_related_cell_id(), "10")
 
     def test_get_work_location_related_cell_id(self):
-        self.assertEqual(self.user1.get_work_location_related_cell_id(), 2)
-        self.assertEqual(self.user2.get_work_location_related_cell_id(), 2)
-        self.assertEqual(self.user3.get_work_location_related_cell_id(), 3)
-        self.assertEqual(self.user3_new.get_work_location_related_cell_id(), 7)
+        self.assertEqual(self.user1.get_work_location_related_cell_id(), "2")
+        self.assertEqual(self.user2.get_work_location_related_cell_id(), "2")
+        self.assertEqual(self.user3.get_work_location_related_cell_id(), "3")
+        self.assertEqual(self.user3_new.get_work_location_related_cell_id(), "7")
 
     def test_get_ignored_call_details(self):
         self.assertEqual(self.user1.get_ignored_call_details(), [])
