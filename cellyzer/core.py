@@ -248,14 +248,17 @@ class CallMessageDataSet(DataSet):
         :return: active_time : dictionary
         """
 
-        keys = []
-        for i in range(24):
-            keys.append(i)
-        active_time = {key: 0 for key in keys}
-        for record in self.get_records(user1=str(user)):
-            time = int(tools.get_datetime_from_timestamp(record.get_timestamp()).hour)
-            active_time[time] += 1
-        return active_time
+        if type(user) != str and type(user) != int:
+            raise TypeError
+        else:
+            keys = []
+            for i in range(24):
+                keys.append(i)
+            active_time = {key: 0 for key in keys}
+            for record in self.get_records(user1=str(user)):
+                time = int(tools.get_datetime_from_timestamp(record.get_timestamp()).hour)
+                active_time[time] += 1
+            return active_time
 
 
 class CallDataSet(CallMessageDataSet):
