@@ -12,6 +12,7 @@ import json
 import logging as log
 from collections import OrderedDict
 from json import dumps
+import hashlib
 
 from dateutil.parser import parse
 from datetime import datetime
@@ -134,7 +135,7 @@ def read_csv(filepath):
         pass
 
 
-def read_call(file_path, file_type='csv'):
+def read_call(file_path, file_type='csv', hash=True):
     print("[x]  Reading Call Data")
 
     """
@@ -168,7 +169,7 @@ def read_call(file_path, file_type='csv'):
 
                 # for c in call_list:
                 #  print(c)
-                return create_call_obj(call_list, fieldnames)
+                return create_call_obj(call_list, fieldnames, hash)
         elif file_type.lower() == 'xls' or file_type.lower() == 'xlsx':
             return read_xls(file_path)
         elif file_type.lower() == 'json':
@@ -180,7 +181,7 @@ def read_call(file_path, file_type='csv'):
         pass
 
 
-def read_msg(file_path, file_type='csv'):
+def read_msg(file_path, file_type='csv', hash=True):
     print("[x]  Reading Message Data...")
 
     """
@@ -210,7 +211,7 @@ def read_msg(file_path, file_type='csv'):
                         message[f] = val[f]
                     messages_list.append(message)
 
-                return create_msg_obj(messages_list, fieldnames)
+                return create_msg_obj(messages_list, fieldnames, hash)
         elif file_type.lower() == 'xls' or file_type.lower() == 'xlsx':
             return read_xls(file_path)
         elif file_type.lower() == 'json':
@@ -343,7 +344,14 @@ def read_json(filepath):
         pass
 
 
-def create_call_obj(calls, fieldnames):
+def hash_number(number):
+    last3 = number[-3:]
+    hash_val = str(hashlib.sha224(number[:7].encode()).hexdigest())
+    # print(hash_val[:6] + last3)
+    return hash_val[:7] + last3
+
+
+def create_call_obj(calls, fieldnames, hash):
     if calls is not None:
 
         call_records = []
@@ -352,9 +360,15 @@ def create_call_obj(calls, fieldnames):
 
             for key in call:
                 if 'user' in key:
-                    user = call["user"]
+                    if hash:
+                        user = hash_number(call["user"])
+                    else:
+                        user = call["user"]
                 elif 'other' in key:
-                    other_user = call[key]
+                    if hash:
+                        other_user = hash_number(call[key])
+                    else:
+                        other_user = call[key]
                 elif 'dir' in key:
                     direction = call[key]
                 elif 'dur' in key:
@@ -379,7 +393,7 @@ def create_call_obj(calls, fieldnames):
         return call_dataset_obj
 
 
-def create_msg_obj(messages, fieldnames):
+def create_msg_obj(messages, fieldnames, hash):
     if messages is not None:
 
         msg_records = []
@@ -388,9 +402,15 @@ def create_msg_obj(messages, fieldnames):
 
             for key in msg:
                 if 'user' in key:
-                    user = msg[key]
+                    if hash:
+                        user = hash_number(msg[key])
+                    else:
+                        user = msg[key]
                 elif 'other' in key:
-                    other_user = msg[key]
+                    if hash:
+                        other_user = hash_number(msg[key])
+                    else:
+                        other_user = msg[key]
                 elif 'dir' in key:
                     direction = msg[key]
                 elif 'len' in key:
@@ -444,8 +464,8 @@ def filter_calls(call_records):
 
     def scheme(r):
         return {
-            'user': True if len(r.user) != 0 and r.user.isdigit() else False,
-            'other': True if len(r.other_user) != 0 and r.other_user.isdigit() else False,
+            'user': True if len(r.user) != 0 else False,
+            'other': True if len(r.other_user) != 0 else False,
             'direction': True if r.direction in ['Incoming', 'Outgoing', 'Missed'] else False,
             'duration': True if len(r.duration) != 0 and r.duration.isdigit() else False,
             'timestamp': is_date(r.timestamp),
@@ -495,8 +515,8 @@ def filter_messages(call_records):
 
     def scheme(r):
         return {
-            'user': True if len(r._user) != 0 and r._user.isdigit() else False,
-            'other': True if len(r._other_user) != 0 and r._other_user.isdigit() else False,
+            'user': True if len(r._user) != 0 else False,
+            'other': True if len(r._other_user) != 0 else False,
             'direction': True if r._direction in ['Incoming', 'Outgoing'] else False,
             'length': True if len(r._length) != 0 and r._length.isdigit() else False,
             'timestamp': is_date(r._timestamp),

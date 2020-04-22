@@ -7,8 +7,8 @@ cz.utils.print_dataset(messageDataSet, name="Message Dataset")
 all_users = messageDataSet.get_all_users()
 print("All Users : %s \n" % all_users)
 
-search_user1 = "7681546436"
-search_user2 = "7641036117"
+search_user1 = "0041628436"
+search_user2 = "329233d117"
 
 connected_users = messageDataSet.get_connected_users(search_user1)
 print("Users connected to %s : %s \n" % (search_user1, connected_users))
