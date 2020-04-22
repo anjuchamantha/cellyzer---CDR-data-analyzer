@@ -26,6 +26,6 @@ messageDataSet.print_connection_matrix()
 
 messageDataSet.visualize_connection_network()
 
-close_contacts = messageDataSet.get_close_contacts(search_user1, top_contact=3)
+close_contacts = messageDataSet.get_close_contacts(search_user2, top_contact=3)
 print(">> close contacts of %s : %s" % (search_user1, close_contacts))
 cz.utils.print_close_contacts(close_contacts)

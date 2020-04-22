@@ -270,6 +270,8 @@ class CallDataSet(CallMessageDataSet):
         """
         if type(user) != str and type(user) != int:
             raise TypeError
+        elif type(top_contact) != str and type(top_contact) != int:
+            raise TypeError
         else:
             contacts_dict = {}
             user = str(user)
@@ -279,7 +281,7 @@ class CallDataSet(CallMessageDataSet):
                     if int(record.get_duration()) > 0:
                         valid_records.append(record)
                 contacts_dict[user2] = len(valid_records)
-            close_contacts = dict(sorted(contacts_dict.items(), key=itemgetter(1), reverse=True)[:top_contact])
+            close_contacts = dict(sorted(contacts_dict.items(), key=itemgetter(1), reverse=True)[:int(top_contact)])
             return close_contacts
 
     def get_call_records_by_antenna_id(self, cell_id):
@@ -338,12 +340,17 @@ class MessageDataSet(CallMessageDataSet):
 
         :return: close_contacts : dictionary
         """
-        contacts_dict = {}
-        for user2 in self.get_connected_users(user):
-            records = self.get_records(user, user2)
-            contacts_dict[user2] = len(records)
-        close_contacts = dict(sorted(contacts_dict.items(), key=itemgetter(1), reverse=True)[:top_contact])
-        return close_contacts
+        if type(user) != str and type(user) != int:
+            raise TypeError
+        elif type(top_contact) != str and type(top_contact) != int:
+            raise TypeError
+        else:
+            contacts_dict = {}
+            for user2 in self.get_connected_users(str(user)):
+                records = self.get_records(str(user), str(user2))
+                contacts_dict[user2] = len(records)
+            close_contacts = dict(sorted(contacts_dict.items(), key=itemgetter(1), reverse=True)[:int(top_contact)])
+            return close_contacts
 
     def get_frequenct_conversations(self):
         print("Frequent conversations between ")
