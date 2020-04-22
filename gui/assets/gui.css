@@ -539,3 +539,9 @@
     color: white;
     display: block;
 }
+
+.index_dataset_cell_record_div {
+    width: 200px;
+    margin-top: 50px;
+    padding-left: 30px;
+}

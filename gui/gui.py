@@ -958,80 +958,200 @@ index_cell_dataset = html.Div([
     className='index_cell_dataset_div'
 )
 
+
 sample_cell_data = html.Div([
-    html.H1(className='sample_cell_data_cellyzer',
-            children='CELLYZER'
-            ),
+    dcc.Location(id='url_sample_cell_data', refresh=False),
+    html.Div(id='page_sample_cell_data') 
+])
+
+cell_dataset_file= html.Div([
+    html.H1(className='sample_cell_data_cellyzer', children='CELLYZER' ),
     html.Div([
-        html.H2(className='sample_cell_dataset_Dashboard',
-                children='Dashboard'
-                ),
-        html.Div([
-            html.H5("Cell Dataset")
-        ],
-            className='sample_cell_dataset_h5'
-        )
+        html.H2(className='sample_cell_dataset_Dashboard', children='Dashboard'),
+        html.Div([html.H5("Cell Dataset")], className='index_dataset_Call_Dataset') 
     ],
-        className='sample_cell_dataset_Dashboard_div'
+    className='sample_cell_dataset_Dashboard_div' 
     ),
+    html.Div([
+        html.Div([
+            html.H3('CELL  DATASET  VISUALIZATION', className='index_dataset_add_call_data')], 
+            className='sample_dataset_visualize'),         
+        ]),
     html.Div([
         html.H4(id="file_name")
     ]),
     html.Div([
-        html.Button('VIEW DATA', id='view_cell', className='sample_cell_dataset_viewdata'
-                    ),
-        html.Button('CLOSED DATA', id='close_cell', className='sample_cell_dataset_close'
-                    )],
-        className='sample_cell_dataset_view_div'
+        dcc.Link('◙ Show All Data', href='/Cell_Dataset/view_cell_data'),
+        html.Br(),
+        dcc.Link('◙ Records Of a Specific Cell', href='/Cell_Dataset/records_cell_id'),
+        html.Br(),
+        dcc.Link('◙ Population Around Cell', href='/Cell_Dataset/population_around_cell'),
+        html.Br(),
+        dcc.Link('◙ Trip Visualization', href='/Cell_Dataset/trip_visualize'),
+        html.Br(),
+    ], className='sample_call_data_visualize_option'),
+    ],
+    className='sample_cell_dataset_div')
+
+####### show all cell data
+view_all_cell_data = html.Div([
+    html.H1(className='sample_call_data_cellyzer',children='CELLYZER'),
+    html.Div([
+        html.H2(className='sample_call_dataset_Dashboard', children='Dashboard'),
+        html.Div([html.H5("Cell Dataset")], className='index_dataset_Call_Dataset'),
+        html.Div([html.H6("All Data")], className='index_page_dataset_div_all_user')     
+    ],
+    className='sample_dataset_Dashboard_div' 
+    ), 
+    html.Div([
+        html.Div([
+            html.H4('CELL  DATASET  VISUALIZATION', className='index_dataset_add_call_data')], 
+        className='index_dataset_add_call_data_div'),         
+    ]), 
+    html.Div([
+        html.H4(children='Get All Data', className='sample_call_visualize_all_user')], 
+        style={'padding-left': '30px', 'margin-top':'40px', 'margin-bottom':'20px'}
     ),
-    html.Div(id='show_cell_data',
-             className='sample_cell_dataset_show'
-             )
-],
-    className='sample_cell_dataset_div'
-)
+    html.Div([
+        html.Button('VIEW DATA', id='view_cell', className='sample_call_dataset_viewdata'),
+        html.Button('CLOSED DATA', id='close_cell', className='sample_call_dataset_close')],
+        className='sample_call_dataset_view_div'),
+    html.Div(id='show_cell_data', className='sample_call_dataset_show'),
+    ],
+    className='sample_call_dataset_div')
+
+###### get records of specific cell
+records_of_cell = html.Div([
+    html.H1(className='sample_call_data_cellyzer', children='CELLYZER'),
+    html.Div([
+        html.H2(className='sample_call_dataset_Dashboard', children='Dashboard'),
+        html.Div([html.H5("Cell Dataset")], className='index_page_dataset_div'), 
+        html.Div([html.H6("Records Cell")], className='index_page_dataset_div_all_user')   
+    ], 
+    className='sample_dataset_Dashboard_div' 
+    ), 
+    html.Div([
+        html.Div([
+            html.H4('CELL  DATASET  VISUALIZATION', className='index_dataset_add_call_data')], 
+            className='index_dataset_add_call_data_div'),         
+    ]), 
+    html.Div([
+        html.H3(children='Records Of a Specific Cell', className='sample_call_visualize_all_user')], 
+        style={'padding-left': '30px', 'margin-top':'40px', 'margin-bottom':'20px'}
+    ),
+    html.Div([
+        html.H6('Enter Cell Id:'),
+        dcc.Input(id="cell_id", type='number', placeholder='Enter Id'),
+        html.Br(),
+        html.Br(),
+        html.Button('Records Cell', id='records_cell', className='sample_call_dataset_viewdata')], 
+        className='sample_call_dataset_view_div'
+    ),
+    html.Div(id='show_records_cell', className='ndex_dataset_cell_record_div'), 
+    ],
+    className='sample_call_dataset_div')
+
+######## page for get ppulation and visualize
+population_around_cell = html.Div([
+    html.H1(className='sample_call_data_cellyzer', children='CELLYZER'),
+    html.Div([
+        html.H2(className='sample_call_dataset_Dashboard', children='Dashboard'),
+        html.Div([html.H5("Cell Dataset")], className='index_page_dataset_div'), 
+        html.Div([html.H6("Population Around Cell")], className='index_page_dataset_div_all_user')   
+    ], 
+    className='sample_dataset_Dashboard_div' 
+    ), 
+    html.Div([
+        html.Div([
+            html.H4('CELL  DATASET  VISUALIZATION', className='index_dataset_add_call_data')], 
+            className='index_dataset_add_call_data_div'),         
+    ]), 
+    html.Div([
+        html.H3(children='Population Around Cell And Visualize', className='sample_call_visualize_all_user')], 
+        style={'padding-left': '30px', 'margin-top':'40px', 'margin-bottom':'20px'}
+    ),
+    html.Div([
+        html.Button('Get Population', id='population_button', className='sample_call_dataset_viewdata')], 
+        className='sample_call_dataset_view_div'
+    ),
+    html.Div(id='show_population', className='sample_call_dataset_show_all_users'), 
+    ],
+    className='sample_call_dataset_div')
+
+######## page for trip visualization
+trip_visualize = html.Div([
+    html.H1(className='sample_call_data_cellyzer', children='CELLYZER'),
+    html.Div([
+        html.H2(className='sample_call_dataset_Dashboard', children='Dashboard'),
+        html.Div([html.H5("Cell Dataset")], className='index_page_dataset_div'), 
+        html.Div([html.H6("Trip Visualize")], className='index_page_dataset_div_all_user')   
+    ], 
+    className='sample_dataset_Dashboard_div' 
+    ), 
+    html.Div([
+        html.Div([
+            html.H4('CELL  DATASET  VISUALIZATION', className='index_dataset_add_call_data')], 
+            className='index_dataset_add_call_data_div'),         
+    ]), 
+    html.Div([
+        html.H3(children='Trip Visualization', className='sample_call_visualize_all_user')], 
+        style={'padding-left': '30px', 'margin-top':'40px', 'margin-bottom':'20px'}
+    ),
+    html.Div([
+        html.H6('Enter user number:'),
+        dcc.Input(id="trip_user", type='text', placeholder='Enter number'),
+        html.Br(),
+        html.Br(),
+        html.Button('Trip Visualize', id='trip_visualize_button', className='sample_call_dataset_viewdata')], 
+        className='sample_call_dataset_view_div'
+    ),
+    html.Div(id='show_trip_visualize', className='sample_call_dataset_show_all_users'), 
+    ],
+    className='sample_call_dataset_div')
 
 cell_data_list = []
 
 
+####### add cell data
 @app.callback(Output('cell-data', 'children'),
-              [
-                  Input('upload-data_cell', 'filename'),
-                  Input('filepath_cell', 'value')
-              ])
+            [
+                Input('upload-data_cell', 'filename'),
+                Input('filepath_cell', 'value')
+            ])
 def add_cell_dataset(filename, filepath):
     try:
-        filename = filename[0]
-        path_File = os.path.join(filepath, filename)
+        filename=filename[0]
+        path_File=os.path.join(filepath, filename)
         cell_data_list.append([filename, path_File])
-        output_cell = []
+        output_cell=[]
         for x in cell_data_list:
-            a = x[0].split('.')
-            output_cell.append(dcc.Link(a[0], href='/Cell_Dataset/' + str(a[0])))
+            a=x[0].split('.')
+            output_cell.append(dcc.Link(a[0], href='/Cell_Dataset/'+str(a[0])))
             output_cell.append(html.Br())
-        name_cell = html.Div(
+        name_cell=html.Div(
             children=output_cell
-        )
+            )
         return name_cell
 
     except Exception as e:
         print(e)
 
-
 @app.callback(dash.dependencies.Output('page_cell_dataset', 'children'),
-              [dash.dependencies.Input('url_cell_dataset', 'pathname')
-               ])
+            [   dash.dependencies.Input('url_cell_dataset', 'pathname')
+            ])   
 def display_sample_cell_data(pathname):
-    filename = str(pathname).split('/')
-    if filename[-2] == 'Cell_Dataset':
+    filename=str(pathname).split('/')
+    if filename[-2]=='Cell_Dataset':
         return sample_cell_data
+    elif pathname=='/':
+        return index_page
     else:
         return index_cell_dataset
 
-
+###### read cell data
 @app.callback(Output('show_cell_data', 'children'),
-              [Input('view_cell', 'n_clicks'), Input('close_cell', 'n_clicks')
-               ])
+            [   Input('view_cell', 'n_clicks'), Input('close_cell', 'n_clicks')
+            ])
 def view_cell_data(n_clicks, click2):
     table = html.Div()
     if click2 is not None:
@@ -1040,38 +1160,116 @@ def view_cell_data(n_clicks, click2):
     if n_clicks is not None:
         filepath = cell_data_list[0][1]
         filename = cell_data_list[0][0]
-        c = cz.read_csv(filepath)
-        d = c.get_records()
-        key = list(d[0].keys())
-        tab = []
-        column = []
-        for i in key:
-            column.append(
-                html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
+        filepath_call = call_data_list[0][1]
+        call_data=cz.read_call(filepath_call)
+        split_name= filename.split('.')
+        file_type=split_name[-1]
+        c=cz.read_cell(filepath,filepath_call, call_data, file_type)
+        dict_list = []
+        for record in c.get_records():
+            dict_list.append(vars(record))
+        header = list(dict_list[0].keys())
+        tab=[]
+        column=[]
+        for i in header:
+            column.append(html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color':'white'}))
         tab.append(html.Tr(children=column))
-        for j in d:
-            value = list(j.values())
-            row_content = []
+        count=0
+        for j in dict_list:
+            value=list(j.values())
+            count+=1       
+            row_content=[]
+            if count>100:
+                break
+            row_content=[]
             for x in value:
-                row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
+                row_content.append(html.Td(x ,style={'border': '1px solid black', 'padding-left':'10px'}))
             tab.append(html.Tr(children=row_content, style={'height': '5px'}))
-        table = html.Div([
+        table=html.Div([
             html.H2(filename),
-            html.Table(children=tab,
-                       style={'border-collapse': 'collapse',
-                              'border': '1px solid black',
-                              'width': '100%'
-                              })
+            html.Table(children=tab, 
+                style={'border-collapse':'collapse',
+                    'border': '1px solid black',
+                    'width': '100%'
+                })
         ])
         return table
 
-
 @app.callback(Output('close_cell', 'n_clicks'),
-              [Input('view_cell', 'n_clicks')
-               ])
+            [   Input('view_cell', 'n_clicks')
+            ])
 def close_cell_data(n_clicks):
     if n_clicks is not None:
         return None
+
+###### get cell_id records
+@app.callback(Output('show_records_cell', 'children'),
+            [   Input('records_cell', 'n_clicks'),
+                Input('cell_id', 'value')
+            ])
+def get_cell_records(n_clicks, cell_id):
+    if n_clicks is not None:
+        filepath = cell_data_list[0][1]
+        filename = cell_data_list[0][0]
+        filepath_call = call_data_list[0][1]
+        call_data=cz.read_call(filepath_call)
+        split_name= filename.split('.')
+        file_type=split_name[-1]
+        antana_dataset=cz.read_cell(filepath,filepath_call, call_data, file_type)
+        record_cell=antana_dataset.get_cell_records(cell_id)
+        cell=record_cell.get_cell_id()
+        print(record_cell)
+        return html.H5('Cell_id: '+cell, className='index_dataset_add_call_data')
+
+
+######## get population around cell
+@app.callback(Output('show_population', 'children'),
+            [   Input('population_button', 'n_clicks'),
+            ])
+def get_population(n_clicks):
+    if n_clicks is not None:
+        filepath = cell_data_list[0][1]
+        filename = cell_data_list[0][0]
+        filepath_call = call_data_list[0][1]
+        call_data=cz.read_call(filepath_call)
+        split_name= filename.split('.')
+        file_type=split_name[-1]
+        antana_dataset=cz.read_cell(filepath,filepath_call, call_data, file_type)
+        population= antana_dataset.get_population()
+        return cz.visualization.cell_population_visualization(population)
+
+######### get trip visualize
+@app.callback(Output('show_trip_visualize', 'children'),
+            [   Input('trip_user', 'value'),
+                Input('trip_visualize_button', 'n_clicks')
+            ])
+def trip_visualization(user, n_clicks):
+    if n_clicks is not None:
+        filepath = cell_data_list[0][1]
+        filename = cell_data_list[0][0]
+        filepath_call = call_data_list[0][1]
+        call_data=cz.read_call(filepath_call)
+        split_name= filename.split('.')
+        file_type=split_name[-1]
+        antana_dataset=cz.read_cell(filepath,filepath_call, call_data, file_type)
+        trip_visualize=antana_dataset.get_trip_details(user)
+        return cz.visualization.trip_visualization(trip_visualize)
+
+######## get page after click link
+@app.callback(dash.dependencies.Output('page_sample_cell_data', 'children'),
+            [   dash.dependencies.Input('url_sample_cell_data', 'pathname')
+            ])   
+def display_cell_link(pathname):
+    if pathname=='/Cell_Dataset/view_cell_data':
+        return view_all_cell_data
+    elif pathname=="/Cell_Dataset/records_cell_id":
+        return records_of_cell
+    elif pathname== '/Cell_Dataset/population_around_cell':
+        return population_around_cell
+    elif pathname== '/Cell_Dataset/trip_visualize':
+        return trip_visualize
+    else:
+        return cell_dataset_file
 
 
 # over cell
