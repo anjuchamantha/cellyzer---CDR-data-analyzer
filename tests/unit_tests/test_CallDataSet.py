@@ -30,24 +30,7 @@ class TestCallDataSet(unittest.TestCase):
 
     # functions
 
-    def test_get_records(self):
-        print("test - get records")
-
-    def test_get_all_users(self):
-        print("test - get all users")
-
-    def test_get_connected_users(self):
-        print("test - get connected users")
-
-    def test_connection_matrix(self):
-        print("test - connection matrix")
-
-    def test_get_connections(self):
-        print("test - get connections")
-
     def test_get_most_active_time(self):
-        print("test - most active time")
-
         user1_result = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0, 11: 1, 12: 1, 13: 1, 14: 0,
                         15: 5, 16: 0, 17: 0, 18: 4, 19: 0, 20: 0, 21: 1, 22: 0, 23: 0}
         self.assertEqual(self.callDataSet.get_most_active_time(user=self.user1), user1_result)
@@ -66,8 +49,6 @@ class TestCallDataSet(unittest.TestCase):
             self.callDataSet.get_most_active_time({})
 
     def test_get_close_contacts(self):
-        print('test - close contacts')
-
         user1_result = {'7187432175': 4, '7230262224': 1}
         self.assertEqual(self.callDataSet.get_close_contacts(user=self.user1, top_contact=2), user1_result)
 
@@ -75,16 +56,20 @@ class TestCallDataSet(unittest.TestCase):
         self.assertEqual(self.callDataSet.get_close_contacts(user=self.user2), user2_result)
 
         user3_result = {'1666472054': 1, '7371326239': 1, '7681546436': 1, '7981267897': 1}
-        self.assertEqual(self.callDataSet.get_close_contacts(user=self.user3, top_contact=4), user3_result)
+        self.assertEqual(self.callDataSet.get_close_contacts(user=self.user3, top_contact='4'), user3_result)
 
         with self.assertRaises(TypeError):
             self.callDataSet.get_close_contacts(12.3)
             self.callDataSet.get_close_contacts([self.user1])
             self.callDataSet.get_close_contacts({})
+            self.callDataSet.get_close_contacts(None, None)
+            self.callDataSet.get_close_contacts(user=self.user1, top_contact=None)
+            self.callDataSet.get_close_contacts(user=self.user1, top_contact=12.3)
+            self.callDataSet.get_close_contacts(user=self.user1, top_contact='1')
+            self.callDataSet.get_close_contacts(user=self.user1, top_contact=[1])
+            self.callDataSet.get_close_contacts(user=self.user1, top_contact={1})
 
     def test_get_call_records_by_antenna_id(self):
-        print('test - get call records by antenna id')
-
         cell1_result = 8
         self.assertEqual(len(self.callDataSet.get_call_records_by_antenna_id(cell_id=1)), cell1_result)
 
@@ -94,8 +79,6 @@ class TestCallDataSet(unittest.TestCase):
         self.assertEqual(len(self.callDataSet.get_call_records_by_antenna_id(cell_id=20)), 0)
 
     def test_get_ignored_call_details(self):
-        print("test - get ignored call details")
-
         self.assertEqual(self.callDataSet.get_ignored_call_details(user=self.user1), [])
         self.assertEqual(self.callDataSet.get_ignored_call_details(user=self.user2), [])
 
