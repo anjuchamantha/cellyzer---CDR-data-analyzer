@@ -9,7 +9,7 @@ import cellyzer as cz
 call_file_path = "dataset/my_test_data/calls.csv"
 callDataSet = cz.read_call(call_file_path)
 
-all_users_of_calls = callDataSet.get_all_users()
+# all_users_of_calls = callDataSet.get_all_users()
 # print("All Users in call dataSet : %s \n" % all_users_of_calls)
 
 search_user_call_1 = "7163185791"
@@ -27,7 +27,9 @@ user_call_dataset = cz.MessageDataSet(user_call_record_list)
 cz.utils.print_dataset(user_call_dataset, name="User Records of %s" % search_user_call_1 + " " + search_user_call_2)
 
 print(">> connection matrix")
-callDataSet.print_connection_matrix()
+a, b = callDataSet.print_connection_matrix()
+# print(a)
+# print(b)
 
 callDataSet.visualize_connection_network()
 
@@ -39,7 +41,6 @@ active_time = callDataSet.get_most_active_time(search_user_call_1)
 print(">> most active times during day of %s - %s" % (search_user_call_1, active_time))
 cz.visualization.active_time_bar_chart(active_time)
 
-
 ignored_call_details = callDataSet.get_ignored_call_details(search_user_call_3)
 print(">> ignored calls details : ")
 print(ignored_call_details)
@@ -47,3 +48,6 @@ cz.utils.tabulate_list_of_dictionaries(ignored_call_details)
 
 call_records_around_cell = callDataSet.get_call_records_by_antenna_id(cell_id='1')
 print("number of call records around cell_id - %s = %s" % (1, len(call_records_around_cell)))
+
+call_connections = callDataSet.get_connections()
+print(call_connections)

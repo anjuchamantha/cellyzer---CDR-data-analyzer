@@ -10,7 +10,7 @@ print("All Users : %s \n" % all_users)
 search_user1 = "7681546436"
 search_user2 = "7641036117"
 
-connected_users = messageDataSet.get_connected_users(search_user1)
+connected_users = messageDataSet.get_connected_users("7641036117")
 print("Users connected to %s : %s \n" % (search_user1, connected_users))
 
 user_record_list = messageDataSet.get_records(search_user1, search_user2)
@@ -29,3 +29,6 @@ messageDataSet.visualize_connection_network()
 close_contacts = messageDataSet.get_close_contacts(search_user2, top_contact=3)
 print(">> close contacts of %s : %s" % (search_user1, close_contacts))
 cz.utils.print_close_contacts(close_contacts)
+
+msg_connections = messageDataSet.get_connections()
+print(msg_connections)

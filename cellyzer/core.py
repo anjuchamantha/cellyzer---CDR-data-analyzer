@@ -130,17 +130,20 @@ class CallMessageDataSet(DataSet):
             # calls the function of Dataset class
             # return all the records : List of Record objects
             return all_records
-
+        elif type(user1) != str and type(user1) != int and user1 is not None:
+            raise TypeError
+        elif type(user2) != str and type(user2) != int and user2 is not None:
+            raise TypeError
         for record in all_records:
             user = record.get_user()
             other_user = record.get_other_user()
             if (user1 is not None) and (user2 is None):
                 # returns a list of Record objects where the given user is involved
-                if user1 == user or user1 == other_user:
+                if str(user1) == user or str(user1) == other_user:
                     records.append(record)
             if (user1 is not None) and (user2 is not None):
                 # returns a list of Record objects where the given 2 users are involved
-                if (user1 == user and user2 == other_user) or (user1 == other_user and user2 == user):
+                if (str(user1) == user and str(user2) == other_user) or (str(user1) == other_user and str(user2) == user):
                     records.append(record)
         return records
 
@@ -164,20 +167,23 @@ class CallMessageDataSet(DataSet):
         """
         get a list of users that are connected to the given user
 
-        :param user: string
+        :param user: string/int
                 contact number of user
 
         :return: connected_users : list
         """
-        connected_users = []
-        for record in self.get_records(user):
-            user1 = record.get_user()
-            user2 = record.get_other_user()
-            if (user1 not in connected_users) and (user1 != user):
-                connected_users.append(user1)
-            if (user2 not in connected_users) and (user2 != user):
-                connected_users.append(user2)
-        return connected_users
+        if type(user) != str and type(user) != int:
+            raise TypeError
+        else:
+            connected_users = []
+            for record in self.get_records(str(user)):
+                user1 = record.get_user()
+                user2 = record.get_other_user()
+                if (user1 not in connected_users) and (user1 != str(user)):
+                    connected_users.append(user1)
+                if (user2 not in connected_users) and (user2 != str(user)):
+                    connected_users.append(user2)
+            return connected_users
 
     def print_connection_matrix(self):
         """
