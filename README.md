@@ -8,7 +8,7 @@
 
 The source code is currently hosted on Github at https://github.com/anjuchamantha/cellyzer---CDR-data-analyzer. Binary installers for the latest released version are available at the Python package index:
 
-http://pypi.python.org/pypi/cellyzer/
+https://pypi.org/project/cellyzer/
 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install cellyzer.
 
