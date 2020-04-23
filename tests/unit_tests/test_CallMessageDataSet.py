@@ -13,11 +13,11 @@ class TestCallMessageDataSet(unittest.TestCase):
         cls.user3 = '329233d117'
 
         cls.callDataSet = core.CallDataSet()
-        call_file_path = "../../dataset/my_test_data/calls.csv"
+        call_file_path = "../../demo/dataset/my_test_data/calls.csv"
         cls.callDataSet = io.read_call(call_file_path)
 
         cls.msgDataSet = core.MessageDataSet()
-        msg_file_path = "../../dataset/my_test_data/messages.csv"
+        msg_file_path = "../../demo/dataset/my_test_data/messages.csv"
         cls.msgDataSet = io.read_msg(msg_file_path)
 
     @classmethod

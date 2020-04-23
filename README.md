@@ -28,10 +28,8 @@ pip3 install cellyzer
 
 **CELLYZER** has no dependencies. But to run tests and compile the visualization, optional dependencies are needed:
 
-- [xlrd](https://pypi.org/project/xlrd/), [numpy](http://www.numpy.org/), [tabulate](https://pypi.org/project/tabulate/), [matplaotlib](https://matplotlib.org) and [networkx](https://networkx.github.io/) for tests,
-- [folium](https://python-visualization.github.io/folium/) for visualization
-
-
+- [xlrd](https://pypi.org/project/xlrd/) (1.2.0), [numpy](http://www.numpy.org/) (1.18.2), [tabulate](https://pypi.org/project/tabulate/) (0.8.7), [matplaotlib](https://matplotlib.org) (3.2.1), [networkx](https://networkx.github.io/) (2.4) and [datetime](https://pypi.org/project/DateTime/) (4.3) for tests,
+- [folium](https://python-visualization.github.io/folium/) (0.10.1) for visualization
 
 ## License
 

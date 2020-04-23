@@ -4,7 +4,7 @@ This is for manual testing the library
 
 import cellyzer as cz
 
-call_file_path = "../dataset/my_test_data/calls.csv"
+call_file_path = "dataset/my_test_data/calls.csv"
 callDataSet = cz.read_call(call_file_path)
 cz.utils.print_dataset(callDataSet, name="Call Dataset")
 
