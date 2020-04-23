@@ -38,32 +38,6 @@ SIDEBAR_STYLE = {
     "background-color": "#f8f9fa",
 }
 
-
-def parse_data(contents, filename):
-    content_type, content_string = contents.split(',')
-
-    decoded = base64.b64decode(content_string)
-    try:
-        if 'csv' in filename:
-            # Assume that the user uploaded a CSV or TXT file
-            df = pd.read_csv(
-                io.StringIO(decoded.decode('utf-8')))
-        elif 'xls' in filename:
-            # Assume that the user uploaded an excel file
-            df = pd.read_excel(io.BytesIO(decoded))
-        # elif 'txt' or 'tsv' in filename:
-        #     # Assume that the user upl, delimiter = r'\s+'oaded an excel file
-        #     df = pd.read_csv(
-        #         io.StringIO(decoded.decode('utf-8')), delimiter = r'\s+')
-    except Exception as e:
-        print(e)
-        return html.Div([
-            'There was an error processing this file.'
-        ])
-
-    return df
-
-
 # Navbar
 right_ui = dac.NavbarDropdown(
     badge_label="!",
@@ -247,50 +221,7 @@ index_dataset = html.Div([
                # Allow multiple files to be uploaded
                multiple=True
                ),
-    # html.Div([
-    #     html.H3(
-    #     children='Map Visualization',
-    #     style={
-    #         # 'textAlign': 'center',
-    #         'color': 'orange',
-    #         'background': 'black',
-    #         'padding-top': '20px',
-    #         'padding-bottom': '20px',
-    #         'width': '350px',
-    #         'padding-left': '90px'
-    #     }),
-    #     html.Div([
-    #         html.H6('Longitude:'),
-    #         dcc.Input(id="long", type='text', placeholder='Longitude')
 
-    #     ]),
-    #     html.Div([
-    #         html.H6('Latitude:'),
-    #         dcc.Input(id="lat", type='text', step='any', placeholder='Latitude')
-
-    #     ]),
-    #     html.Div([
-    #         html.Button(id='submit_but', type='submit', children='Submit',
-    #         style={
-    #             'background-color': '#4CAF50',
-    #             'color': 'white',
-    #             'border': 'none',
-    #             'font-size': '15px',
-
-    #         })
-    #     ],
-    #     style={
-    #         'margin-top': '20px',
-    #         'margin-bottom': '20px',
-    #         'padding-left': '20px'
-    #     }) ,
-    #     html.Iframe(id='map_new',
-    #     style={
-    #         'width': '100%',
-    #         'height': '500px'
-    #     }
-    # )
-    # ])
 ],
     className='index_dataset_div'
 )
@@ -870,24 +801,6 @@ def display_page(pathname):
     else:
         return index_page
 
-
-# @app.callback(dash.dependencies.Output('file_name', 'children') ,
-#     [   
-#     ])   
-# def show_name():
-#     file_name=call_data_list[0][0].split('.')
-#     print(file_name)
-#     return file_name[0]
-# def show_f():
-#     c=str(flask.request.full_path)
-#     c1=c.split('/')
-#     return c1[-1]
-# def show_name(href, n_clicks):
-#     if n_clicks is not None:
-#         filename=str(href).split('/')
-#         new_name=filename[-1]
-#         print(new_name)
-#         return new_name
 
 controlbar = dac.Controlbar(
     [
