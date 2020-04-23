@@ -1,9 +1,8 @@
-connection_network.png
 *.pyc
-route_map.html
-
-trip_map.html
-
 cellyzer/__pycache__/
-/demo/population_map.html
-/demo/home_work_location.html
+
+connection_network.png
+trip_map.html
+route_map.html
+population_map.html
+home_work_location.html
