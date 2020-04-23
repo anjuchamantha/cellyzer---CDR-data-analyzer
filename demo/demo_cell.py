@@ -4,8 +4,8 @@ This is for manual testing the library
 
 import cellyzer as cz
 
-call_file_path = "dataset/my_test_data/calls.csv"
-antenna_file_path = "dataset/my_test_data/antennas.csv"
+call_file_path = "../dataset/my_test_data/calls.csv"
+antenna_file_path = "../dataset/my_test_data/antennas.csv"
 callDataSet = cz.read_call(call_file_path)
 
 antennaDataSet = cz.read_cell(antenna_file_path, call_dataset_obj=callDataSet, file_type='csv')

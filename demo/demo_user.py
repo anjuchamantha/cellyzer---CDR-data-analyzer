@@ -4,9 +4,9 @@ This is for manual testing the library
 
 import cellyzer as cz
 
-call_file_path = "dataset/my_test_data/calls.csv"
+call_file_path = "../dataset/my_test_data/calls.csv"
 # message_file_path = "dataset/my_test_data/messages.csv"
-antenna_file_path = "dataset/my_test_data/antennas.csv"
+antenna_file_path = "../dataset/my_test_data/antennas.csv"
 
 callDataSet = cz.read_call(call_file_path)
 # messageDataSet = cz.read_msg(message_file_path)
@@ -31,7 +31,7 @@ print('>> work location : ', location_office)
 officeplace_cell_id = user1.get_work_location_related_cell_id()
 print(">> work location -> cell id : ", officeplace_cell_id)
 
-# cz.visualization.view_home_work_locations(home_location=location_home, work_location=location_office)
+cz.visualization.view_home_work_locations(home_location=location_home, work_location=location_office)
 
 user3_number = '329233d117'
 user3 = cz.User(callDataSet=callDataSet, cellDataSet=cellDataSet, contact_no=user3_number, work_start_time=15,
