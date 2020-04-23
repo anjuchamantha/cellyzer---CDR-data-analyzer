@@ -1360,91 +1360,260 @@ index_message_dataset = html.Div([
     className='index_message_dataset_div'
 )
 
+
 sample_message_data = html.Div([
-    html.H1(className='sample_message_data_cellyzer',
-            children='CELLYZER'
-            ),
+    dcc.Location(id='url_sample_message_data', refresh=False),
+    html.Div(id='page_sample_message_data') 
+])
+
+message_data_file= html.Div([
+    html.H1(className='sample_call_data_cellyzer', children='CELLYZER'),
     html.Div([
-        html.H2(className='sample_message_dataset_Dashboard',
-                children='Dashboard'
-                ),
-        html.Div([
-            html.H5("Message Dataset")
-        ],
-            className='sample_message_dataset_h5'
-        )
+        html.H2(className='sample_call_dataset_Dashboard', children='Dashboard'),
+        html.Div([html.H5("Message Dataset")], className='index_dataset_Call_Dataset') ,
+        html.Div([dcc.Link("Home", href='/')], className='index_page_dataset_div'), 
     ],
-        className='sample_message_dataset_Dashboard_div'
-    ),
+    className='sample_dataset_Dashboard_div'),
+    html.Div([
+        html.Div([
+            html.H3('MESSAGE  DATASET  VISUALIZATION', className='index_dataset_add_call_data')], 
+            className='sample_dataset_visualize'),         
+        ]),
     html.Div([
         html.H4(id="file_name")
     ]),
     html.Div([
-        html.Button('VIEW DATA', id='view_message', className='sample_message_dataset_viewdata'
-                    ),
-        html.Button('CLOSED DATA', id='close_message', className='sample_message_dataset_close'
-                    )],
-        className='sample_message_dataset_view_div'
+        dcc.Link('◙ Show All Message Data', href='/Message_Dataset/view_data'),
+        html.Br(),
+        dcc.Link('◙ Show All Users', href='/Message_Dataset/all_users'),
+        html.Br(),
+        dcc.Link('◙ Show Connected Users', href='/Message_Dataset/connected_users'),
+        html.Br(),
+        dcc.Link('◙ Call Records Between Two Selected Users', href='/Message_Dataset/records_between_users'),
+        html.Br(),
+        dcc.Link('◙ Visualize Connections Between All Users', href='/Message_Dataset/visualize_connection'),
+        
+    ], className='sample_call_data_visualize_option'),
+    ],
+    className='sample_call_dataset_div')
+
+############ page for view all message data
+view_all_message_data = html.Div([
+    html.H1(className='sample_call_data_cellyzer',children='CELLYZER'),
+    html.Div([
+        html.H2(className='sample_call_dataset_Dashboard', children='Dashboard'),
+        html.Div([html.H5("Message Dataset")], className='index_dataset_Call_Dataset'),
+        html.Div([html.H6("All Data")], className='index_page_dataset_div_all_user')     
+    ],
+    className='sample_dataset_Dashboard_div' 
+    ), 
+    html.Div([
+        html.Div([
+            html.H4('MESSAGE  DATASET  VISUALIZATION', className='index_dataset_add_call_data')], 
+        className='index_dataset_add_call_data_div'),         
+    ]), 
+    html.Div([
+        html.H4(children='Get All Data', className='sample_call_visualize_all_user')], 
+        style={'padding-left': '30px', 'margin-top':'40px', 'margin-bottom':'20px'}
     ),
-    html.Div(id='show_message_data',
-             className='sample_message_dataset_show'
-             )
-],
-    className='sample_message_dataset_div'
-)
+    html.Div([
+        html.Button('VIEW DATA', id='view_message', className='sample_call_dataset_viewdata'),
+        html.Button('CLOSED DATA', id='close_message', className='sample_call_dataset_close')],
+        className='sample_call_dataset_view_div'),
+    html.Div(id='show_message_data', className='sample_call_dataset_show'),
+    ],
+    className='sample_call_dataset_div')
+
+######## page for get all users in message dataset
+get_all_message_users = html.Div([
+    html.H1(className='sample_call_data_cellyzer', children='CELLYZER'),
+    html.Div([
+        html.H2(className='sample_call_dataset_Dashboard',children='Dashboard'),
+        html.Div([html.H5("Message Dataset")], className='index_page_dataset_div'),
+        html.Div([html.H6("All Users")], className='index_page_dataset_div_all_user')  
+    ],
+    className='sample_dataset_Dashboard_div' 
+    ),   
+    html.Div([
+        html.Div([
+            html.H3('MESSAGE  DATASET  VISUALIZATION', className='index_dataset_add_call_data')], 
+            className='index_dataset_add_call_data_div')         
+    ]), 
+    html.Div([
+        html.H4(children='Get All Users', className='sample_call_visualize_all_user')], 
+        style={'padding-left': '30px', 'margin-top':'40px', 'margin-bottom':'20px'}
+    ),
+    html.Div([
+        html.Button('Get All Users', id='get_message_users', className='sample_call_dataset_viewdata')],
+        className='sample_call_dataset_view_div'
+    ),
+    html.Div(id='show_all_message_users', className='sample_call_dataset_show_all_users'), 
+    ],
+    className='sample_call_dataset_div')
+
+####### page for show connected users of specific user im message dataset
+connected_message_users = html.Div([
+    html.H1(className='sample_call_data_cellyzer', children='CELLYZER'),
+    html.Div([
+        html.H2(className='sample_call_dataset_Dashboard', children='Dashboard'),
+        html.Div([html.H5("Message Dataset")], className='index_page_dataset_div'), 
+        html.Div([html.H6("Connected Users")], className='index_page_dataset_div_all_user')   
+    ], 
+    className='sample_dataset_Dashboard_div' 
+    ), 
+    html.Div([
+        html.Div([
+            html.H4('MESSAGE  DATASET  VISUALIZATION', className='index_dataset_add_call_data')], 
+            className='index_dataset_add_call_data_div'),         
+    ]), 
+    html.Div([
+        html.H3(children='Connected Users Of Specific Message User', className='sample_call_visualize_all_user')], 
+        style={'padding-left': '30px', 'margin-top':'40px', 'margin-bottom':'20px'}
+    ),
+    html.Div([
+        html.H6('Enter Specific User Number:'),
+        dcc.Input(id="user_message", type='text', placeholder='Enter number'),
+        html.Br(),
+        html.Br(),
+        html.Button('Connected Users', id='connected_message_users', className='sample_call_dataset_viewdata')], 
+        className='sample_call_dataset_view_div'
+    ),
+    html.Div(id='show_connected_message_users', className='sample_call_dataset_show_all_users'), 
+    ],
+    className='sample_call_dataset_div')
+
+###### get call rercords between 2 users
+message_records_between_users = html.Div([
+    html.H1(className='sample_call_data_cellyzer', children='CELLYZER'),
+    html.Div([
+        html.H2(className='sample_call_dataset_Dashboard', children='Dashboard'),
+        html.Div([html.H5("Message Dataset")], className='index_page_dataset_div'), 
+        html.Div([html.H6("Message Records Between Users")], className='index_page_dataset_div_all_user') 
+    ],
+    className='sample_dataset_Dashboard_div' 
+    ), 
+    html.Div([
+        html.Div([
+            html.H3('MESSAGE  DATASET  VISUALIZATION', className='index_dataset_add_call_data')], 
+            className='index_dataset_add_call_data_div'),         
+    ]), 
+    html.Div([
+        html.H4(children='Message Records Between Two Users', className='sample_call_visualize_all_user')], 
+        style={'padding-left': '30px', 'margin-top':'40px', 'margin-bottom':'20px'}
+    ),
+    html.Div([
+        html.H6('Enter Two Numbers:'),
+        dcc.Input(id="message_user2", type='text', placeholder='Enter number'),
+        html.Br(),
+        html.Br(),
+        dcc.Input(id="message_user3", type='text', placeholder='Enter number'),
+        html.Br(),
+        html.Br(),
+        html.Button('Get Records', id='record_message_users', className='sample_call_dataset_viewdata')], 
+        className='sample_call_dataset_view_div'
+    ),
+    html.Div(id='show_records_message_users', className='sample_call_dataset_show_all_users'),
+    ],
+    className='sample_call_dataset_div')
+
+##### visualize connections between all users
+visualize_message_connections = html.Div([
+    html.H1(className='sample_call_data_cellyzer', children='CELLYZER'),
+    html.Div([
+        html.H2(className='sample_call_dataset_Dashboard', children='Dashboard'),
+        html.Div([html.H5("Message Dataset")], className='index_page_dataset_div'), 
+        html.Div([html.H6("Visualize Connection")], className='index_page_dataset_div_all_user')    
+    ],
+    className='sample_dataset_Dashboard_div' 
+    ), 
+    html.Div([
+        html.Div([
+            html.H3('MESSAGE  DATASET  VISUALIZATION', className='index_dataset_add_call_data')], 
+            className='index_dataset_add_call_data_div'),         
+    ]),
+    html.Div([
+        html.H4(children='Visualize Connections Between All Users', className='sample_call_visualize_all_user')], 
+        style={'padding-left': '30px', 'margin-top':'40px', 'margin-bottom':'20px'}
+    ), 
+    html.Div([
+        html.Button('Visualize Connection', id='visualize_message_connection', className='sample_call_dataset_viewdata')], 
+        className='sample_call_dataset_view_div'
+        ),
+    html.Div(id='show_visualize_message_connection', className='sample_call_dataset_show_all_users'),
+    ],
+    className='sample_call_dataset_div')
 
 message_data_list = []
 
 
+######## add message dataset 
 @app.callback(Output('message-data', 'children'),
-              [
-                  Input('upload-data_message', 'filename'),
-                  Input('filepath_message', 'value')
-              ])
+            [
+                Input('upload-data_message', 'filename'),
+                Input('filepath_message', 'value')
+            ])
 def add_message_dataset(filename, filepath):
     try:
-        filename = filename[0]
-        path_File = os.path.join(filepath, filename)
+        filename=filename[0]
+        path_File=os.path.join(filepath, filename)
         message_data_list.append([filename, path_File])
-        output_message = []
+        output_message=[]
         for x in message_data_list:
-            a = x[0].split('.')
-            output_message.append(dcc.Link(a[0], href='/Message_Dataset/' + str(a[0])))
+            a=x[0].split('.')
+            output_message.append(dcc.Link(a[0], href='/Message_Dataset/'+str(a[0])))
             output_message.append(html.Br())
-        name_message = html.Div(
+        name_message=html.Div(
             children=output_message
-        )
+            )
         return name_message
 
     except Exception as e:
         print(e)
 
-
 @app.callback(dash.dependencies.Output('page_message_dataset', 'children'),
-              [dash.dependencies.Input('url_message_dataset', 'pathname')
-               ])
+            [   dash.dependencies.Input('url_message_dataset', 'pathname')
+            ])   
 def display_sample_message_data(pathname):
-    filename = str(pathname).split('/')
-    if filename[-2] == 'Message_Dataset':
+    filename=str(pathname).split('/')
+    if filename[-2]=='Message_Dataset':
         return sample_message_data
     else:
         return index_message_dataset
 
+@app.callback(dash.dependencies.Output('page_sample_message_data', 'children'),
+            [   dash.dependencies.Input('url_sample_message_data', 'pathname')
+            ])   
+def display_sample_message_data_file(pathname):
+    if pathname=='/Message_Dataset/view_data':
+        return view_all_message_data
+    elif pathname=='/Message_Dataset/all_users':
+        return get_all_message_users
+    elif pathname=='/Message_Dataset/connected_users':
+        return connected_message_users  
+    elif pathname== '/Message_Dataset/records_between_users':
+        return  message_records_between_users
+    elif pathname== '/Message_Dataset/visualize_connection':
+        return visualize_message_connections
+    else:
+        return message_data_file
 
+####### view all message data
 @app.callback(Output('show_message_data', 'children'),
-              [Input('view_message', 'n_clicks'), Input('close_message', 'n_clicks')
-               ])
+            [   Input('view_message', 'n_clicks'), Input('close_message', 'n_clicks')
+            ])
 def view_message_data(n_clicks, click2):
     table = html.Div()
     if click2 is not None:
         return None
 
     if n_clicks is not None:
-        filepath = message_data_list[0][1]
-        filename = message_data_list[0][0]
-        c=cz.read_msg(filepath)
+        filename_message = message_data_list[0][0]
+        filepath_message = message_data_list[0][1]
+        split_name= filename_message.split('.')
+        file_type=split_name[-1]
+        message_data=cz.read_msg(filepath_message, file_type)
         dict_list = []
-        for record in c.get_records():
+        for record in message_data.get_records():
             dict_list.append(vars(record))
         header = list(dict_list[0].keys())
         tab=[]
@@ -1464,7 +1633,7 @@ def view_message_data(n_clicks, click2):
                 row_content.append(html.Td(x ,style={'border': '1px solid black', 'padding-left':'10px'}))
             tab.append(html.Tr(children=row_content, style={'height': '5px'}))
         table=html.Div([
-            html.H2(filename),
+            html.H2(filename_message),
             html.Table(children=tab, 
                 style={'border-collapse':'collapse',
                     'border': '1px solid black',
@@ -1473,36 +1642,159 @@ def view_message_data(n_clicks, click2):
         ])
         return table
 
-
+########## set button value
 @app.callback(Output('close_message', 'n_clicks'),
-              [Input('view_message', 'n_clicks')
-               ])
+            [   Input('view_message', 'n_clicks')
+            ])
 def close_message_data(n_clicks):
     if n_clicks is not None:
         return None
 
+########## show all message users
+@app.callback(Output('show_all_message_users', 'children'),
+            [   Input('get_message_users', 'n_clicks')
+            ])
+def show_all_message_users(n_clicks):
+    table = html.Div()
+    if n_clicks is not None:
+        filename_message = message_data_list[0][0]
+        filepath_message = message_data_list[0][1]
+        split_name= filename_message.split('.')
+        file_type=split_name[-1]
+        message_data=cz.read_msg(filepath_message, file_type)
+        all_users= message_data.get_all_users()
+        tab=[]
+        column=[]
+        column.append(html.Th('Users', style={'border': '1px solid black', 'background-color': '#4CAF50', 'color':'white'}))
+        tab.append(html.Tr(children=column))
+        for user in all_users:
+            row_content=[]   
+            row_content.append(html.Td(user ,style={'border': '1px solid black', 'padding-left':'10px'}))
+            tab.append(html.Tr(children=row_content, style={'height': '5px'}))
+        table=html.Div([
+            html.Table(children=tab, 
+                style={'border-collapse':'collapse',
+                    'border': '1px solid black',
+                    'width': '200px'
+                })
+        ])
+        return table
+
+######## show cnnected users of specific user in message dataset
+@app.callback(Output('show_connected_message_users', 'children'),
+            [   Input('connected_message_users', 'n_clicks'),
+                Input('user_message', 'value')
+            ])
+def show_connected_message_users(n_clicks, searchUser):
+    table = html.Div()
+    if n_clicks is not None:
+        filename_message = message_data_list[0][0]
+        filepath_message = message_data_list[0][1]
+        split_name= filename_message.split('.')
+        file_type=split_name[-1]
+        message_data=cz.read_msg(filepath_message, file_type)
+        connected_users= message_data.get_connected_users(searchUser)
+        tab=[]
+        column=[]
+        column.append(html.Th('Connected Users', style={'border': '1px solid black', 'background-color': '#4CAF50', 'color':'white'}))
+        tab.append(html.Tr(children=column))
+        for user in connected_users:
+            row_content=[]   
+            row_content.append(html.Td(user ,style={'border': '1px solid black', 'padding-left':'10px'}))
+            tab.append(html.Tr(children=row_content, style={'height': '5px'}))
+        table=html.Div([
+            html.Table(children=tab, 
+                style={'border-collapse':'collapse',
+                    'border': '1px solid black',
+                    'width': '200px'
+                })
+        ])
+        return table
+
+####### show message records between 2 input users
+@app.callback(Output('show_records_message_users', 'children'),
+            [   Input('message_user3', 'value'), 
+                Input('message_user2', 'value'), 
+                Input('record_message_users', 'n_clicks')
+            ])
+def between_message_users_records(user_1, user_2, click):
+    table = html.Div()
+
+    if click is not None:
+        filename_message = message_data_list[0][0]
+        filepath_message = message_data_list[0][1]
+        split_name= filename_message.split('.')
+        file_type=split_name[-1]
+        message_data=cz.read_msg(filepath_message, file_type)
+        dict_list = []
+        for record in message_data.get_records(user_1, user_2):
+            dict_list.append(vars(record))
+        header = list(dict_list[0].keys())
+        tab=[]
+        column=[]
+        for i in header:
+            column.append(html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color':'white'}))
+        tab.append(html.Tr(children=column))
+        count=0
+        for j in dict_list:
+            value=list(j.values())
+            count+=1       
+            row_content=[]
+            if count>100:
+                break
+            for x in value:
+                row_content.append(html.Td(x ,style={'border': '1px solid black', 'padding-left':'10px'}))
+            tab.append(html.Tr(children=row_content, style={'height': '5px'}))
+        table=html.Div([
+            html.Table(children=tab, 
+                style={'border-collapse':'collapse',
+                    'border': '1px solid black',
+                    'width': '100%'
+                })
+        ])
+        return table
+
+###### Visualize connection betwwen all users in message dataset
+@app.callback(Output('show_visualize_message_connection', 'children'),
+            [   Input('visualize_message_connection', 'n_clicks')
+            ])
+def show_visualize_message_connection(n_clicks):
+    table = html.Div()
+
+    if n_clicks is not None:
+        filename_message = message_data_list[0][0]
+        filepath_message = message_data_list[0][1]
+        split_name= filename_message.split('.')
+        file_type=split_name[-1]
+        message_data=cz.read_msg(filepath_message, file_type)
+        visu_conn= message_data.visualize_connection_network()
+        tab=[]
+        column=[]
+        col1=html.Th("User", style={'border': '1px solid black', 'background-color': '#4CAF50', 'color':'white'})
+        column.append(col1)
+        col2=html.Th("Connected User", style={'border': '1px solid black', 'background-color': '#4CAF50', 'color':'white'})
+        column.append(col2)
+        tab.append(html.Tr(children=column))
+        for connection in visu_conn[0]:
+            row_content=[]
+            row_content.append(html.Td(connection[0] ,style={'border': '1px solid black', 'padding-left':'10px'}))
+            row_content.append(html.Td(connection[1] ,style={'border': '1px solid black', 'padding-left':'10px'}))
+            tab.append(html.Tr(children=row_content, style={'height': '5px'}))
+        table=html.Div([
+            html.Table(children=tab, 
+                style={'border-collapse':'collapse',
+                    'border': '1px solid black',
+                    'width': '50%'
+                })
+        ])
+        return table
+
 
 # over message dataset
 
-@app.callback(dash.dependencies.Output('map_new', 'srcDoc'),
-              [dash.dependencies.Input('long', 'value'),
-               dash.dependencies.Input('lat', 'value'),
-               dash.dependencies.Input('submit_but', 'n_clicks')
-               ])
-def show_map(longitude, latitude, clicks):
-    try:
-        if clicks is not None:
-            mapit = folium.Map(location=[float(longitude), float(latitude)], zoom_start=12)
-            folium.Marker([longitude, latitude], popup='<strong>Location One</strong>').add_to(mapit)
-            mapit.save('mapi.html')
-
-            return open('mapi.html', 'r').read()
-        # map_hooray = folium.Map(location=[longitude, latitude], zoom_start=12)
-        # return map_hooray
-    except ValueError:
-        print("Not a float")
 
 
+######### link for front page 
 @app.callback(dash.dependencies.Output('page-content', 'children'),
               [dash.dependencies.Input('url', 'pathname')
                ])
