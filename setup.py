@@ -9,7 +9,7 @@ def readme():
 
 setup(
     name="cellyzer",
-    version="1.0.0",
+    version="1.0.1",
     description="A CDR(Call Data Records) data analyzing library",
     long_description=readme(),
     long_description_content_type="text/markdown",
@@ -34,9 +34,4 @@ setup(
         "matplotlib == 3.2.1",
         "folium == 0.10.1"
     ],
-    entry_points={
-        "console_scripts": [
-            "cellyzer=cellyzer.__init__.py",
-        ]
-    },
 )

@@ -1,3 +1,0 @@
-[console_scripts]
-cellyzer = cellyzer.__init__.py
-

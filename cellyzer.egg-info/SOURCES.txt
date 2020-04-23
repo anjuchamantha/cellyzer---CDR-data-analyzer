@@ -11,6 +11,5 @@ cellyzer/visualization.py
 cellyzer.egg-info/PKG-INFO
 cellyzer.egg-info/SOURCES.txt
 cellyzer.egg-info/dependency_links.txt
-cellyzer.egg-info/entry_points.txt
 cellyzer.egg-info/requires.txt
 cellyzer.egg-info/top_level.txt
