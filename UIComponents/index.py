@@ -35,7 +35,7 @@ sidebar = html.Div(
         dbc.Nav(
             [
                 dbc.NavLink("Home", href="/home", id="home"),
-                dbc.NavLink("DataSets", href="/dataset", id="dataset"),
+                dbc.NavLink("DataSets", href="/demo_datasets", id="demo_datasets"),
                 dbc.NavLink("Analytics", href="/analytics", id="analytics"),
 
             ],
@@ -55,14 +55,14 @@ app.layout = html.Div([dcc.Location(id="url"), sidebar, content])
 # this callback uses the current pathname to set the active state of the
 # corresponding nav link to true, allowing users to tell see page they are on
 @app.callback(
-    [Output(f"{i}", "active") for i in ["home", "dataset", "analytics"]],
+    [Output(f"{i}", "active") for i in ["home", "demo_datasets", "analytics"]],
     [Input("url", "pathname")],
 )
 def toggle_active_links(pathname):
     if pathname == "/" or pathname == "/home":
         # Treat page 1 as the homepage / index
         return True, False, False
-    if pathname == "/dataset":
+    if pathname == "/demo_datasets":
         return False, True, False
     if pathname == "/analytics":
         return False, False, True
@@ -75,11 +75,11 @@ datasetpage = DataSetPage()
 def render_page_content(pathname):
     if pathname in ["/", "/home"]:
         return html.P("HomePage")
-    elif pathname == "/dataset":
+    elif pathname == "/demo_datasets":
         return datasetpage
     elif pathname == "/analytics":
         return html.P("Analytics Page")
-    elif pathname == "/dataset/call":
+    elif pathname == "/demo_datasets/call":
         return CallPage()
 
 

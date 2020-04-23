@@ -10,10 +10,10 @@ class TestCellDataSet(unittest.TestCase):
     def setUpClass(cls):
         # before all the tests
         cls.callDataSet = core.CallDataSet()
-        call_file_path = "../../dataset/my_test_data/calls.csv"
+        call_file_path = "../../demo/demo_datasets/test_data/calls.csv"
         cls.callDataSet = io.read_call(call_file_path)
 
-        cell_file_path = "../../dataset/my_test_data/antennas.csv"
+        cell_file_path = "../../demo/demo_datasets/test_data/antennas.csv"
         cls.cellDataSet = io.read_cell(cell_file_path, call_dataset_obj=cls.callDataSet)
 
     @classmethod
@@ -91,15 +91,13 @@ class TestCellDataSet(unittest.TestCase):
 
     def test_get_unique_users_around_cell(self):
         test = self.callDataSet.get_records()
-        result = ['7610039694', '7641036117', '7981267897', '7163185791', '7110730864']
+        result = ['8d27cf2694', '329233d117', 'bac412f897', '3e97992791', '7331c02864']
         self.assertEqual(self.cellDataSet.get_unique_users_around_cell(test), result)
 
     def test_check_user_location_matches_cell(self):
-        self.assertEqual(self.cellDataSet.check_user_location_matches_cell('7163185791', 10), True)
-        self.assertEqual(self.cellDataSet.check_user_location_matches_cell(7163185791, 10), True)
-        self.assertEqual(self.cellDataSet.check_user_location_matches_cell(7163185791, "10"), True)
-        self.assertEqual(self.cellDataSet.check_user_location_matches_cell('7163185791', 2), False)
-        self.assertEqual(self.cellDataSet.check_user_location_matches_cell('7163185791', 2.2), False)
+        self.assertEqual(self.cellDataSet.check_user_location_matches_cell('3e97992791', 10), True)
+        self.assertEqual(self.cellDataSet.check_user_location_matches_cell('3e97992791', 2), False)
+        self.assertEqual(self.cellDataSet.check_user_location_matches_cell('3e97992791', 2.2), False)
         self.assertEqual(self.cellDataSet.check_user_location_matches_cell('123', 10), False)
 
         with self.assertRaises(TypeError):
@@ -116,7 +114,13 @@ class TestCellDataSet(unittest.TestCase):
                    'location': (42.386722, -71.138778)},
                   {'timestamp': datetime.datetime(2010, 9, 9, 19, 3, 5), 'duration': '0', 'cell_id': '2',
                    'location': (42.386722, -71.138778)},
+                  {'timestamp': datetime.datetime(2010, 9, 9, 20, 2, 16), 'duration': '0', 'cell_id': '2',
+                   'location': (42.386722, -71.138778)},
                   {'timestamp': datetime.datetime(2010, 9, 9, 20, 57, 51), 'duration': '0', 'cell_id': '3',
+                   'location': (42.3604, -71.087374)},
+                  {'timestamp': datetime.datetime(2010, 9, 9, 22, 7, 39), 'duration': '0', 'cell_id': '3',
+                   'location': (42.3604, -71.087374)},
+                  {'timestamp': datetime.datetime(2010, 9, 9, 22, 8, 8), 'duration': '0', 'cell_id': '3',
                    'location': (42.3604, -71.087374)},
                   {'timestamp': datetime.datetime(2010, 9, 9, 22, 12, 1), 'duration': '215', 'cell_id': '2',
                    'location': (42.386722, -71.138778)},
@@ -144,13 +148,13 @@ class TestCellDataSet(unittest.TestCase):
                    'location': (42.304917, -71.147374)},
                   {'timestamp': datetime.datetime(2010, 9, 10, 19, 35, 57), 'duration': '0', 'cell_id': '1',
                    'location': (42.366944, -71.083611)}]
-        self.assertEqual(self.cellDataSet.get_trip_details("7110730864"), result)
-        self.assertEqual(self.cellDataSet.get_trip_details(7110730864), result)
+
+        self.assertEqual(self.cellDataSet.get_trip_details("7331c02864"), result)
 
         with self.assertRaises(TypeError):
-            self.cellDataSet.get_trip_details("7110730864", console_print='str')
-            self.cellDataSet.get_trip_details("7110730864", tabulate='str')
-            self.cellDataSet.get_trip_details("7110730864", console_print='str', tabulate='str')
+            self.cellDataSet.get_trip_details("7331c02864", console_print='str')
+            self.cellDataSet.get_trip_details("7331c02864", tabulate='str')
+            self.cellDataSet.get_trip_details("7331c02864", console_print='str', tabulate='str')
             self.cellDataSet.get_trip_details(12.3)
             self.cellDataSet.get_trip_details([])
             self.cellDataSet.get_trip_details({})

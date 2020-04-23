@@ -13,7 +13,7 @@ def DataSetCard(name, records="-", type="call"):
                         "records", style={}
                     ),
                     html.Br(),
-                    dbc.Button("Visit DataSet", color="primary", href="/dataset/" + type),
+                    dbc.Button("Visit DataSet", color="primary", href="/demo_datasets/" + type),
                 ],
                 style={"text-align": "center"}
             ),

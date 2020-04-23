@@ -8,15 +8,15 @@ class TestUser(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # before all the tests
-        cls.user1_contact_no = "7163185791"
-        cls.user2_contact_no = "7610039694"
-        cls.user3_contact_no = '7641036117'
+        cls.user1_contact_no = "3e97992791"
+        cls.user2_contact_no = "8d27cf2694"
+        cls.user3_contact_no = '329233d117'
 
         cls.callDataSet = core.CallDataSet()
-        call_file_path = "../../dataset/my_test_data/calls.csv"
+        call_file_path = "../../demo/demo_datasets/test_data/calls.csv"
         cls.callDataSet = io.read_call(call_file_path)
 
-        cell_file_path = "../../dataset/my_test_data/antennas.csv"
+        cell_file_path = "../../demo/demo_datasets/test_data/antennas.csv"
         # cls.cellDataSet = core.CellDataSet( )
         cls.cellDataSet = io.read_cell(cell_file_path, call_dataset_obj=cls.callDataSet)
 
@@ -91,7 +91,7 @@ class TestUser(unittest.TestCase):
     def test_get_ignored_call_details(self):
         self.assertEqual(self.user1.get_ignored_call_details(), [])
 
-        user3_result = [{'other user': '7681546436', 'date': '11-02-1980', 'time stamp': '08:06:18', 'cell ID': '5'}]
+        user3_result = [{'other user': '0041628436', 'date': '11-02-1980', 'time stamp': '08:06:18', 'cell ID': '5'}]
         self.assertEqual(self.user3.get_ignored_call_details(), user3_result)
 
 

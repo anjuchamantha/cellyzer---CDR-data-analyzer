@@ -12,7 +12,6 @@ antennaDataSet = cz.read_cell(antenna_file_path, call_dataset_obj=callDataSet, f
 record = antennaDataSet.get_cell_records(cell_id=1)
 print("cell id - ", record.get_cell_id())
 
-
 population = antennaDataSet.get_population()
 print(">> population around cell")
 print(population)
@@ -22,7 +21,6 @@ cz.visualization.cell_population_visualization(population)
 call_made_locations = antennaDataSet.get_trip_details("7331c02864", console_print=True, tabulate=True)
 
 cz.visualization.trip_visualization(call_made_locations, notebook=False)
-
 
 all_records = antennaDataSet.get_cell_records()
 print('len - records = ', len(all_records))
