@@ -9,7 +9,7 @@ def print_record_lists(records):
 
 
 def print_dataset(dataset_obj, notebook=False, name="Dataset"):
-    # print a dataset obj as a dictionary
+    # print a demo_datasets obj as a dictionary
     print("\n >>> %s :" % name)
     dict_list = []
     for record in dataset_obj.get_records():

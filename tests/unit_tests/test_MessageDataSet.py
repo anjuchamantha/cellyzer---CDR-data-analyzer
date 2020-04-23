@@ -12,7 +12,7 @@ class TestMessageDataSet(unittest.TestCase):
         cls.user2 = "329233d117"
 
         cls.msgDataSet = core.MessageDataSet()
-        msg_file_path = "../../demo/dataset/my_test_data/messages.csv"
+        msg_file_path = "../../demo/demo_datasets/test_data/messages.csv"
         cls.msgDataSet = io.read_msg(msg_file_path)
 
     @classmethod

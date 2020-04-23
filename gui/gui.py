@@ -140,10 +140,10 @@ def toggle_collapse(n, is_open):
 # over front page
 
 #######################################################################
-## page for call dataset
+## page for call demo_datasets
 call_dataset = html.Div([
     dcc.Location(id='url_dataset', refresh=False),
-    html.Div(id='page-dataset')
+    html.Div(id='page-demo_datasets')
 ])
 
 index_dataset = html.Div([
@@ -298,7 +298,7 @@ sample_call_data = html.Div([
              )],
     className='sample_call_dataset_div'
 )
-# over call dataset
+# over call demo_datasets
 
 call_data_list = []
 
@@ -330,7 +330,7 @@ def add_call_dataset(filename, filepath):
         print(e)
 
 
-@app.callback(dash.dependencies.Output('page-dataset', 'children'),
+@app.callback(dash.dependencies.Output('page-demo_datasets', 'children'),
               [dash.dependencies.Input('url_dataset', 'pathname')
                ])
 def display_sample_data(pathname):
@@ -393,7 +393,7 @@ def close_data(n_clicks):
 
 
 ##############################################################
-## Page for cell dataset
+## Page for cell demo_datasets
 
 cell_dataset = html.Div([
     dcc.Location(id='url_cell_dataset', refresh=False),
@@ -598,7 +598,7 @@ def close_cell_data(n_clicks):
 
 # over cell
 ###########################################################################
-## Page for message dataset
+## Page for message demo_datasets
 
 message_dataset = html.Div([
     dcc.Location(id='url_message_dataset', refresh=False),
@@ -806,7 +806,7 @@ def close_message_data(n_clicks):
         return None
 
 
-# over message dataset
+# over message demo_datasets
 
 @app.callback(dash.dependencies.Output('map_new', 'srcDoc'),
               [dash.dependencies.Input('long', 'value'),

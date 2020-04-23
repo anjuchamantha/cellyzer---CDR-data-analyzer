@@ -34,7 +34,7 @@ def to_json(dataset_object, filename):
     print("[x]  Writing to JSON file ...")
 
     """
-         write dataset object to a json file.
+         write demo_datasets object to a json file.
 
         Parameters
         ----------
@@ -63,7 +63,7 @@ def to_csv(dataset_object, filename):
     print("[x]  Writing to CSV file ...")
 
     """
-            write dataset object to a csv file.
+            write demo_datasets object to a csv file.
 
             Parameters
             ----------

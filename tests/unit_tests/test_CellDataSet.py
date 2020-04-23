@@ -10,10 +10,10 @@ class TestCellDataSet(unittest.TestCase):
     def setUpClass(cls):
         # before all the tests
         cls.callDataSet = core.CallDataSet()
-        call_file_path = "../../demo/dataset/my_test_data/calls.csv"
+        call_file_path = "../../demo/demo_datasets/test_data/calls.csv"
         cls.callDataSet = io.read_call(call_file_path)
 
-        cell_file_path = "../../demo/dataset/my_test_data/antennas.csv"
+        cell_file_path = "../../demo/demo_datasets/test_data/antennas.csv"
         cls.cellDataSet = io.read_cell(cell_file_path, call_dataset_obj=cls.callDataSet)
 
     @classmethod
