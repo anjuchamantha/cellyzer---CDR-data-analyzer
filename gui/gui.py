@@ -7,6 +7,7 @@ from dash.dependencies import Input, Output, State
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
+import dash_admin_components as dac
 import dash_table
 import folium
 import flask
@@ -17,9 +18,9 @@ import sys
 sys.path.insert(0, '../')
 import cellyzer as cz
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+# external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP, external_stylesheets])
+app = dash.Dash(__name__)
 server = app.server
 
 app.config.suppress_callback_exceptions = True
@@ -36,11 +37,6 @@ SIDEBAR_STYLE = {
     "padding": "2rem 1rem 1rem 1rem",
     "background-color": "#f8f9fa",
 }
-
-app.layout = html.Div([
-    dcc.Location(id='url', refresh=False),
-    html.Div(id='page-content')
-])
 
 
 def parse_data(contents, filename):
@@ -68,43 +64,75 @@ def parse_data(contents, filename):
     return df
 
 
+# Navbar
+right_ui = dac.NavbarDropdown(
+    badge_label="!",
+    badge_color="danger",
+    header_text="2 Items",
+    children=[
+        dac.NavbarDropdownItem(
+            children="message 1",
+            date="today"
+        ),
+        dac.NavbarDropdownItem(
+            children="message 2",
+            date="yesterday"
+        ),
+    ]
+)
+
+navbar = dac.Navbar(color="white",
+                    text="CELLYZER - CDR Data Analyzer",
+                    children=right_ui)
+
+recorditems = [dac.SidebarButton(id='add-call-records',
+                                 label='Add Call Record',
+                                 icon='arrow-circle-right',
+                                 href='/call_records'
+                                 ),
+               dac.SidebarButton(id='add-msg-records',
+                                 label='Add Message Record',
+                                 icon='arrow-circle-right',
+                                 href='/message_records'
+                                 ),
+               dac.SidebarButton(id='add-cell-records',
+                                 label='Add Cell Record',
+                                 icon='arrow-circle-right',
+                                 href='/cell_records'
+                                 ),
+               ]
+# Sidebar
+sidebar = dac.Sidebar(
+    dac.SidebarMenu(
+        [
+            dac.SidebarHeader(children="Dataset Functions"),
+            dac.SidebarMenuItem(id='tab_cards', label='Add a Dataset', icon='box', children=recorditems),
+            dac.SidebarButton(id='tab_basic_boxes', label='Data Visualization', icon='desktop', href='page-4'),
+            dac.SidebarButton(id='tab_value_boxes', label='Settings', icon='id-card', href='page-5')
+        ]
+    ),
+    title='User',
+    skin="light",
+    color="primary",
+    brand_color="primary",
+    elevation=3,
+    opacity=0.8
+)
+
+page1_title = html.Div([
+    html.Div([
+        dbc.Alert("ADD  CALL  DATASET", color="dark"),
+    ]
+    ),
+], style={'margin-left': '16rem'})
+
+body = dac.Body(dac.TabItems([page1_title]), id="page-content")
+
 ## Front page
 index_page = html.Div([
     html.H1(className='index_page_CELLYZER',
             children='CELLYZER'
             ),
-    html.Div([
-        html.H2(className='index_page_Dashboard',
-                children='Dashboard'
-                ),
-
-        html.Hr(className='horizontal-lines'),
-        html.Div(
-            [
-                dbc.Button(
-                    "Add a Dataset",
-                    id="collapse-button",
-                    className="dashboard-button",
-                    color="dark",
-                ),
-                dbc.Collapse(
-                    html.Div(
-                        [
-                            dcc.Link('Call Dataset', href='/Call_Dataset'),
-                            html.Br(),
-                            dcc.Link('Cell Dataset', href='/Cell_Dataset'),
-                            html.Br(),
-                            dcc.Link('Message Dataset', href='/Message_Dataset')
-                        ],
-                        className='index_page_dataset_div'
-                    ),
-                    id="collapse",
-                ),
-            ],
-        ),
-    ],
-        className='index_page_Dashboard_div'
-    ),
     html.Div([
         html.Div([
             html.Img(
@@ -352,34 +380,35 @@ def update_table(n_clicks, click2):
     if n_clicks is not None:
         filepath = call_data_list[0][1]
         filename = call_data_list[0][0]
-        c=cz.read_call(filepath)
+        c = cz.read_call(filepath)
         dict_list = []
         for record in c.get_records():
             dict_list.append(vars(record))
         header = list(dict_list[0].keys())
-        tab=[]
-        column=[]
+        tab = []
+        column = []
         for i in header:
-            column.append(html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color':'white'}))
+            column.append(
+                html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
         tab.append(html.Tr(children=column))
-        count=0
+        count = 0
         for j in dict_list:
-            value=list(j.values())
-            count+=1       
-            row_content=[]
-            if count>100:
+            value = list(j.values())
+            count += 1
+            row_content = []
+            if count > 100:
                 break
-            row_content=[]
+            row_content = []
             for x in value:
-                row_content.append(html.Td(x ,style={'border': '1px solid black', 'padding-left':'10px'}))
+                row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
             tab.append(html.Tr(children=row_content, style={'height': '5px'}))
-        table=html.Div([
+        table = html.Div([
             html.H2(filename),
-            html.Table(children=tab, 
-                style={'border-collapse':'collapse',
-                    'border': '1px solid black',
-                    'width': '100%'
-                })
+            html.Table(children=tab,
+                       style={'border-collapse': 'collapse',
+                              'border': '1px solid black',
+                              'width': '100%'
+                              })
         ])
         return table
 
@@ -766,34 +795,35 @@ def view_message_data(n_clicks, click2):
     if n_clicks is not None:
         filepath = message_data_list[0][1]
         filename = message_data_list[0][0]
-        c=cz.read_msg(filepath)
+        c = cz.read_msg(filepath)
         dict_list = []
         for record in c.get_records():
             dict_list.append(vars(record))
         header = list(dict_list[0].keys())
-        tab=[]
-        column=[]
+        tab = []
+        column = []
         for i in header:
-            column.append(html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color':'white'}))
+            column.append(
+                html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
         tab.append(html.Tr(children=column))
-        count=0
+        count = 0
         for j in dict_list:
-            value=list(j.values())
-            count+=1       
-            row_content=[]
-            if count>100:
+            value = list(j.values())
+            count += 1
+            row_content = []
+            if count > 100:
                 break
-            row_content=[]
+            row_content = []
             for x in value:
-                row_content.append(html.Td(x ,style={'border': '1px solid black', 'padding-left':'10px'}))
+                row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
             tab.append(html.Tr(children=row_content, style={'height': '5px'}))
-        table=html.Div([
+        table = html.Div([
             html.H2(filename),
-            html.Table(children=tab, 
-                style={'border-collapse':'collapse',
-                    'border': '1px solid black',
-                    'width': '100%'
-                })
+            html.Table(children=tab,
+                       style={'border-collapse': 'collapse',
+                              'border': '1px solid black',
+                              'width': '100%'
+                              })
         ])
         return table
 
@@ -858,6 +888,25 @@ def display_page(pathname):
 #         new_name=filename[-1]
 #         print(new_name)
 #         return new_name
+
+controlbar = dac.Controlbar(
+    [
+        html.Br(),
+        html.P("Put different components here!"),
+    ],
+    title="My right sidebar",
+    skin="light"
+)
+
+# Footer
+footer = dac.Footer(
+    html.A("CELLYZER",
+           target="_blank",
+           ),
+    right_text="2019"
+)
+
+app.layout = dac.Page([dcc.Location(id="url"), navbar, sidebar, body, controlbar, footer])
 
 if __name__ == '__main__':
     app.run_server(debug=True)
