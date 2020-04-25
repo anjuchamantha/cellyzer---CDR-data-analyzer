@@ -8,7 +8,8 @@
 
 .index_page_Dashboard {
     color: white;
-    padding-left: 20px;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 .index_page_dataset_div {
@@ -26,10 +27,9 @@
     z-index: 1;
     top: 0;
     left: 0;
-    background-color:#111;
+    background-color:black;
     overflow-x: hidden;
     padding-top: 20px;
-    margin-top: 8px;
 }
 
 .index_page_Img {
@@ -78,6 +78,7 @@
     font-size: 22px;
     color: white;
     display: block;
+    margin-left: 20px;
 }
 
 .index_dataset_Dashboard_div {
