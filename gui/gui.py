@@ -27,9 +27,19 @@ app.config.suppress_callback_exceptions = True
 image_filename = 'cdr.jpg'
 encoded_mage = base64.b64encode(open(image_filename, 'rb').read())
 
+footer = dac.Footer(
+    html.A("@DawidKopczyk, Quantee",
+           href="https://twitter.com/quanteeai",
+           target="_blank",
+           ),
+    right_text="2019",
+    style={'position': 'fixed'}
+)
+
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
-    html.Div(id='page-content')
+    html.Div(id='page-content'),
+    footer
 ])
 
 indexrecorditems = [dac.SidebarButton(id='add-call-records',
@@ -125,33 +135,66 @@ call_dataset = html.Div([
             children='CELLYZER'
             ),
     callpagesidebar,
-    html.Div([
+    dbc.Jumbotron([
+        html.H2("ADD CALL DATASET"),
+        html.Hr(),
         html.Div([
-            html.H3('ADD  CALL  DATASET', className='index_dataset_add_call_data')
+            dbc.FormGroup(
+                [
+                    dbc.Label("Get File Path:", html_for="example-email-row", width=2),
+                    dbc.Col(
+                        dbc.Input(
+                            type="text", id="filepath", placeholder="Enter path",
+                            style={'width': '500px'}
+                        ),
+                        width=10,
+                    ),
+                ],
+                row=True,
+            ),
+            html.H5(
+                "Enter correct path of call dataset folder",
+                style={'font-size': '17px'}
+            ),
+            html.H5(
+                "Do not enter file name to the path",
+                style={'font-size': '17px','color':'red'}
+            ),
+            dbc.FormGroup(
+                [
+                    dbc.Label("File Type", html_for="example-radios-row", width=2),
+                    dbc.Col(
+                        dbc.RadioItems(
+                            id="file-types-col",
+                            options=[
+                                {"label": "csv", "value": 1},
+                                {"label": "excel", "value": 2},
+                                {
+                                    "label": "json",
+                                    "value": 3,
+                                },
+                            ],
+                        ),
+                        width=10,
+                    ),
+                ],
+                row=True,
+            ),
         ],
-            className='index_dataset_add_call_data_div'
-        ),
-    ]),
-    html.Div([
-        html.H5('Get File Path:'),
-        dcc.Input(id="filepath", type='text', placeholder='Enter path',
-                  style={'width': '500px', 'border': '1px solid black'}),
-        html.Br(),
-        html.P('Enter correct path of call dataset folder', style={'font-size': '15px'}),
-        html.P('Do not enter file name to the path', style={'font-size': '14px', 'color': 'red'}),
-    ],
-        style={
-            'padding-left': '30px'
-        }),
-    dcc.Upload(id='upload-data_call',
-               children=html.Div([
-                   html.Button('ADD CALL DATA', className='index_datatset_calldata_button'
-                               )
-               ]),
-               className='index_dataset_upload_data',
-               # Allow multiple files to be uploaded
-               multiple=True
-               ),
+            style={
+                'padding-left': '30px'
+            }),
+        html.Hr(),
+        dcc.Upload(id='upload-data_call',
+                   children=html.Div([
+                       html.Button('ADD CALL DATA', className='index_datatset_calldata_button'
+                                   )
+                   ]),
+                   className='index_dataset_upload_data',
+                   # Allow multiple files to be uploaded
+                   multiple=True
+                   ),
+    ])
 ],
     className='index_dataset_div'
 )
@@ -1138,13 +1181,13 @@ def trip_visualization(user, n_clicks):
 ## Page for message dataset
 
 messagerecorditems = [dac.SidebarMenuItem(id='add-message-records',
-                                       label='Add Message Record',
-                                       icon='arrow-circle-right',
-                                       children=[
-                                           html.Div(id="message-data", style={"margin-left": "40px"})
-                                       ]
-                                       ),
-                   ]
+                                          label='Add Message Record',
+                                          icon='arrow-circle-right',
+                                          children=[
+                                              html.Div(id="message-data", style={"margin-left": "40px"})
+                                          ]
+                                          ),
+                      ]
 
 messagepagesidebar = dac.Sidebar(
     dac.SidebarMenu(

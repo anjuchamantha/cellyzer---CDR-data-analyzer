@@ -100,6 +100,7 @@
     padding-bottom: 10px;
     padding-left: 50px;
     color: white;
+    text-align: center;
 }
 
 .index_dataset_add_call_data_div {
@@ -130,6 +131,10 @@
 .index_dataset_div {
     margin-left: 222px;
     padding: 0px 10px;   
+}
+
+.call_dataset_input_div{
+    height: 500px;
 }
 
 .sample_call_data_cellyzer {
