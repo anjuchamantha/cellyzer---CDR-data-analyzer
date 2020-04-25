@@ -99,7 +99,7 @@ callrecorditems = [dac.SidebarMenuItem(id='add-call-records',
                                        label='Add Call Record',
                                        icon='arrow-circle-right',
                                        children=[
-                                           html.Div(id="call-data", style={"margin-left": "20px"})
+                                           html.Div(id="call-data", style={"margin-left": "40px"})
                                        ]
                                        ),
                    ]
@@ -114,6 +114,7 @@ callpagesidebar = dac.Sidebar(
     title='DASHBOARD',
     color="primary",
     brand_color="secondary",
+    url='/',
     src="https://adminlte.io/themes/AdminLTE/dist/img/user2-160x160.jpg",
     elevation=3,
     opacity=0.8
@@ -770,20 +771,34 @@ def show_visualize_connection(n_clicks):
 ###################################################################################################
 ## Page for cell dataset
 
+cellrecorditems = [dac.SidebarMenuItem(id='add-cell-records',
+                                       label='Add Cell Record',
+                                       icon='arrow-circle-right',
+                                       children=[
+                                           html.Div(id="cell-data", style={"margin-left": "40px"})
+                                       ]
+                                       ),
+                   ]
+
+cellpagesidebar = dac.Sidebar(
+    dac.SidebarMenu(
+        [
+            dac.SidebarHeader(children="Dataset Functions"),
+            dac.SidebarMenuItem(id='tab_cards', label='Add a Dataset', icon='box', children=cellrecorditems)
+        ]
+    ),
+    title='DASHBOARD',
+    color="primary",
+    brand_color="secondary",
+    url='/',
+    src="https://adminlte.io/themes/AdminLTE/dist/img/user2-160x160.jpg",
+    elevation=3,
+    opacity=0.8
+)
+
 cell_dataset = html.Div([
     html.H1(className='index_cell_dataset_cellyzer', children='CELLYZER'),
-    html.Div([
-        html.H2(className='index_cell_dataset_Dashboard', children='Dashboard'),
-        html.Div([dcc.Link("Home", href='/')], className='index_page_dataset_div'),
-        html.Div([
-            html.H5("Cell Dataset"),
-            html.Div(id='cell-data')
-        ],
-            className='index_cell_dataset_h5'
-        )
-    ],
-        className='index_cell_dataset_Dashboard_div'
-    ),
+    cellpagesidebar,
     html.Div([
         html.Div([
             html.H3('ADD  CELL  DATASET', className='index_cell_dataset_addcell')
@@ -1122,28 +1137,36 @@ def trip_visualization(user, n_clicks):
 ###########################################################################
 ## Page for message dataset
 
+messagerecorditems = [dac.SidebarMenuItem(id='add-message-records',
+                                       label='Add Message Record',
+                                       icon='arrow-circle-right',
+                                       children=[
+                                           html.Div(id="message-data", style={"margin-left": "40px"})
+                                       ]
+                                       ),
+                   ]
+
+messagepagesidebar = dac.Sidebar(
+    dac.SidebarMenu(
+        [
+            dac.SidebarHeader(children="Dataset Functions"),
+            dac.SidebarMenuItem(id='tab_cards', label='Add a Dataset', icon='box', children=messagerecorditems)
+        ]
+    ),
+    title='DASHBOARD',
+    color="primary",
+    brand_color="secondary",
+    url='/',
+    src="https://adminlte.io/themes/AdminLTE/dist/img/user2-160x160.jpg",
+    elevation=3,
+    opacity=0.8
+)
+
 message_dataset = html.Div([
     html.H1(className='index_message_dataset_cellyzer',
             children='CELLYZER'
             ),
-    html.Div([
-        html.H2(className='index_message_dataset_Dashboard',
-                children='Dashboard'
-                ),
-        html.Div([
-            dcc.Link("Home", href='/')
-        ],
-            className='index_page_dataset_div'
-        ),
-        html.Div([
-            html.H5("Message Dataset"),
-            html.Div(id='message-data')
-        ],
-            className='index_message_dataset_h5'
-        )
-    ],
-        className='index_message_dataset_Dashboard_div'
-    ),
+    messagepagesidebar,
     html.Div([
         html.Div([
             html.H3('ADD  MESSAGE  DATASET', className='index_message_dataset_addmessage'
