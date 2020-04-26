@@ -32,8 +32,7 @@ footer = dac.Footer(
            href="https://twitter.com/quanteeai",
            target="_blank",
            ),
-    right_text="2019",
-    style={'position': 'fixed'}
+    right_text="2019"
 )
 
 app.layout = html.Div([
@@ -135,7 +134,7 @@ call_dataset = html.Div([
             children='CELLYZER'
             ),
     callpagesidebar,
-    dbc.Jumbotron([
+    html.Div([
         html.H2("ADD CALL DATASET"),
         html.Hr(),
         html.Div([
@@ -154,11 +153,11 @@ call_dataset = html.Div([
             ),
             html.H5(
                 "Enter correct path of call dataset folder",
-                style={'font-size': '17px'}
+                style={'font-size': '17px','padding': '10px'}
             ),
             html.H5(
                 "Do not enter file name to the path",
-                style={'font-size': '17px','color':'red'}
+                style={'font-size': '17px', 'color': 'red','padding': '10px'}
             ),
             dbc.FormGroup(
                 [
@@ -187,16 +186,16 @@ call_dataset = html.Div([
         html.Hr(),
         dcc.Upload(id='upload-data_call',
                    children=html.Div([
-                       html.Button('ADD CALL DATA', className='index_datatset_calldata_button'
+                       dbc.Button('ADD CALL DATA', className='index_datatset_calldata_button', color='dark'
                                    )
                    ]),
                    className='index_dataset_upload_data',
                    # Allow multiple files to be uploaded
                    multiple=True
                    ),
-    ])
+    ], className='call_page_welcome_div'),
 ],
-    className='index_dataset_div'
+    className='call_dataset_div'
 )
 
 call_dataset_file = html.Div([
@@ -843,34 +842,68 @@ cell_dataset = html.Div([
     html.H1(className='index_cell_dataset_cellyzer', children='CELLYZER'),
     cellpagesidebar,
     html.Div([
-        html.Div([
-            html.H3('ADD  CELL  DATASET', className='index_cell_dataset_addcell')
-        ],
-            className='index_cell_dataset_addcell_div'
-        ),
-    ]),
-    html.Div([
-        html.H5('File Path:'),
-        dcc.Input(id="filepath_cell", type='text', placeholder='Enter path',
-                  style={'width': '500px', 'border': '1px solid black'}),
-        html.Br(),
-        html.P('Enter correct path of cell dataset folder', style={'font-size': '15px'}),
-        html.P('Do not enter file name to the path', style={'font-size': '14px', 'color': 'red'}),
+            html.H2("ADD CELL DATASET"),
+            html.Hr(),
+            html.Div([
+                dbc.FormGroup(
+                    [
+                        dbc.Label("Get File Path:", html_for="example-email-row", width=2),
+                        dbc.Col(
+                            dbc.Input(
+                                type="text", id="filepath_cell", placeholder="Enter path",
+                                style={'width': '500px'}
+                            ),
+                            width=10,
+                        ),
+                    ],
+                    row=True,
+                ),
+                html.H5(
+                    "Enter correct path of cell dataset folder",
+                    style={'font-size': '17px','padding': '10px'}
+                ),
+                html.H5(
+                    "Do not enter file name to the path",
+                    style={'font-size': '17px', 'color': 'red','padding': '10px'}
+                ),
+                dbc.FormGroup(
+                    [
+                        dbc.Label("File Type", html_for="example-radios-row", width=2),
+                        dbc.Col(
+                            dbc.RadioItems(
+                                id="file-types-col",
+                                options=[
+                                    {"label": "csv", "value": 1},
+                                    {"label": "excel", "value": 2},
+                                    {
+                                        "label": "json",
+                                        "value": 3,
+                                    },
+                                ],
+                            ),
+                            width=10,
+                        ),
+                    ],
+                    row=True,
+                ),
+            ],
+                style={
+                    'padding-left': '30px'
+                }),
+            html.Hr(),
+            dcc.Upload(id='upload-data_cell',
+                   children=html.Div([
+                       html.Button('ADD CELL DATA', className='index_celldata_add_button'
+                                   )
+                   ]),
+                   className='index_cell_dataset_upload_data',
+                   # Allow multiple files to be uploaded
+                   multiple=True
+                   ),
+        ], className='call_page_welcome_div'),
+
     ],
-        style={
-            'padding-left': '30px'
-        }),
-    dcc.Upload(id='upload-data_cell',
-               children=html.Div([
-                   html.Button('ADD CELL DATA', className='index_celldata_add_button'
-                               )
-               ]),
-               className='index_cell_dataset_upload_data',
-               # Allow multiple files to be uploaded
-               multiple=True
-               ),
-],
-    className='index_cell_dataset_div'
+    className='call_dataset_div'
 )
 
 cell_dataset_file = html.Div([
@@ -1211,33 +1244,67 @@ message_dataset = html.Div([
             ),
     messagepagesidebar,
     html.Div([
-        html.Div([
-            html.H3('ADD  MESSAGE  DATASET', className='index_message_dataset_addmessage'
-                    )],
-            className='index_message_dataset_addmessage_div'
-        ),
-    ]),
-    html.Div([
-        html.H5('File Path:'),
-        dcc.Input(id="filepath_message", type='text', placeholder='Enter path',
-                  style={'width': '500px', 'border': '1px solid black'}),
-        html.Br(),
-        html.P('Enter correct path of message dataset folder', style={'font-size': '15px'}),
-        html.P('Do not enter file name to the path', style={'font-size': '14px', 'color': 'red'}),
+            html.H2("ADD MESSAGE DATASET"),
+            html.Hr(),
+            html.Div([
+                dbc.FormGroup(
+                    [
+                        dbc.Label("Get File Path:", html_for="example-email-row", width=2),
+                        dbc.Col(
+                            dbc.Input(
+                                type="text", id="filepath_message", placeholder="Enter path",
+                                style={'width': '500px'}
+                            ),
+                            width=10,
+                        ),
+                    ],
+                    row=True,
+                ),
+                html.H5(
+                    "Enter correct path of cell dataset folder",
+                    style={'font-size': '17px','padding': '10px'}
+                ),
+                html.H5(
+                    "Do not enter file name to the path",
+                    style={'font-size': '17px', 'color': 'red','padding': '10px'}
+                ),
+                dbc.FormGroup(
+                    [
+                        dbc.Label("File Type", html_for="example-radios-row", width=2),
+                        dbc.Col(
+                            dbc.RadioItems(
+                                id="file-types-col",
+                                options=[
+                                    {"label": "csv", "value": 1},
+                                    {"label": "excel", "value": 2},
+                                    {
+                                        "label": "json",
+                                        "value": 3,
+                                    },
+                                ],
+                            ),
+                            width=10,
+                        ),
+                    ],
+                    row=True,
+                ),
+            ],
+                style={
+                    'padding-left': '30px'
+                }),
+            html.Hr(),
+            dcc.Upload(id='upload-data_message',
+                   children=html.Div([
+                       html.Button('ADD MESSAGE DATA', className='index_messagedata_add_button'
+                                   )
+                   ]),
+                   className='index_message_dataset_upload_data',
+                   # Allow multiple files to be uploaded
+                   multiple=True
+                   ),
+        ], className='call_page_welcome_div'),
     ],
-        style={
-            'padding-left': '30px'
-        }),
-    dcc.Upload(id='upload-data_message',
-               children=html.Div([
-                   html.Button('ADD MESSAGE DATA', className='index_messagedata_add_button'
-                               )
-               ]),
-               className='index_message_dataset_upload_data',
-               # Allow multiple files to be uploaded
-               multiple=True
-               )],
-    className='index_message_dataset_div'
+    className='call_dataset_div'
 )
 
 message_data_file = html.Div([

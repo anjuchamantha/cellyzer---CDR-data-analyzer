@@ -51,7 +51,8 @@
 .index_page_welcome_div {
     position: relative;
     max-width: 1300px;
-    margin: 0 auto;
+    margin: 0px auto;
+    color: #007bff;
 }
 
 .index_page_div {
@@ -124,18 +125,36 @@
 }
 
 .index_dataset_upload_data {
-    margin-left: 100px;
-    margin-top: 50px;
+    margin-top: 30px;
 }
 
 .index_dataset_div {
-    margin-left: 222px;
-    padding: 0px 10px;   
+    margin-left: 250px;
+    padding: 10px 10px;
+    background-color: white;
+    height: 600px;
 }
 
 .call_dataset_input_div{
     height: 500px;
 }
+
+.call_page_welcome_div {
+    position: relative;
+    max-width: 1300px;
+    margin: 20px 20px;
+    color: #007bff;
+    font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-weight: 300!important;
+}
+
+.call_dataset_div {
+    margin-left: 250px;
+    padding: 10px 10px;
+    background-color: white;
+    height: 600px;
+}
+
 
 .sample_call_data_cellyzer {
     text-align: center;
@@ -296,8 +315,7 @@
 }
 
 .index_cell_dataset_upload_data {
-    margin-left: 100px;
-    margin-top: 50px;
+    margin-top: 30px;
 }
 
 .index_cell_dataset_div {
@@ -444,8 +462,7 @@
 }
 
 .index_message_dataset_upload_data {
-    margin-left: 100px;
-    margin-top: 50px;
+    margin-top: 30px;
 }
 
 .index_message_dataset_div {
