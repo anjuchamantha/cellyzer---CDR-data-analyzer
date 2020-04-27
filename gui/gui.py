@@ -28,11 +28,11 @@ image_filename = 'cdr.jpg'
 encoded_mage = base64.b64encode(open(image_filename, 'rb').read())
 
 footer = dac.Footer(
-    html.A("@DawidKopczyk, Quantee",
-           href="https://twitter.com/quanteeai",
+    html.A("@Project CELLYZER",
+           href="https://pypi.org/project/cellyzer/",
            target="_blank",
            ),
-    right_text="2019"
+    right_text="2020"
 )
 
 app.layout = html.Div([
