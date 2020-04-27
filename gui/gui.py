@@ -153,11 +153,11 @@ call_dataset = html.Div([
             ),
             html.H5(
                 "Enter correct path of call dataset folder",
-                style={'font-size': '17px','padding': '10px'}
+                style={'font-size': '17px', 'padding': '10px'}
             ),
             html.H5(
                 "Do not enter file name to the path",
-                style={'font-size': '17px', 'color': 'red','padding': '10px'}
+                style={'font-size': '17px', 'color': 'red', 'padding': '10px'}
             ),
             dbc.FormGroup(
                 [
@@ -187,7 +187,7 @@ call_dataset = html.Div([
         dcc.Upload(id='upload-data_call',
                    children=html.Div([
                        dbc.Button('ADD CALL DATA', className='index_datatset_calldata_button', color='dark'
-                                   )
+                                  )
                    ]),
                    className='index_dataset_upload_data',
                    # Allow multiple files to be uploaded
@@ -198,14 +198,31 @@ call_dataset = html.Div([
     className='call_dataset_div'
 )
 
+calldatasetitems = [dac.SidebarMenuItem(id='add-call-records',
+                                        label='Add Call Record',
+                                        icon='arrow-circle-right'
+                                        ),
+                    ]
+
+calldatasetidebar = dac.Sidebar(
+    dac.SidebarMenu(
+        [
+            dac.SidebarHeader(children="Dataset Functions"),
+            dac.SidebarMenuItem(id='tab_cards', label='Add a Dataset', icon='box', children=calldatasetitems)
+        ]
+    ),
+    title='DASHBOARD',
+    color="primary",
+    brand_color="secondary",
+    url='/',
+    src="https://adminlte.io/themes/AdminLTE/dist/img/user2-160x160.jpg",
+    elevation=3,
+    opacity=0.8
+)
+
 call_dataset_file = html.Div([
     html.H1(className='sample_call_data_cellyzer', children='CELLYZER'),
-    html.Div([
-        html.H2(className='sample_call_dataset_Dashboard', children='Dashboard'),
-        html.Div([dcc.Link("Home", href='/')], className='index_page_dataset_div'),
-        html.Div([html.H5("Call Dataset")], className='index_dataset_Call_Dataset'),
-    ],
-        className='sample_dataset_Dashboard_div'),
+    calldatasetidebar,
     html.Div([
         html.Div([
             html.H3('CALL  DATASET  VISUALIZATION', className='index_dataset_add_call_data')],
@@ -236,28 +253,62 @@ call_dataset_file = html.Div([
     className='sample_call_dataset_div')
 
 ############ page for view all call data
+
+viewcalldatasetitems = [dac.SidebarMenuItem(id='add-call-records',
+                                            label='Add Call Record',
+                                            icon='arrow-circle-right',
+                                            children=html.Div([
+                                                dcc.Link('◙ Show All Data', href='/Call_Dataset/view_data'),
+                                                html.Br(),
+                                                dcc.Link('◙ Show All Users', href='/Call_Dataset/all_users'),
+                                                html.Br(),
+                                                dcc.Link('◙ Show Connected Users',
+                                                         href='/Call_Dataset/connected_users'),
+                                                html.Br(),
+                                                dcc.Link('◙ Call Records Between'
+                                                         'Two Selected Users',
+                                                         href='/Call_Dataset/records_between_users'),
+                                                html.Br(),
+                                                dcc.Link('◙ Close Contacts Of Selected Users',
+                                                         href='/Call_Dataset/close_contacts'),
+                                                html.Br(),
+                                                dcc.Link('◙ Ignored Call Details Of a User',
+                                                         href='/Call_Dataset/ignored_call'),
+                                                html.Br(),
+                                                dcc.Link('◙ Active Time Of a User', href='/Call_Dataset/active_time'),
+                                                html.Br(),
+                                                dcc.Link('◙ Visualize Connections Between All Users',
+                                                         href='/Call_Dataset/visualize_connection'),
+                                            ], style={'font-size': '12px', 'margin-left': '10px'})),
+                        ]
+
+viewcalldatasetidebar = dac.Sidebar(
+    dac.SidebarMenu(
+        [
+            dac.SidebarHeader(children="Dataset Functions"),
+            dac.SidebarMenuItem(id='tab_cards', label='Add a Dataset', icon='box', children=viewcalldatasetitems)
+        ]
+    ),
+    title='DASHBOARD',
+    color="primary",
+    brand_color="secondary",
+    url='/',
+    src="https://adminlte.io/themes/AdminLTE/dist/img/user2-160x160.jpg",
+    elevation=3,
+    opacity=0.8
+)
+
 view_all_call_data = html.Div([
     html.H1(className='sample_call_data_cellyzer', children='CELLYZER'),
-    html.Div([
-        html.H2(className='sample_call_dataset_Dashboard', children='Dashboard'),
-        html.Div([dcc.Link("Home", href='/')], className='index_page_dataset_div'),
-        html.Div([html.H5("Call Dataset")], className='index_dataset_Call_Dataset'),
-        html.Div([html.H6("All Data")], className='index_page_dataset_div_all_user')
-    ],
-        className='sample_dataset_Dashboard_div'
-    ),
+    viewcalldatasetidebar,
     html.Div([
         html.Div([
-            html.H4('CALL  DATASET  VISUALIZATION', className='index_dataset_add_call_data')],
-            className='index_dataset_add_call_data_div'),
+            html.H3('CALL  DATASET  VISUALIZATION - GET ALL DATA', className='index_dataset_add_call_data')],
+            className='sample_dataset_visualize'),
     ]),
     html.Div([
-        html.H4(children='Get All Data', className='sample_call_visualize_all_user')],
-        style={'padding-left': '30px', 'margin-top': '40px', 'margin-bottom': '20px'}
-    ),
-    html.Div([
-        html.Button('VIEW DATA', id='view', className='sample_call_dataset_viewdata'),
-        html.Button('CLOSED DATA', id='close', className='sample_call_dataset_close')],
+        dbc.Button('VIEW DATA', outline=True, id='view', color='success', className='sample_call_dataset_viewdata'),
+        dbc.Button('CLOSED DATA', outline=True, id='close', color='danger', className='sample_call_dataset_close')],
         className='sample_call_dataset_view_div'),
     html.Div(id='show_data', className='sample_call_dataset_show'),
 ],
@@ -266,25 +317,14 @@ view_all_call_data = html.Div([
 ######## page for get all users
 get_all_users = html.Div([
     html.H1(className='sample_call_data_cellyzer', children='CELLYZER'),
-    html.Div([
-        html.H2(className='sample_call_dataset_Dashboard', children='Dashboard'),
-        html.Div([dcc.Link("Home", href='/')], className='index_page_dataset_div'),
-        html.Div([html.H5("Call Dataset")], className='index_page_dataset_div'),
-        html.Div([html.H6("All Users")], className='index_page_dataset_div_all_user')
-    ],
-        className='sample_dataset_Dashboard_div'
-    ),
+    viewcalldatasetidebar,
     html.Div([
         html.Div([
-            html.H3('CALL  DATASET  VISUALIZATION', className='index_dataset_add_call_data')],
-            className='index_dataset_add_call_data_div')
+            html.H3('CALL  DATASET  VISUALIZATION - GET ALL USERS', className='index_dataset_add_call_data')],
+            className='sample_dataset_visualize')
     ]),
     html.Div([
-        html.H4(children='Get All Users', className='sample_call_visualize_all_user')],
-        style={'padding-left': '30px', 'margin-top': '40px', 'margin-bottom': '20px'}
-    ),
-    html.Div([
-        html.Button('Get All Users', id='get_users', className='sample_call_dataset_viewdata')],
+        dbc.Button('Get All Users', outline=True, color='success', id='get_users', className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div'
     ),
     html.Div(id='show_all_users', className='sample_call_dataset_show_all_users'),
@@ -294,29 +334,24 @@ get_all_users = html.Div([
 ####### page for show connected users of specific user
 connected_users = html.Div([
     html.H1(className='sample_call_data_cellyzer', children='CELLYZER'),
-    html.Div([
-        html.H2(className='sample_call_dataset_Dashboard', children='Dashboard'),
-        html.Div([dcc.Link("Home", href='/')], className='index_page_dataset_div'),
-        html.Div([html.H5("Call Dataset")], className='index_page_dataset_div'),
-        html.Div([html.H6("Connected Users")], className='index_page_dataset_div_all_user')
-    ],
-        className='sample_dataset_Dashboard_div'
-    ),
+    viewcalldatasetidebar,
     html.Div([
         html.Div([
-            html.H4('CALL  DATASET  VISUALIZATION', className='index_dataset_add_call_data')],
-            className='index_dataset_add_call_data_div'),
+            html.H3('CALL  DATASET  VISUALIZATION - SHOW CONNECTED USERS', className='index_dataset_add_call_data')],
+            className='sample_dataset_visualize'),
     ]),
     html.Div([
-        html.H3(children='Connected Users Of Specific User', className='sample_call_visualize_all_user')],
-        style={'padding-left': '30px', 'margin-top': '40px', 'margin-bottom': '20px'}
-    ),
-    html.Div([
-        html.H6('Enter Specific User Number:'),
-        dcc.Input(id="search", type='text', placeholder='Enter number'),
-        html.Br(),
-        html.Br(),
-        html.Button('Connected Users', id='connected_users', className='sample_call_dataset_viewdata')],
+        dbc.FormGroup(
+            [
+                dbc.Label("Enter Specific User Number:", html_for="example-email"),
+                dbc.Input(type="text", id="search", placeholder="Enter number", style={'width':'500px'}),
+                dbc.FormText(
+                    "Input must be a 10 digit number",
+                    color="danger",
+                ),
+            ]
+        ),
+        dbc.Button('Connected Users', outline=True, color='success', id='connected_users', className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div'
     ),
     html.Div(id='show_connected_users', className='sample_call_dataset_show_all_users'),
@@ -842,56 +877,56 @@ cell_dataset = html.Div([
     html.H1(className='index_cell_dataset_cellyzer', children='CELLYZER'),
     cellpagesidebar,
     html.Div([
-            html.H2("ADD CELL DATASET"),
-            html.Hr(),
-            html.Div([
-                dbc.FormGroup(
-                    [
-                        dbc.Label("Get File Path:", html_for="example-email-row", width=2),
-                        dbc.Col(
-                            dbc.Input(
-                                type="text", id="filepath_cell", placeholder="Enter path",
-                                style={'width': '500px'}
-                            ),
-                            width=10,
+        html.H2("ADD CELL DATASET"),
+        html.Hr(),
+        html.Div([
+            dbc.FormGroup(
+                [
+                    dbc.Label("Get File Path:", html_for="example-email-row", width=2),
+                    dbc.Col(
+                        dbc.Input(
+                            type="text", id="filepath_cell", placeholder="Enter path",
+                            style={'width': '500px'}
                         ),
-                    ],
-                    row=True,
-                ),
-                html.H5(
-                    "Enter correct path of cell dataset folder",
-                    style={'font-size': '17px','padding': '10px'}
-                ),
-                html.H5(
-                    "Do not enter file name to the path",
-                    style={'font-size': '17px', 'color': 'red','padding': '10px'}
-                ),
-                dbc.FormGroup(
-                    [
-                        dbc.Label("File Type", html_for="example-radios-row", width=2),
-                        dbc.Col(
-                            dbc.RadioItems(
-                                id="file-types-col",
-                                options=[
-                                    {"label": "csv", "value": 1},
-                                    {"label": "excel", "value": 2},
-                                    {
-                                        "label": "json",
-                                        "value": 3,
-                                    },
-                                ],
-                            ),
-                            width=10,
+                        width=10,
+                    ),
+                ],
+                row=True,
+            ),
+            html.H5(
+                "Enter correct path of cell dataset folder",
+                style={'font-size': '17px', 'padding': '10px'}
+            ),
+            html.H5(
+                "Do not enter file name to the path",
+                style={'font-size': '17px', 'color': 'red', 'padding': '10px'}
+            ),
+            dbc.FormGroup(
+                [
+                    dbc.Label("File Type", html_for="example-radios-row", width=2),
+                    dbc.Col(
+                        dbc.RadioItems(
+                            id="file-types-col",
+                            options=[
+                                {"label": "csv", "value": 1},
+                                {"label": "excel", "value": 2},
+                                {
+                                    "label": "json",
+                                    "value": 3,
+                                },
+                            ],
                         ),
-                    ],
-                    row=True,
-                ),
-            ],
-                style={
-                    'padding-left': '30px'
-                }),
-            html.Hr(),
-            dcc.Upload(id='upload-data_cell',
+                        width=10,
+                    ),
+                ],
+                row=True,
+            ),
+        ],
+            style={
+                'padding-left': '30px'
+            }),
+        html.Hr(),
+        dcc.Upload(id='upload-data_cell',
                    children=html.Div([
                        html.Button('ADD CELL DATA', className='index_celldata_add_button'
                                    )
@@ -900,9 +935,9 @@ cell_dataset = html.Div([
                    # Allow multiple files to be uploaded
                    multiple=True
                    ),
-        ], className='call_page_welcome_div'),
+    ], className='call_page_welcome_div'),
 
-    ],
+],
     className='call_dataset_div'
 )
 
@@ -1244,56 +1279,56 @@ message_dataset = html.Div([
             ),
     messagepagesidebar,
     html.Div([
-            html.H2("ADD MESSAGE DATASET"),
-            html.Hr(),
-            html.Div([
-                dbc.FormGroup(
-                    [
-                        dbc.Label("Get File Path:", html_for="example-email-row", width=2),
-                        dbc.Col(
-                            dbc.Input(
-                                type="text", id="filepath_message", placeholder="Enter path",
-                                style={'width': '500px'}
-                            ),
-                            width=10,
+        html.H2("ADD MESSAGE DATASET"),
+        html.Hr(),
+        html.Div([
+            dbc.FormGroup(
+                [
+                    dbc.Label("Get File Path:", html_for="example-email-row", width=2),
+                    dbc.Col(
+                        dbc.Input(
+                            type="text", id="filepath_message", placeholder="Enter path",
+                            style={'width': '500px'}
                         ),
-                    ],
-                    row=True,
-                ),
-                html.H5(
-                    "Enter correct path of cell dataset folder",
-                    style={'font-size': '17px','padding': '10px'}
-                ),
-                html.H5(
-                    "Do not enter file name to the path",
-                    style={'font-size': '17px', 'color': 'red','padding': '10px'}
-                ),
-                dbc.FormGroup(
-                    [
-                        dbc.Label("File Type", html_for="example-radios-row", width=2),
-                        dbc.Col(
-                            dbc.RadioItems(
-                                id="file-types-col",
-                                options=[
-                                    {"label": "csv", "value": 1},
-                                    {"label": "excel", "value": 2},
-                                    {
-                                        "label": "json",
-                                        "value": 3,
-                                    },
-                                ],
-                            ),
-                            width=10,
+                        width=10,
+                    ),
+                ],
+                row=True,
+            ),
+            html.H5(
+                "Enter correct path of cell dataset folder",
+                style={'font-size': '17px', 'padding': '10px'}
+            ),
+            html.H5(
+                "Do not enter file name to the path",
+                style={'font-size': '17px', 'color': 'red', 'padding': '10px'}
+            ),
+            dbc.FormGroup(
+                [
+                    dbc.Label("File Type", html_for="example-radios-row", width=2),
+                    dbc.Col(
+                        dbc.RadioItems(
+                            id="file-types-col",
+                            options=[
+                                {"label": "csv", "value": 1},
+                                {"label": "excel", "value": 2},
+                                {
+                                    "label": "json",
+                                    "value": 3,
+                                },
+                            ],
                         ),
-                    ],
-                    row=True,
-                ),
-            ],
-                style={
-                    'padding-left': '30px'
-                }),
-            html.Hr(),
-            dcc.Upload(id='upload-data_message',
+                        width=10,
+                    ),
+                ],
+                row=True,
+            ),
+        ],
+            style={
+                'padding-left': '30px'
+            }),
+        html.Hr(),
+        dcc.Upload(id='upload-data_message',
                    children=html.Div([
                        html.Button('ADD MESSAGE DATA', className='index_messagedata_add_button'
                                    )
@@ -1302,8 +1337,8 @@ message_dataset = html.Div([
                    # Allow multiple files to be uploaded
                    multiple=True
                    ),
-        ], className='call_page_welcome_div'),
-    ],
+    ], className='call_page_welcome_div'),
+],
     className='call_dataset_div'
 )
 

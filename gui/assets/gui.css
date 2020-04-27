@@ -101,7 +101,7 @@
     padding-bottom: 10px;
     padding-left: 50px;
     color: white;
-    text-align: center;
+    text-align: left;
 }
 
 .index_dataset_add_call_data_div {
@@ -191,9 +191,9 @@
 }
 
 .sample_dataset_visualize {
-    width: 700px;
+    width: 900px;
     margin-top: 50px;
-    padding-left: 30px;
+    padding-left: 10px;
     margin-bottom: 40px;
 }
 
@@ -207,13 +207,6 @@
 }
 
 .sample_call_dataset_viewdata {
-    background-color: #4CAF50;
-    height: 50px;
-    border: none;
-    color: white;
-    text-align: center;
-    text-decoration: none;
-    font-size: 16px;
     margin: 4px 6px;
     margin-bottom: 20px;
     cursor: pointer;
@@ -221,24 +214,17 @@
 }
 
 .sample_call_dataset_close {
-    background-color: #4CAF50;
-    height: 50px;
-    border: none;
-    color: white;
-    text-align: center;
-    text-decoration: none;
-    font-size: 16px;
     margin: 4px 6px;
     margin-bottom: 20px;
     cursor: pointer;
 }
 
 .sample_call_dataset_view_div {
-    padding-left: 30px;
+    padding-left: 40px;
 }
 
 .sample_call_dataset_show{
-    padding-left: 20px;
+    padding-left: 40px;
     margin-top: 30px;
 }
 
