@@ -361,33 +361,42 @@ connected_users = html.Div([
 ###### get call rercords between 2 users
 records_between_users = html.Div([
     html.H1(className='sample_call_data_cellyzer', children='CELLYZER'),
-    html.Div([
-        html.H2(className='sample_call_dataset_Dashboard', children='Dashboard'),
-        html.Div([dcc.Link("Home", href='/')], className='index_page_dataset_div'),
-        html.Div([html.H5("Call Dataset")], className='index_page_dataset_div'),
-        html.Div([html.H6("Call Records Between Users")], className='index_page_dataset_div_all_user')
-    ],
-        className='sample_dataset_Dashboard_div'
-    ),
+    viewcalldatasetidebar,
     html.Div([
         html.Div([
-            html.H3('CALL  DATASET  VISUALIZATION', className='index_dataset_add_call_data')],
-            className='index_dataset_add_call_data_div'),
+            html.H3('CALL  DATASET  VISUALIZATION - CALL RECORDS BETWEEN TWO USERS', className='index_dataset_add_call_data')],
+            className='sample_dataset_visualize', style={'width':'1000px'}),
     ]),
+    html.Hr(),
     html.Div([
-        html.H4(children='Call Records Between Two Users', className='sample_call_visualize_all_user')],
-        style={'padding-left': '30px', 'margin-top': '40px', 'margin-bottom': '20px'}
-    ),
-    html.Div([
-        html.H6('Enter Two Numbers:'),
-        dcc.Input(id="search_2", type='text', placeholder='Enter number'),
+        html.H4('Enter Two Numbers:'),
         html.Br(),
-        html.Br(),
-        dcc.Input(id="search_3", type='text', placeholder='Enter number'),
-        html.Br(),
-        html.Br(),
-        html.Button('Get Records', id='record_users', className='sample_call_dataset_viewdata')],
-        className='sample_call_dataset_view_div'
+        dbc.FormGroup(
+            [
+                dbc.Label("First Number", html_for="example-email-row", width=2),
+                dbc.Col(
+                    dbc.Input(
+                        type="text", id="search_2", placeholder="Enter first number", style={'width': '500px'}
+                    ),
+                    width=10,
+                ),
+            ],
+            row=True,
+        ),
+        dbc.FormGroup(
+            [
+                dbc.Label("Second Number", html_for="example-email-row", width=2),
+                dbc.Col(
+                    dbc.Input(
+                        type="text", id="search_3", placeholder="Enter second number", style={'width': '500px'}
+                    ),
+                    width=10,
+                ),
+            ],
+            row=True,
+        ),
+        dbc.Button('Get Records', id='record_users', color='success', outline=True, className='sample_call_dataset_viewdata')],
+        className='sample_call_dataset_view_div',
     ),
     html.Div(id='show_records_users', className='sample_call_dataset_show_all_users'),
 ],
@@ -396,33 +405,40 @@ records_between_users = html.Div([
 ###### get close contacts
 close_contacts = html.Div([
     html.H1(className='sample_call_data_cellyzer', children='CELLYZER'),
-    html.Div([
-        html.H2(className='sample_call_dataset_Dashboard', children='Dashboard'),
-        html.Div([dcc.Link("Home", href='/')], className='index_page_dataset_div'),
-        html.Div([html.H5("Call Dataset")], className='index_page_dataset_div'),
-        html.Div([html.H6("Close Contacts")], className='index_page_dataset_div_all_user')
-    ],
-        className='sample_dataset_Dashboard_div'
-    ),
+    viewcalldatasetidebar,
     html.Div([
         html.Div([
-            html.H3('CALL  DATASET  VISUALIZATION', className='index_dataset_add_call_data')],
-            className='index_dataset_add_call_data_div'),
+            html.H3('CALL  DATASET  VISUALIZATION - CLOSE CONTACTS OF A SELECTED USER', className='index_dataset_add_call_data')],
+            className='sample_dataset_visualize', style={'width':'1000px'}),
     ]),
+    html.Hr(),
     html.Div([
-        html.H4(children='Close Contacts Of a Selected User', className='sample_call_visualize_all_user')],
-        style={'padding-left': '30px', 'margin-top': '40px', 'margin-bottom': '20px'}
-    ),
-    html.Div([
-        html.H6('Enter Number:'),
-        dcc.Input(id="user_3", type='text', placeholder='Enter number'),
         html.Br(),
-        html.Br(),
-        html.H6('Enter No. Top Contact:'),
-        dcc.Input(id="contact", type='number', placeholder='Enter number of top contact'),
-        html.Br(),
-        html.Br(),
-        html.Button('Close Contacts', id='close_contacts', className='sample_call_dataset_viewdata')],
+        dbc.FormGroup(
+            [
+                dbc.Label("Enter Number", html_for="example-email-row", width=2),
+                dbc.Col(
+                    dbc.Input(
+                        type="text", id="user_3", placeholder="Enter number", style={'width': '500px'}
+                    ),
+                    width=10,
+                ),
+            ],
+            row=True,
+        ),
+        dbc.FormGroup(
+            [
+                dbc.Label("Enter No. Top Contact:", html_for="example-email-row", width=2),
+                dbc.Col(
+                    dbc.Input(
+                        type="text", id="contact", placeholder="Enter number of top contact", style={'width': '500px'}
+                    ),
+                    width=10,
+                ),
+            ],
+            row=True,
+        ),
+        dbc.Button('Close Contacts', id='close_contacts', color='success', outline=True, className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div'
     ),
     html.Div(id='show_close_contact', className='sample_call_dataset_show_all_users'),
@@ -432,29 +448,28 @@ close_contacts = html.Div([
 ##### get ignored call details of a selected user
 ignore_call_detail = html.Div([
     html.H1(className='sample_call_data_cellyzer', children='CELLYZER'),
-    html.Div([
-        html.H2(className='sample_call_dataset_Dashboard', children='Dashboard'),
-        html.Div([dcc.Link("Home", href='/')], className='index_page_dataset_div'),
-        html.Div([html.H5("Call Dataset")], className='index_page_dataset_div'),
-        html.Div([html.H6("Ignored Call Details")], className='index_page_dataset_div_all_user')
-    ],
-        className='sample_dataset_Dashboard_div'
-    ),
+    viewcalldatasetidebar,
     html.Div([
         html.Div([
-            html.H3('CALL  DATASET  VISUALIZATION', className='index_dataset_add_call_data')],
-            className='index_dataset_add_call_data_div'),
+            html.H3('CALL  DATASET  VISUALIZATION - IGNORED CALL DETAILS OF A SELECTED USER', className='index_dataset_add_call_data')],
+            className='sample_dataset_visualize', style={'width':'1100px'}),
     ]),
+    html.Hr(),
+    html.Br(),
     html.Div([
-        html.H4(children='Ignored Call Details Of a Selected User', className='sample_call_visualize_all_user')],
-        style={'padding-left': '30px', 'margin-top': '40px', 'margin-bottom': '20px'}
-    ),
-    html.Div([
-        html.H6('Enter Number:'),
-        dcc.Input(id="user_5", type='text', placeholder='Enter number'),
-        html.Br(),
-        html.Br(),
-        html.Button('Ignored Call', id='ignore_call', className='sample_call_dataset_viewdata')],
+        dbc.FormGroup(
+            [
+                dbc.Label("Enter Number", html_for="example-email-row", width=2),
+                dbc.Col(
+                    dbc.Input(
+                        type="text", id="user_5", placeholder="Enter number", style={'width': '500px'}
+                    ),
+                    width=10,
+                ),
+            ],
+            row=True,
+        ),
+        dbc.Button('Ignored Call', id='ignore_call',  color='success', outline=True, className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div'
     ),
     html.Div(id='show_ignore_call', className='sample_call_dataset_show_all_users'),
@@ -464,29 +479,28 @@ ignore_call_detail = html.Div([
 ##### get most active time of a user
 active_time_user = html.Div([
     html.H1(className='sample_call_data_cellyzer', children='CELLYZER'),
-    html.Div([
-        html.H2(className='sample_call_dataset_Dashboard', children='Dashboard'),
-        html.Div([dcc.Link("Home", href='/')], className='index_page_dataset_div'),
-        html.Div([html.H5("Call Dataset")], className='index_page_dataset_div'),
-        html.Div([html.H6("Active Time Of a User")], className='index_page_dataset_div_all_user')
-    ],
-        className='sample_dataset_Dashboard_div'
-    ),
+    viewcalldatasetidebar,
     html.Div([
         html.Div([
-            html.H3('CALL  DATASET  VISUALIZATION', className='index_dataset_add_call_data')],
-            className='index_dataset_add_call_data_div'),
+            html.H3('CALL  DATASET  VISUALIZATION - ACTIVE TIME OF A SELECTED USER', className='index_dataset_add_call_data')],
+            className='sample_dataset_visualize', style={'width':'1000px'}),
     ]),
+    html.Hr(),
+    html.Br(),
     html.Div([
-        html.H4(children='Active Time Of a Selected User', className='sample_call_visualize_all_user')],
-        style={'padding-left': '30px', 'margin-top': '40px', 'margin-bottom': '20px'}
-    ),
-    html.Div([
-        html.H6('Enter User:'),
-        dcc.Input(id="user_4", type='text', placeholder='Enter number'),
-        html.Br(),
-        html.Br(),
-        html.Button('Active Time', id='active_time', className='sample_call_dataset_viewdata')],
+        dbc.FormGroup(
+            [
+                dbc.Label("Enter User", html_for="example-email-row", width=2),
+                dbc.Col(
+                    dbc.Input(
+                        type="text", id="user_4", placeholder="Enter number", style={'width': '500px'}
+                    ),
+                    width=10,
+                ),
+            ],
+            row=True,
+        ),
+        dbc.Button('Active Time', id='active_time', color='success', outline=True, className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div'
     ),
     html.Div(id='show_active_time', className='sample_call_dataset_show_all_users'),
@@ -496,25 +510,16 @@ active_time_user = html.Div([
 ##### visualize connections between all users
 visualize_connections = html.Div([
     html.H1(className='sample_call_data_cellyzer', children='CELLYZER'),
-    html.Div([
-        html.H2(className='sample_call_dataset_Dashboard', children='Dashboard'),
-        html.Div([dcc.Link("Home", href='/')], className='index_page_dataset_div'),
-        html.Div([html.H5("Call Dataset")], className='index_page_dataset_div'),
-        html.Div([html.H6("Visualize Connection")], className='index_page_dataset_div_all_user')
-    ],
-        className='sample_dataset_Dashboard_div'
-    ),
+    viewcalldatasetidebar,
     html.Div([
         html.Div([
-            html.H3('CALL  DATASET  VISUALIZATION', className='index_dataset_add_call_data')],
-            className='index_dataset_add_call_data_div'),
+            html.H3('CALL  DATASET  VISUALIZATION - VISUALIZE CONNECTIONS', className='index_dataset_add_call_data')],
+            className='sample_dataset_visualize'),
     ]),
+    html.Hr(),
+    html.Br(),
     html.Div([
-        html.H4(children='Visualize Connections Between All Users', className='sample_call_visualize_all_user')],
-        style={'padding-left': '30px', 'margin-top': '40px', 'margin-bottom': '20px'}
-    ),
-    html.Div([
-        html.Button('Visualize Connection', id='visualize_connection', className='sample_call_dataset_viewdata')],
+        dbc.Button('Visualize Connection', id='visualize_connection',color='danger', outline=True, className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div'
     ),
     html.Div(id='show_visualize_connection', className='sample_call_dataset_show_all_users'),
