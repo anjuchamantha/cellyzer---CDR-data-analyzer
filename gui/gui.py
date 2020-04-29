@@ -952,15 +952,31 @@ cell_dataset = html.Div([
     className='call_dataset_div'
 )
 
+celldatasetitems = [dac.SidebarMenuItem(id='add-cell-records',
+                                        label='Add Cell Record',
+                                        icon='arrow-circle-right'
+                                        ),
+                    ]
+
+celldatasetidebar = dac.Sidebar(
+    dac.SidebarMenu(
+        [
+            dac.SidebarHeader(children="Dataset Functions"),
+            dac.SidebarMenuItem(id='tab_cards', label='Add a Dataset', icon='box', children=celldatasetitems)
+        ]
+    ),
+    title='DASHBOARD',
+    color="primary",
+    brand_color="secondary",
+    url='/',
+    src="https://adminlte.io/themes/AdminLTE/dist/img/user2-160x160.jpg",
+    elevation=3,
+    opacity=0.8
+)
+
 cell_dataset_file = html.Div([
     html.H1(className='sample_cell_data_cellyzer', children='CELLYZER'),
-    html.Div([
-        html.H2(className='sample_cell_dataset_Dashboard', children='Dashboard'),
-        html.Div([dcc.Link("Home", href='/')], className='index_page_dataset_div'),
-        html.Div([html.H5("Cell Dataset")], className='index_dataset_Call_Dataset')
-    ],
-        className='sample_cell_dataset_Dashboard_div'
-    ),
+    celldatasetidebar,
     html.Div([
         html.Div([
             html.H3('CELL  DATASET  VISUALIZATION', className='index_dataset_add_call_data')],
@@ -983,28 +999,53 @@ cell_dataset_file = html.Div([
     className='sample_cell_dataset_div')
 
 ####### show all cell data
+
+viewcelldatasetitems = [dac.SidebarMenuItem(id='add-cell-records',
+                                            label='Add Cell Record',
+                                            icon='arrow-circle-right',
+                                            children=html.Div([
+                                                dcc.Link('◙ Show All Data', href='/Cell_Dataset/view_cell_data'),
+                                                html.Br(),
+                                                dcc.Link('◙ Records Of a Specific Cell',
+                                                         href='/Cell_Dataset/records_cell_id'),
+                                                html.Br(),
+                                                dcc.Link('◙ Population Around Cell',
+                                                         href='/Cell_Dataset/population_around_cell'),
+                                                html.Br(),
+                                                dcc.Link('◙ Trip Visualization', href='/Cell_Dataset/trip_visualize'),
+                                                html.Br(),
+                                            ], style={'font-size': '12px', 'margin-left': '10px'})),
+                        ]
+
+viewcelldatasetidebar = dac.Sidebar(
+    dac.SidebarMenu(
+        [
+            dac.SidebarHeader(children="Dataset Functions"),
+            dac.SidebarMenuItem(id='tab_cards', label='Add a Dataset', icon='box', children=viewcelldatasetitems)
+        ]
+    ),
+    title='DASHBOARD',
+    color="primary",
+    brand_color="secondary",
+    url='/',
+    src="https://adminlte.io/themes/AdminLTE/dist/img/user2-160x160.jpg",
+    elevation=3,
+    opacity=0.8
+)
+
 view_all_cell_data = html.Div([
     html.H1(className='sample_call_data_cellyzer', children='CELLYZER'),
-    html.Div([
-        html.H2(className='sample_call_dataset_Dashboard', children='Dashboard'),
-        html.Div([dcc.Link("Home", href='/')], className='index_page_dataset_div'),
-        html.Div([html.H5("Cell Dataset")], className='index_dataset_Call_Dataset'),
-        html.Div([html.H6("All Data")], className='index_page_dataset_div_all_user')
-    ],
-        className='sample_dataset_Dashboard_div'
-    ),
+    viewcelldatasetidebar,
     html.Div([
         html.Div([
-            html.H4('CELL  DATASET  VISUALIZATION', className='index_dataset_add_call_data')],
-            className='index_dataset_add_call_data_div'),
+            html.H4('CELL  DATASET  VISUALIZATION - GET ALL DATA', className='index_dataset_add_call_data')],
+            className='sample_dataset_visualize'),
     ]),
+    html.Hr(),
+    html.Br(),
     html.Div([
-        html.H4(children='Get All Data', className='sample_call_visualize_all_user')],
-        style={'padding-left': '30px', 'margin-top': '40px', 'margin-bottom': '20px'}
-    ),
-    html.Div([
-        html.Button('VIEW DATA', id='view_cell', className='sample_call_dataset_viewdata'),
-        html.Button('CLOSED DATA', id='close_cell', className='sample_call_dataset_close')],
+        dbc.Button('VIEW DATA', id='view_cell', outline=True, color='success', className='sample_call_dataset_viewdata'),
+        dbc.Button('CLOSED DATA', id='close_cell', outline=True, color='danger', className='sample_call_dataset_close')],
         className='sample_call_dataset_view_div'),
     html.Div(id='show_cell_data', className='sample_call_dataset_show'),
 ],
@@ -1013,29 +1054,28 @@ view_all_cell_data = html.Div([
 ###### get records of specific cell
 records_of_cell = html.Div([
     html.H1(className='sample_call_data_cellyzer', children='CELLYZER'),
-    html.Div([
-        html.H2(className='sample_call_dataset_Dashboard', children='Dashboard'),
-        html.Div([dcc.Link("Home", href='/')], className='index_page_dataset_div'),
-        html.Div([html.H5("Cell Dataset")], className='index_page_dataset_div'),
-        html.Div([html.H6("Records Cell")], className='index_page_dataset_div_all_user')
-    ],
-        className='sample_dataset_Dashboard_div'
-    ),
+    viewcelldatasetidebar,
     html.Div([
         html.Div([
-            html.H4('CELL  DATASET  VISUALIZATION', className='index_dataset_add_call_data')],
-            className='index_dataset_add_call_data_div'),
+            html.H4('CELL  DATASET  VISUALIZATION - RECORDS OF A SPECIFIC CELL', className='index_dataset_add_call_data')],
+            className='sample_dataset_visualize'),
     ]),
+    html.Hr(),
+    html.Br(),
     html.Div([
-        html.H3(children='Records Of a Specific Cell', className='sample_call_visualize_all_user')],
-        style={'padding-left': '30px', 'margin-top': '40px', 'margin-bottom': '20px'}
-    ),
-    html.Div([
-        html.H6('Enter Cell Id:'),
-        dcc.Input(id="cell_id", type='number', placeholder='Enter Id'),
-        html.Br(),
-        html.Br(),
-        html.Button('Records Cell', id='records_cell', className='sample_call_dataset_viewdata')],
+        dbc.FormGroup(
+            [
+                dbc.Label("Enter Cell ID", html_for="example-email-row", width=2),
+                dbc.Col(
+                    dbc.Input(
+                        type="number", id="cell_id", placeholder="Enter ID", style={'width': '500px'}
+                    ),
+                    width=10,
+                ),
+            ],
+            row=True,
+        ),
+        dbc.Button('Records Cell', id='records_cell', outline=True, color='success', className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div'
     ),
     html.Div(id='show_records_cell', className='ndex_dataset_cell_record_div'),
@@ -1045,25 +1085,16 @@ records_of_cell = html.Div([
 ######## page for get ppulation and visualize
 population_around_cell = html.Div([
     html.H1(className='sample_call_data_cellyzer', children='CELLYZER'),
-    html.Div([
-        html.H2(className='sample_call_dataset_Dashboard', children='Dashboard'),
-        html.Div([dcc.Link("Home", href='/')], className='index_page_dataset_div'),
-        html.Div([html.H5("Cell Dataset")], className='index_page_dataset_div'),
-        html.Div([html.H6("Population Around Cell")], className='index_page_dataset_div_all_user')
-    ],
-        className='sample_dataset_Dashboard_div'
-    ),
+    viewcelldatasetidebar,
     html.Div([
         html.Div([
-            html.H4('CELL  DATASET  VISUALIZATION', className='index_dataset_add_call_data')],
-            className='index_dataset_add_call_data_div'),
+            html.H4('CELL  DATASET  VISUALIZATION - POPULATION AROUND CELL AND VISUALIZE', className='index_dataset_add_call_data')],
+            className='sample_dataset_visualize', style={'width':'1000px'}),
     ]),
+    html.Hr(),
+    html.Br(),
     html.Div([
-        html.H3(children='Population Around Cell And Visualize', className='sample_call_visualize_all_user')],
-        style={'padding-left': '30px', 'margin-top': '40px', 'margin-bottom': '20px'}
-    ),
-    html.Div([
-        html.Button('Get Population', id='population_button', className='sample_call_dataset_viewdata')],
+        dbc.Button('Get Population', id='population_button', outline=True, color='danger', className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div'
     ),
     html.Div(id='show_population', className='sample_call_dataset_show_all_users'),
@@ -1073,29 +1104,28 @@ population_around_cell = html.Div([
 ######## page for trip visualization
 trip_visualize = html.Div([
     html.H1(className='sample_call_data_cellyzer', children='CELLYZER'),
-    html.Div([
-        html.H2(className='sample_call_dataset_Dashboard', children='Dashboard'),
-        html.Div([dcc.Link("Home", href='/')], className='index_page_dataset_div'),
-        html.Div([html.H5("Cell Dataset")], className='index_page_dataset_div'),
-        html.Div([html.H6("Trip Visualize")], className='index_page_dataset_div_all_user')
-    ],
-        className='sample_dataset_Dashboard_div'
-    ),
+    viewcelldatasetidebar,
     html.Div([
         html.Div([
-            html.H4('CELL  DATASET  VISUALIZATION', className='index_dataset_add_call_data')],
-            className='index_dataset_add_call_data_div'),
+            html.H4('CELL  DATASET  VISUALIZATION - TRIP VISAULIZATION', className='index_dataset_add_call_data')],
+            className='sample_dataset_visualize'),
     ]),
+    html.Hr(),
+    html.Br(),
     html.Div([
-        html.H3(children='Trip Visualization', className='sample_call_visualize_all_user')],
-        style={'padding-left': '30px', 'margin-top': '40px', 'margin-bottom': '20px'}
-    ),
-    html.Div([
-        html.H6('Enter user number:'),
-        dcc.Input(id="trip_user", type='text', placeholder='Enter number'),
-        html.Br(),
-        html.Br(),
-        html.Button('Trip Visualize', id='trip_visualize_button', className='sample_call_dataset_viewdata')],
+        dbc.FormGroup(
+            [
+                dbc.Label("Enter user number:", html_for="example-email-row", width=2),
+                dbc.Col(
+                    dbc.Input(
+                        type="number", id="trip_user", placeholder="Enter number", style={'width': '500px'}
+                    ),
+                    width=10,
+                ),
+            ],
+            row=True,
+        ),
+        dbc.Button('Trip Visualize', id='trip_visualize_button', outline=True, color='danger', className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div'
     ),
     html.Div(id='show_trip_visualize', className='sample_call_dataset_show_all_users'),
