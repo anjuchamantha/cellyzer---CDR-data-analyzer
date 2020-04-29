@@ -306,6 +306,8 @@ view_all_call_data = html.Div([
             html.H3('CALL  DATASET  VISUALIZATION - GET ALL DATA', className='index_dataset_add_call_data')],
             className='sample_dataset_visualize'),
     ]),
+    html.Hr(),
+    html.Br(),
     html.Div([
         dbc.Button('VIEW DATA', outline=True, id='view', color='success', className='sample_call_dataset_viewdata'),
         dbc.Button('CLOSED DATA', outline=True, id='close', color='danger', className='sample_call_dataset_close')],
@@ -323,6 +325,8 @@ get_all_users = html.Div([
             html.H3('CALL  DATASET  VISUALIZATION - GET ALL USERS', className='index_dataset_add_call_data')],
             className='sample_dataset_visualize')
     ]),
+    html.Hr(),
+    html.Br(),
     html.Div([
         dbc.Button('Get All Users', outline=True, color='success', id='get_users', className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div'
@@ -340,6 +344,8 @@ connected_users = html.Div([
             html.H3('CALL  DATASET  VISUALIZATION - SHOW CONNECTED USERS', className='index_dataset_add_call_data')],
             className='sample_dataset_visualize'),
     ]),
+    html.Hr(),
+    html.Br(),
     html.Div([
         dbc.FormGroup(
             [
