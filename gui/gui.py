@@ -159,26 +159,6 @@ call_dataset = html.Div([
                 "Do not enter file name to the path",
                 style={'font-size': '17px', 'color': 'red', 'padding': '10px'}
             ),
-            dbc.FormGroup(
-                [
-                    dbc.Label("File Type", html_for="example-radios-row", width=2),
-                    dbc.Col(
-                        dbc.RadioItems(
-                            id="file-types-col",
-                            options=[
-                                {"label": "csv", "value": 1},
-                                {"label": "excel", "value": 2},
-                                {
-                                    "label": "json",
-                                    "value": 3,
-                                },
-                            ],
-                        ),
-                        width=10,
-                    ),
-                ],
-                row=True,
-            ),
         ],
             style={
                 'padding-left': '30px'
@@ -200,7 +180,10 @@ call_dataset = html.Div([
 
 calldatasetitems = [dac.SidebarMenuItem(id='add-call-records',
                                         label='Add Call Record',
-                                        icon='arrow-circle-right'
+                                        icon='arrow-circle-right',
+                                        children=[
+                                           html.Div(id="file_name", style={"margin-left": "40px", 'color':'white'})
+                                       ]
                                         ),
                     ]
 
@@ -228,28 +211,8 @@ call_dataset_file = html.Div([
             html.H3('CALL  DATASET  VISUALIZATION', className='index_dataset_add_call_data')],
             className='sample_dataset_visualize'),
     ]),
-    html.Div([
-        html.H4(id="file_name")
-    ]),
-    html.Div([
-        dcc.Link('◙ Show All Data', href='/Call_Dataset/view_data'),
-        html.Br(),
-        dcc.Link('◙ Show All Users', href='/Call_Dataset/all_users'),
-        html.Br(),
-        dcc.Link('◙ Show Connected Users', href='/Call_Dataset/connected_users'),
-        html.Br(),
-        dcc.Link('◙ Call Records Between Two Selected Users', href='/Call_Dataset/records_between_users'),
-        html.Br(),
-        dcc.Link('◙ Close Contacts Of Selected Users', href='/Call_Dataset/close_contacts'),
-        html.Br(),
-        dcc.Link('◙ Ignored Call Details Of a User', href='/Call_Dataset/ignored_call'),
-        html.Br(),
-        dcc.Link('◙ Active Time Of a User', href='/Call_Dataset/active_time'),
-        html.Br(),
-        dcc.Link('◙ Visualize Connections Between All Users', href='/Call_Dataset/visualize_connection'),
-
-    ], className='sample_call_data_visualize_option'),
-],
+    html.Div(id='call_option', className='sample_call_data_visualize_option'),
+    ],
     className='sample_call_dataset_div')
 
 ############ page for view all call data
@@ -535,34 +498,87 @@ visualize_connections = html.Div([
 # over call dataset
 
 call_data_list = []
+update_call_data = []
+call_option=[]
+call_name =[]
 
-
+###### add call data
 @app.callback(Output('call-data', 'children'),
-              [
-                  Input('upload-data_call', 'filename'),
-                  Input('filepath', 'value')
-              ])
+            [   
+                Input('upload-data_call', 'filename'),
+                Input('filepath', 'value')
+            ])
 def add_call_dataset(filename, filepath):
     try:
-        filename = filename[0]
-        path_File = os.path.join(filepath, filename)
-        call_data_list.append([filename, path_File])
-        output_call = []
+        filename=filename[0]
+        path_File=os.path.join(filepath, filename)
+        call_data_list.append([filename, path_File])    
+        file_part=filename.split('.')
+        call_name.append(file_part[0])
+        option=[]
+        option.append(dcc.Link('◙ Show All Data', href='/Call_Dataset/{}/view_data'.format(file_part[0])))
+        option.append(html.Br())
+        option.append(dcc.Link('◙ Show All Users', href='/Call_Dataset/{}/all_users'.format(file_part[0])))
+        option.append(html.Br())
+        option.append(dcc.Link('◙ Show Connected Users', href='/Call_Dataset/{}/connected_users'.format(file_part[0])))
+        option.append(html.Br())
+        option.append(dcc.Link('◙ Call Records Between Two Selected Users', href='/Call_Dataset/{}/records_between_users'.format(file_part[0]))) 
+        option.append(html.Br()) 
+        option.append(dcc.Link('◙ Close Contacts Of Selected Users', href='/Call_Dataset/{}/close_contacts'.format(file_part[0])))
+        option.append(html.Br()) 
+        option.append(dcc.Link('◙ Ignored Call Details Of a User', href='/Call_Dataset/{}/ignored_call'.format(file_part[0]))) 
+        option.append(html.Br()) 
+        option.append(dcc.Link('◙ Active Time Of a User', href='/Call_Dataset/{}/active_time'.format(file_part[0]))) 
+        option.append(html.Br()) 
+        option.append(dcc.Link('◙ Visualize Connections Between All Users', href='/Call_Dataset/{}/visualize_connection'.format(file_part[0]))) 
+        call_option.append([file_part[0], option])
+        output_call=[]
         for x in call_data_list:
-            a = x[0].split('.')
-            output_call.append(dcc.Link(a[0], href='/Call_Dataset/sample_call'))
+            a=x[0].split('.')
             output_call.append(html.Br())
-            # output_call.append(dcc.Link(a[0], href='/Call_Dataset/'+str(a[0]), id='link'))
-        name = html.Div(children=output_call)
-        return name
+            output_call.append(dcc.Link(a[0], href='/Call_Dataset/'+str(a[0])))
+        name=html.Div(children=output_call)
+        return name    
 
     except Exception as e:
         print(e)
+        output_call=[]
+        for x in call_data_list:
+            a=x[0].split('.')
+            output_call.append(html.Br())
+            output_call.append(dcc.Link(a[0], href='/Call_Dataset/'+str(a[0])))
+        name=html.Div(children=output_call)
+        return name  
 
+######## return file name to the next page
+@app.callback( dash.dependencies.Output('file_name', 'children'),              
+              [   dash.dependencies.Input('url', 'pathname')
+            ]) 
+def file_name(pathname): 
+    file_call = pathname.split('/')
+    for a in call_option:
+        if file_call[-1] == a[0]:
+            for data in call_data_list:
+                dataNew= data[0].split('.')
+                if file_call[-1]== dataNew[0]:
+                    update_call_data.append(data)
+                    
+            return file_call[-1]
+
+######## get call option
+@app.callback( dash.dependencies.Output('call_option', 'children'),
+            [   dash.dependencies.Input('url', 'pathname')
+            ]) 
+def file_name2(pathname): 
+    file_call = pathname.split('/')
+    for a in call_option:
+        if file_call[-1] == a[0]:
+            return a[1]
 
 ######### view call dataset
 @app.callback(Output('show_data', 'children'),
-              [Input('view', 'n_clicks'), Input('close', 'n_clicks')
+              [ Input('view', 'n_clicks'),
+                Input('close', 'n_clicks')
                ])
 def update_table(n_clicks, click2):
     table = html.Div()
@@ -570,8 +586,8 @@ def update_table(n_clicks, click2):
         return None
 
     if n_clicks is not None:
-        filepath = call_data_list[0][1]
-        filename = call_data_list[0][0]
+        filepath = update_call_data[-1][1]
+        filename = update_call_data[-1][0]
         split_name = filename.split('.')
         file_type = split_name[-1]
         call_data = cz.read_call(filepath, file_type)
@@ -623,8 +639,8 @@ def close_data(n_clicks):
 def show_all_users(n_clicks):
     table = html.Div()
     if n_clicks is not None:
-        filepath = call_data_list[0][1]
-        filename = call_data_list[0][0]
+        filepath = update_call_data[-1][1]
+        filename = update_call_data[-1][0]
         split_name = filename.split('.')
         file_type = split_name[-1]
         call_data = cz.read_call(filepath, file_type)
@@ -656,8 +672,8 @@ def show_all_users(n_clicks):
 def show_connected_users(n_clicks, searchUser):
     table = html.Div()
     if n_clicks is not None:
-        filepath = call_data_list[0][1]
-        filename = call_data_list[0][0]
+        filepath = update_call_data[-1][1]
+        filename = update_call_data[-1][0]
         split_name = filename.split('.')
         file_type = split_name[-1]
         call_data = cz.read_call(filepath, file_type)
@@ -691,8 +707,8 @@ def between_users_records(user_1, user_2, click):
     table = html.Div()
 
     if click is not None:
-        filepath = call_data_list[0][1]
-        filename = call_data_list[0][0]
+        filepath = update_call_data[-1][1]
+        filename = update_call_data[-1][0]
         split_name = filename.split('.')
         file_type = split_name[-1]
         call_data = cz.read_call(filepath, file_type)
@@ -735,8 +751,8 @@ def between_users_records(user_1, user_2, click):
 def show_close_contatcs(user_3, contact, n_clicks):
     table = html.Div()
     if n_clicks is not None:
-        filepath = call_data_list[0][1]
-        filename = call_data_list[0][0]
+        filepath = update_call_data[-1][1]
+        filename = update_call_data[-1][0]
         split_name = filename.split('.')
         file_type = split_name[-1]
         call_data = cz.read_call(filepath, file_type)
@@ -774,8 +790,8 @@ def show_close_contatcs(user_3, contact, n_clicks):
                ])
 def show_active_time(n_clicks, user_4):
     if n_clicks is not None:
-        filepath = call_data_list[0][1]
-        filename = call_data_list[0][0]
+        filepath = update_call_data[-1][1]
+        filename = update_call_data[-1][0]
         split_name = filename.split('.')
         file_type = split_name[-1]
         call_data = cz.read_call(filepath, file_type)
@@ -791,8 +807,8 @@ def show_active_time(n_clicks, user_4):
 def show_ignore_call(user_5, n_clicks):
     table = html.Div()
     if n_clicks is not None:
-        filepath = call_data_list[0][1]
-        filename = call_data_list[0][0]
+        filepath = update_call_data[-1][1]
+        filename = update_call_data[-1][0]
         split_name = filename.split('.')
         file_type = split_name[-1]
         call_data = cz.read_call(filepath, file_type)
@@ -826,8 +842,8 @@ def show_ignore_call(user_5, n_clicks):
                ])
 def show_visualize_connection(n_clicks):
     if n_clicks is not None:
-        filepath = call_data_list[0][1]
-        filename = call_data_list[0][0]
+        filepath = update_call_data[-1][1]
+        filename = update_call_data[-1][0]
         split_name = filename.split('.')
         file_type = split_name[-1]
         call_data = cz.read_call(filepath, file_type)
@@ -912,40 +928,24 @@ cell_dataset = html.Div([
                 "Do not enter file name to the path",
                 style={'font-size': '17px', 'color': 'red', 'padding': '10px'}
             ),
-            dbc.FormGroup(
-                [
-                    dbc.Label("File Type", html_for="example-radios-row", width=2),
-                    dbc.Col(
-                        dbc.RadioItems(
-                            id="file-types-col",
-                            options=[
-                                {"label": "csv", "value": 1},
-                                {"label": "excel", "value": 2},
-                                {
-                                    "label": "json",
-                                    "value": 3,
-                                },
-                            ],
-                        ),
-                        width=10,
-                    ),
-                ],
-                row=True,
-            ),
         ],
             style={
                 'padding-left': '30px'
             }),
         html.Hr(),
         dcc.Upload(id='upload-data_cell',
-                   children=html.Div([
-                       html.Button('ADD CELL DATA', className='index_celldata_add_button'
-                                   )
-                   ]),
-                   className='index_cell_dataset_upload_data',
-                   # Allow multiple files to be uploaded
-                   multiple=True
-                   ),
+            children=html.Div([
+                html.Button('SELECT CELL DATA', className='index_celldata_add_button')]),
+            className='index_cell_dataset_upload_data',
+            multiple=True),
+        html.Div([
+            html.H5('Please add call dataset before adding cell dataset', style={'font-size': '15px'}), 
+            html.Button('SELECT CALL DATA', id='call_for_cell' ,className='index_celldata_add_button'),
+            dcc.Dropdown(id='select_call', style={'width': '200px', 'float':'right', 'color':'red'}), 
+            ], style={'padding-right': '300px'}),
+        html.Div([
+            html.Button('ADD DATA', id='show_cell_dash' ,className='index_celldata_add_button'),
+            ])
     ], className='call_page_welcome_div'),
 
 ],
@@ -954,7 +954,10 @@ cell_dataset = html.Div([
 
 celldatasetitems = [dac.SidebarMenuItem(id='add-cell-records',
                                         label='Add Cell Record',
-                                        icon='arrow-circle-right'
+                                        icon='arrow-circle-right',
+                                        children=[
+                                           html.Div(id="file_name_cell", style={"margin-left": "40px", 'color':'white'})
+                                       ]
                                         ),
                     ]
 
@@ -982,20 +985,8 @@ cell_dataset_file = html.Div([
             html.H3('CELL  DATASET  VISUALIZATION', className='index_dataset_add_call_data')],
             className='sample_dataset_visualize'),
     ]),
-    html.Div([
-        html.H4(id="file_name")
-    ]),
-    html.Div([
-        dcc.Link('◙ Show All Data', href='/Cell_Dataset/view_cell_data'),
-        html.Br(),
-        dcc.Link('◙ Records Of a Specific Cell', href='/Cell_Dataset/records_cell_id'),
-        html.Br(),
-        dcc.Link('◙ Population Around Cell', href='/Cell_Dataset/population_around_cell'),
-        html.Br(),
-        dcc.Link('◙ Trip Visualization', href='/Cell_Dataset/trip_visualize'),
-        html.Br(),
-    ], className='sample_call_data_visualize_option'),
-],
+    html.Div(id='cell_option', className='sample_call_data_visualize_option'),
+    ],
     className='sample_cell_dataset_div')
 
 ####### show all cell data
@@ -1133,35 +1124,64 @@ trip_visualize = html.Div([
     className='sample_call_dataset_div')
 
 cell_data_list = []
-
+update_cell_data = []
+cell_option = []
 
 ####### add cell data
 @app.callback(Output('cell-data', 'children'),
-              [
-                  Input('upload-data_cell', 'filename'),
-                  Input('filepath_cell', 'value')
-              ])
-def add_cell_dataset(filename, filepath):
+
+            [   Input('select_call', 'value'),
+                Input('upload-data_cell', 'filename'),
+                Input('filepath_cell', 'value'),
+                Input('show_cell_dash', 'n_clicks')
+            ])
+def add_cell_dataset(call_file, filename, filepath, n_clicks):
     try:
-        filename = filename[0]
-        path_File = os.path.join(filepath, filename)
-        cell_data_list.append([filename, path_File])
-        output_cell = []
-        for x in cell_data_list:
-            a = x[0].split('.')
-            output_cell.append(dcc.Link(a[0], href='/Cell_Dataset/sample_cell'))
-            output_cell.append(html.Br())
-        name_cell = html.Div(
-            children=output_cell
-        )
-        return name_cell
+        if n_clicks is not None:
+            filename=filename[0]
+            path_File=os.path.join(filepath, filename)
+            for call in call_data_list:
+                f_name= call[0].split('.')
+                if call_file == f_name[0]:
+                    cell_data_list.append([filename, path_File, call])
+                    print(cell_data_list)
+                    break
+            
+            
+            file_part=filename.split('.')
+            option=[]
+            option.append(dcc.Link('◙ Show All Data', href='/Cell_Dataset/{}/view_cell_data'.format(file_part[0])))
+            option.append(html.Br())
+            option.append(dcc.Link('◙ Records Of a Specific Cell', href='/Cell_Dataset/{}/records_cell_id'.format(file_part[0])))
+            option.append(html.Br())
+            option.append(dcc.Link('◙ Population Around Cell', href='/Cell_Dataset/{}/population_around_cell'.format(file_part[0])))
+            option.append(html.Br())
+            option.append(dcc.Link('◙ Trip Visualization', href='/Cell_Dataset/{}/trip_visualize'.format(file_part[0]))) 
+            cell_option.append([file_part[0], option])
+            output_cell=[]
+            for x in cell_data_list:
+                a=x[0].split('.')
+                output_cell.append(dcc.Link(a[0], href='/Cell_Dataset/'+str(a[0])))
+                output_cell.append(html.Br())
+            name_cell=html.Div(children = output_cell)
+            return name_cell
 
     except Exception as e:
         print(e)
+        output_cell=[]
+        for x in cell_data_list:
+            a=x[0].split('.')
+            output_cell.append(dcc.Link(a[0], href='/Cell_Dataset/'+str(a[0])))
+            output_cell.append(html.Br())
+        name_cell=html.Div(children = output_cell)
+        return name_cell
 
 
+
+########### show cell data
 @app.callback(Output('show_cell_data', 'children'),
-              [Input('view_cell', 'n_clicks'), Input('close_cell', 'n_clicks')
+              [ Input('view_cell', 'n_clicks'), 
+                Input('close_cell', 'n_clicks')
                ])
 def view_cell_data(n_clicks, click2):
     table = html.Div()
@@ -1169,10 +1189,10 @@ def view_cell_data(n_clicks, click2):
         return None
 
     if n_clicks is not None:
-        filepath = cell_data_list[0][1]
-        filename = cell_data_list[0][0]
-        filepath_call = call_data_list[0][1]
-        filename_call = call_data_list[0][0]
+        filepath = update_cell_data[-1][1]
+        filename = update_cell_data[-1][0]
+        filepath_call = update_cell_data[-1][2][1]
+        filename_call = update_cell_data[-1][2][0]
         split_call_name = filename_call.split('.')
         file_type_call = split_call_name[-1]
         call_data = cz.read_call(filepath_call, file_type_call)
@@ -1218,6 +1238,16 @@ def close_cell_data(n_clicks):
     if n_clicks is not None:
         return None
 
+######## select call dataset using dropdown
+@app.callback(Output('select_call', 'options'),
+            [   Input('call_for_cell', 'n_clicks')
+            ])
+def get_call_for_cell(n_clicks):
+    if n_clicks is not None:
+        add_call=[]
+        for name in call_name:
+            add_call.append({'label':name, 'value': name})
+        return add_call
 
 ###### get cell_id records
 @app.callback(Output('show_records_cell', 'children'),
@@ -1226,10 +1256,10 @@ def close_cell_data(n_clicks):
                ])
 def get_cell_records(n_clicks, cell_id):
     if n_clicks is not None:
-        filepath = cell_data_list[0][1]
-        filename = cell_data_list[0][0]
-        filepath_call = call_data_list[0][1]
-        filename_call = call_data_list[0][0]
+        filepath = update_cell_data[-1][1]
+        filename = update_cell_data[-1][0]
+        filepath_call = update_cell_data[-1][2][1]
+        filename_call = update_cell_data[-1][2][0]
         split_call_name = filename_call.split('.')
         file_type_call = split_call_name[-1]
         call_data = cz.read_call(filepath_call, file_type_call)
@@ -1238,7 +1268,7 @@ def get_cell_records(n_clicks, cell_id):
         antana_dataset = cz.read_cell(filepath, filepath_call, call_data, file_type)
         record_cell = antana_dataset.get_cell_records(cell_id)
         cell = record_cell.get_cell_id()
-        print(record_cell)
+
         return html.H5('Cell_id: ' + cell, className='index_dataset_add_call_data')
 
 
@@ -1248,10 +1278,10 @@ def get_cell_records(n_clicks, cell_id):
                ])
 def get_population(n_clicks):
     if n_clicks is not None:
-        filepath = cell_data_list[0][1]
-        filename = cell_data_list[0][0]
-        filepath_call = call_data_list[0][1]
-        filename_call = call_data_list[0][0]
+        filepath = update_cell_data[-1][1]
+        filename = update_cell_data[-1][0]
+        filepath_call = update_cell_data[-1][2][1]
+        filename_call = update_cell_data[-1][2][0]
         split_call_name = filename_call.split('.')
         file_type_call = split_call_name[-1]
         call_data = cz.read_call(filepath_call, file_type_call)
@@ -1269,10 +1299,10 @@ def get_population(n_clicks):
                ])
 def trip_visualization(user, n_clicks):
     if n_clicks is not None:
-        filepath = cell_data_list[0][1]
-        filename = cell_data_list[0][0]
-        filepath_call = call_data_list[0][1]
-        filename_call = call_data_list[0][0]
+        filepath = update_cell_data[-1][1]
+        filename = update_cell_data[-1][0]
+        filepath_call = update_cell_data[-1][2][1]
+        filename_call = update_cell_data[-1][2][0]
         split_call_name = filename_call.split('.')
         file_type_call = split_call_name[-1]
         call_data = cz.read_call(filepath_call, file_type_call)
@@ -1283,10 +1313,36 @@ def trip_visualization(user, n_clicks):
 
         return cz.visualization.trip_visualization(trip_visualize)
 
+######## return cell file name to the next page
+@app.callback( dash.dependencies.Output('file_name_cell', 'children'),              
+              [   dash.dependencies.Input('url', 'pathname')
+            ]) 
+def file_name_cell(pathname): 
+    file_cell = pathname.split('/')
+    for a in cell_option:
+        if file_cell[-1] == a[0]:
+            print('hess')
+            for data in cell_data_list:
+                print(data)
+                dataNew= data[0].split('.')
+                if file_cell[-1]== dataNew[0]:
+                    update_cell_data.append(data)
+                    
+            print(update_cell_data)
+            return file_cell[-1]
 
+######## get cell option
+@app.callback( dash.dependencies.Output('cell_option', 'children'),
+            [   dash.dependencies.Input('url', 'pathname')
+            ]) 
+def cell_option_visu(pathname): 
+    file_cell = pathname.split('/')
+    for a in cell_option:
+        if file_cell[-1] == a[0]:
+            return a[1]
 # over cell
-###########################################################################
-###########################################################################
+################################################################################################
+################################################################################################
 ## Page for message dataset
 
 messagerecorditems = [dac.SidebarMenuItem(id='add-message-records',
@@ -1344,26 +1400,26 @@ message_dataset = html.Div([
                 "Do not enter file name to the path",
                 style={'font-size': '17px', 'color': 'red', 'padding': '10px'}
             ),
-            dbc.FormGroup(
-                [
-                    dbc.Label("File Type", html_for="example-radios-row", width=2),
-                    dbc.Col(
-                        dbc.RadioItems(
-                            id="file-types-col",
-                            options=[
-                                {"label": "csv", "value": 1},
-                                {"label": "excel", "value": 2},
-                                {
-                                    "label": "json",
-                                    "value": 3,
-                                },
-                            ],
-                        ),
-                        width=10,
-                    ),
-                ],
-                row=True,
-            ),
+            # dbc.FormGroup(
+            #     [
+            #         dbc.Label("File Type", html_for="example-radios-row", width=2),
+            #         dbc.Col(
+            #             dbc.RadioItems(
+            #                 id="file-types-col",
+            #                 options=[
+            #                     {"label": "csv", "value": 1},
+            #                     {"label": "excel", "value": 2},
+            #                     {
+            #                         "label": "json",
+            #                         "value": 3,
+            #                     },
+            #                 ],
+            #             ),
+            #             width=10,
+            #         ),
+            #     ],
+            #     row=True,
+            # ),
         ],
             style={
                 'padding-left': '30px'
@@ -1371,9 +1427,8 @@ message_dataset = html.Div([
         html.Hr(),
         dcc.Upload(id='upload-data_message',
                    children=html.Div([
-                       html.Button('ADD MESSAGE DATA', className='index_messagedata_add_button'
-                                   )
-                   ]),
+                       html.Button('ADD MESSAGE DATA', className='index_messagedata_add_button')
+                        ]),
                    className='index_message_dataset_upload_data',
                    # Allow multiple files to be uploaded
                    multiple=True
@@ -1397,21 +1452,10 @@ message_data_file = html.Div([
             className='sample_dataset_visualize'),
     ]),
     html.Div([
-        html.H4(id="file_name")
+        html.H4(id="file_name_message")
     ]),
-    html.Div([
-        dcc.Link('◙ Show All Message Data', href='/Message_Dataset/view_data'),
-        html.Br(),
-        dcc.Link('◙ Show All Users', href='/Message_Dataset/all_users'),
-        html.Br(),
-        dcc.Link('◙ Show Connected Users', href='/Message_Dataset/connected_users'),
-        html.Br(),
-        dcc.Link('◙ Call Records Between Two Selected Users', href='/Message_Dataset/records_between_users'),
-        html.Br(),
-        dcc.Link('◙ Visualize Connections Between All Users', href='/Message_Dataset/visualize_connection'),
-
-    ], className='sample_call_data_visualize_option'),
-],
+    html.Div(id='message_option', className='sample_call_data_visualize_option'),
+    ],
     className='sample_call_dataset_div')
 
 ############ page for view all message data
@@ -1567,31 +1611,50 @@ visualize_message_connections = html.Div([
     className='sample_call_dataset_div')
 
 message_data_list = []
+update_message_data = []
+message_option=[]
 
 
-######## add message dataset
+######## add message dataset 
 @app.callback(Output('message-data', 'children'),
-              [
-                  Input('upload-data_message', 'filename'),
-                  Input('filepath_message', 'value')
-              ])
+            [
+                Input('upload-data_message', 'filename'),
+                Input('filepath_message', 'value')
+            ])
 def add_message_dataset(filename, filepath):
     try:
-        filename = filename[0]
-        path_File = os.path.join(filepath, filename)
+        filename=filename[0]
+        path_File=os.path.join(filepath, filename)
         message_data_list.append([filename, path_File])
-        output_message = []
+        file_part=filename.split('.')
+        option=[]
+        option.append(dcc.Link('◙ Show All Message Data', href='/Message_Dataset/{}/view_data'.format(file_part[0])))
+        option.append(html.Br())
+        option.append(dcc.Link('◙ Show All Users', href='/Message_Dataset/{}/all_users'.format(file_part[0])))
+        option.append(html.Br())
+        option.append(dcc.Link('◙ Show Connected Users', href='/Message_Dataset/{}/connected_users'.format(file_part[0])))
+        option.append(html.Br())
+        option.append(dcc.Link('◙ Message Records Between Two Selected Users', href='/Message_Dataset/{}/records_between_users'.format(file_part[0]))) 
+        option.append(html.Br()) 
+        option.append(dcc.Link('◙ Visualize Connections Between All Users', href='/Message_Dataset/{}/visualize_connection'.format(file_part[0]))) 
+        message_option.append([file_part[0], option])
+        output_message=[]
         for x in message_data_list:
-            a = x[0].split('.')
-            output_message.append(dcc.Link(a[0], href='/Message_Dataset/sample_message'))
+            a=x[0].split('.')
+            output_message.append(dcc.Link(a[0], href='/Message_Dataset/'+str(a[0])))
             output_message.append(html.Br())
-        name_message = html.Div(
-            children=output_message
-        )
+        name_message=html.Div(children=output_message)
         return name_message
 
     except Exception as e:
         print(e)
+        output_message=[]
+        for x in message_data_list:
+            a=x[0].split('.')
+            output_message.append(dcc.Link(a[0], href='/Message_Dataset/'+str(a[0])))
+            output_message.append(html.Br())
+        name_message=html.Div(children=output_message)
+        return name_message
 
 
 ####### view all message data
@@ -1604,8 +1667,8 @@ def view_message_data(n_clicks, click2):
         return None
 
     if n_clicks is not None:
-        filename_message = message_data_list[0][0]
-        filepath_message = message_data_list[0][1]
+        filename_message = update_message_data[-1][0]
+        filepath_message = update_message_data[-1][1]
         split_name = filename_message.split('.')
         file_type = split_name[-1]
         message_data = cz.read_msg(filepath_message, file_type)
@@ -1657,8 +1720,8 @@ def close_message_data(n_clicks):
 def show_all_message_users(n_clicks):
     table = html.Div()
     if n_clicks is not None:
-        filename_message = message_data_list[0][0]
-        filepath_message = message_data_list[0][1]
+        filename_message = update_message_data[-1][0]
+        filepath_message = update_message_data[-1][1]
         split_name = filename_message.split('.')
         file_type = split_name[-1]
         message_data = cz.read_msg(filepath_message, file_type)
@@ -1690,8 +1753,8 @@ def show_all_message_users(n_clicks):
 def show_connected_message_users(n_clicks, searchUser):
     table = html.Div()
     if n_clicks is not None:
-        filename_message = message_data_list[0][0]
-        filepath_message = message_data_list[0][1]
+        filename_message = update_message_data[-1][0]
+        filepath_message = update_message_data[-1][1]
         split_name = filename_message.split('.')
         file_type = split_name[-1]
         message_data = cz.read_msg(filepath_message, file_type)
@@ -1725,8 +1788,8 @@ def between_message_users_records(user_1, user_2, click):
     table = html.Div()
 
     if click is not None:
-        filename_message = message_data_list[0][0]
-        filepath_message = message_data_list[0][1]
+        filename_message = update_message_data[-1][0]
+        filepath_message = update_message_data[-1][1]
         split_name = filename_message.split('.')
         file_type = split_name[-1]
         message_data = cz.read_msg(filepath_message, file_type)
@@ -1768,8 +1831,8 @@ def show_visualize_message_connection(n_clicks):
     table = html.Div()
 
     if n_clicks is not None:
-        filename_message = message_data_list[0][0]
-        filepath_message = message_data_list[0][1]
+        filename_message = update_message_data[-1][0]
+        filepath_message = update_message_data[-1][1]
         split_name = filename_message.split('.')
         file_type = split_name[-1]
         message_data = cz.read_msg(filepath_message, file_type)
@@ -1796,61 +1859,87 @@ def show_visualize_message_connection(n_clicks):
         ])
         return table
 
+######## return message file name to the next page
+@app.callback( dash.dependencies.Output('file_name_message', 'children'),              
+              [   dash.dependencies.Input('url', 'pathname')
+            ]) 
+def file_name_message(pathname): 
+    file_message = pathname.split('/')
+    for a in message_option:
+        if file_message[-1] == a[0]:
+            for data in message_data_list:
+                dataNew= data[0].split('.')
+                if file_message[-1]== dataNew[0]:
+                    update_message_data.append(data)
+                    
+            return file_message[-1]
+
+######## get message option
+@app.callback( dash.dependencies.Output('message_option', 'children'),
+            [   dash.dependencies.Input('url', 'pathname')
+            ]) 
+def message_option_visu(pathname): 
+    file_message = pathname.split('/')
+    for a in message_option:
+        if file_message[-1] == a[0]:
+            return a[1]
+
 
 # over message dataset
-
+##################################################################################
 
 @app.callback(dash.dependencies.Output('page-content', 'children'),
-              [dash.dependencies.Input('url', 'pathname')
-               ])
+            [   dash.dependencies.Input('url', 'pathname')
+            ])       
 def display_page(pathname):
-    if pathname == '/Call_Dataset':
+    path_set = pathname.split('/')
+    if pathname=='/Call_Dataset':
         return call_dataset
-    elif pathname == '/Cell_Dataset':
+    elif pathname=='/Cell_Dataset':
         return cell_dataset
-    elif pathname == '/Message_Dataset':
+    elif pathname=='/Message_Dataset':
         return message_dataset
-    elif pathname == '/Call_Dataset/view_data':
-        return view_all_call_data
-    elif pathname == '/Call_Dataset/all_users':
-        return get_all_users
-    elif pathname == '/Call_Dataset/connected_users':
-        return connected_users
-    elif pathname == '/Call_Dataset/records_between_users':
-        return records_between_users
-    elif pathname == '/Call_Dataset/close_contacts':
-        return close_contacts
-    elif pathname == '/Call_Dataset/ignored_call':
-        return ignore_call_detail
-    elif pathname == '/Call_Dataset/active_time':
-        return active_time_user
-    elif pathname == '/Call_Dataset/visualize_connection':
-        return visualize_connections
-    elif pathname == '/Call_Dataset/sample_call':
+    elif len(path_set)==3 and path_set[-2]== 'Call_Dataset':
         return call_dataset_file
-    elif pathname == '/Cell_Dataset/sample_cell':
+    elif len(path_set)==4 and path_set[-3]== 'Call_Dataset' and path_set[-1]=='view_data':
+        return view_all_call_data
+    elif len(path_set)==4 and path_set[-3]== 'Call_Dataset' and path_set[-1]=='all_users':
+        return get_all_users
+    elif len(path_set)==4 and path_set[-3]== 'Call_Dataset' and path_set[-1]=='connected_users':
+        return connected_users  
+    elif len(path_set)==4 and path_set[-3]== 'Call_Dataset' and path_set[-1]== 'records_between_users':
+        return  records_between_users
+    elif len(path_set)==4 and path_set[-3]== 'Call_Dataset' and path_set[-1]== 'close_contacts':
+        return close_contacts
+    elif len(path_set)==4 and path_set[-3]== 'Call_Dataset' and path_set[-1]== 'ignored_call':
+        return ignore_call_detail
+    elif len(path_set)==4 and path_set[-3]== 'Call_Dataset' and path_set[-1]== 'active_time':
+        return active_time_user
+    elif len(path_set)==4 and path_set[-3]== 'Call_Dataset' and path_set[-1]== 'visualize_connection':
+        return visualize_connections
+    elif len(path_set)==3 and  path_set[-2]== 'Cell_Dataset':
         return cell_dataset_file
-    elif pathname == '/Cell_Dataset/view_cell_data':
+    elif len(path_set)==4 and path_set[-3]== 'Cell_Dataset' and path_set[-1]=='view_cell_data':
         return view_all_cell_data
-    elif pathname == "/Cell_Dataset/records_cell_id":
+    elif len(path_set)==4 and path_set[-3]== 'Cell_Dataset' and path_set[-1]=='records_cell_id':
         return records_of_cell
-    elif pathname == '/Cell_Dataset/population_around_cell':
+    elif len(path_set)==4 and path_set[-3]== 'Cell_Dataset' and path_set[-1]=='population_around_cell':
         return population_around_cell
-    elif pathname == '/Cell_Dataset/trip_visualize':
+    elif len(path_set)==4 and path_set[-3]== 'Cell_Dataset' and path_set[-1]=='trip_visualize':
         return trip_visualize
-    elif pathname == '/Message_Dataset/sample_message':
+    elif len(path_set)==3 and  path_set[-2]== 'Message_Dataset':
         return message_data_file
-    elif pathname == '/Message_Dataset/view_data':
+    elif len(path_set)==4 and path_set[-3]== 'Message_Dataset' and path_set[-1]=='view_data':
         return view_all_message_data
-    elif pathname == '/Message_Dataset/all_users':
+    elif len(path_set)==4 and path_set[-3]== 'Message_Dataset' and path_set[-1]=='all_users':
         return get_all_message_users
-    elif pathname == '/Message_Dataset/connected_users':
-        return connected_message_users
-    elif pathname == '/Message_Dataset/records_between_users':
-        return message_records_between_users
-    elif pathname == '/Message_Dataset/visualize_connection':
+    elif len(path_set)==4 and path_set[-3]== 'Message_Dataset' and path_set[-1]=='connected_users':
+        return connected_message_users  
+    elif len(path_set)==4 and path_set[-3]== 'Message_Dataset' and path_set[-1]== 'records_between_users':
+        return  message_records_between_users
+    elif len(path_set)==4 and path_set[-3]== 'Message_Dataset' and path_set[-1]== 'visualize_connection':
         return visualize_message_connections
-    elif pathname == '/':
+    elif pathname=='/':
         return index_page
     else:
         return index_page
