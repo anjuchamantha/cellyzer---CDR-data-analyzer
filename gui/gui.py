@@ -115,8 +115,9 @@ callrecorditems = [dac.SidebarMenuItem(id='add-call-records',
 
 callpagesidebar = dac.Sidebar(
     dac.SidebarMenu(
-        [
+        [   
             dac.SidebarHeader(children="Dataset Functions"),
+            dac.SidebarButton(id='add-cell-records', label='Home', icon='home', href='/'),
             dac.SidebarMenuItem(id='tab_cards', label='Add a Dataset', icon='box', children=callrecorditems)
         ]
     ),
@@ -191,6 +192,7 @@ calldatasetidebar = dac.Sidebar(
     dac.SidebarMenu(
         [
             dac.SidebarHeader(children="Dataset Functions"),
+            dac.SidebarButton(id='add-cell-records', label='Home', icon='home', href='/'),
             dac.SidebarMenuItem(id='tab_cards', label='Add a Dataset', icon='box', children=calldatasetitems)
         ]
     ),
@@ -249,6 +251,7 @@ viewcalldatasetidebar = dac.Sidebar(
     dac.SidebarMenu(
         [
             dac.SidebarHeader(children="Dataset Functions"),
+            dac.SidebarButton(id='add-cell-records', label='Home', icon='home', href='/'),
             dac.SidebarMenuItem(id='tab_cards', label='Add a Dataset', icon='box', children=viewcalldatasetitems)
         ]
     ),
@@ -334,7 +337,7 @@ records_between_users = html.Div([
     html.Div([
         html.Div([
             html.H3('CALL  DATASET  VISUALIZATION - CALL RECORDS BETWEEN TWO USERS', className='index_dataset_add_call_data')],
-            className='sample_dataset_visualize', style={'width':'1000px'}),
+            className='sample_dataset_visualize'),
     ]),
     html.Hr(),
     html.Div([
@@ -888,6 +891,7 @@ cellpagesidebar = dac.Sidebar(
     dac.SidebarMenu(
         [
             dac.SidebarHeader(children="Dataset Functions"),
+            dac.SidebarButton(id='add-cell-records', label='Home', icon='home', href='/'),
             dac.SidebarMenuItem(id='tab_cards', label='Add a Dataset', icon='box', children=cellrecorditems)
         ]
     ),
@@ -965,6 +969,7 @@ celldatasetidebar = dac.Sidebar(
     dac.SidebarMenu(
         [
             dac.SidebarHeader(children="Dataset Functions"),
+            dac.SidebarButton(id='add-cell-records', label='Home', icon='home', href='/'),
             dac.SidebarMenuItem(id='tab_cards', label='Add a Dataset', icon='box', children=celldatasetitems)
         ]
     ),
@@ -1012,6 +1017,7 @@ viewcelldatasetidebar = dac.Sidebar(
     dac.SidebarMenu(
         [
             dac.SidebarHeader(children="Dataset Functions"),
+            dac.SidebarButton(id='add-cell-records', label='Home', icon='home', href='/'),
             dac.SidebarMenuItem(id='tab_cards', label='Add a Dataset', icon='box', children=viewcelldatasetitems)
         ]
     ),
@@ -1029,7 +1035,7 @@ view_all_cell_data = html.Div([
     viewcelldatasetidebar,
     html.Div([
         html.Div([
-            html.H4('CELL  DATASET  VISUALIZATION - GET ALL DATA', className='index_dataset_add_call_data')],
+            html.H3('CELL  DATASET  VISUALIZATION - GET ALL DATA', className='index_dataset_add_call_data')],
             className='sample_dataset_visualize'),
     ]),
     html.Hr(),
@@ -1048,7 +1054,7 @@ records_of_cell = html.Div([
     viewcelldatasetidebar,
     html.Div([
         html.Div([
-            html.H4('CELL  DATASET  VISUALIZATION - RECORDS OF A SPECIFIC CELL', className='index_dataset_add_call_data')],
+            html.H3('CELL  DATASET  VISUALIZATION - RECORDS OF A SPECIFIC CELL', className='index_dataset_add_call_data')],
             className='sample_dataset_visualize'),
     ]),
     html.Hr(),
@@ -1079,7 +1085,7 @@ population_around_cell = html.Div([
     viewcelldatasetidebar,
     html.Div([
         html.Div([
-            html.H4('CELL  DATASET  VISUALIZATION - POPULATION AROUND CELL AND VISUALIZE', className='index_dataset_add_call_data')],
+            html.H3('CELL  DATASET  VISUALIZATION - POPULATION AROUND CELL AND VISUALIZE', className='index_dataset_add_call_data')],
             className='sample_dataset_visualize', style={'width':'1000px'}),
     ]),
     html.Hr(),
@@ -1098,7 +1104,7 @@ trip_visualize = html.Div([
     viewcelldatasetidebar,
     html.Div([
         html.Div([
-            html.H4('CELL  DATASET  VISUALIZATION - TRIP VISAULIZATION', className='index_dataset_add_call_data')],
+            html.H3('CELL  DATASET  VISUALIZATION - TRIP VISAULIZATION', className='index_dataset_add_call_data')],
             className='sample_dataset_visualize'),
     ]),
     html.Hr(),
@@ -1358,6 +1364,7 @@ messagepagesidebar = dac.Sidebar(
     dac.SidebarMenu(
         [
             dac.SidebarHeader(children="Dataset Functions"),
+            dac.SidebarButton(id='add-cell-records', label='Home', icon='home', href='/'),
             dac.SidebarMenuItem(id='tab_cards', label='Add a Dataset', icon='box', children=messagerecorditems)
         ]
     ),
@@ -1438,76 +1445,101 @@ message_dataset = html.Div([
     className='call_dataset_div'
 )
 
+messagedatasetitems = [dac.SidebarMenuItem(id='add-message-records',
+                                        label='Add Message Record',
+                                        icon='arrow-circle-right',
+                                        children=[
+                                           html.Div(id="file_name_message", style={"margin-left": "40px", 'color':'white'})
+                                       ]
+                                        ),
+                    ]
+
+messagedatasetidebar = dac.Sidebar(
+    dac.SidebarMenu(
+        [
+            dac.SidebarHeader(children="Dataset Functions"),
+            dac.SidebarButton(id='add-cell-records', label='Home', icon='home', href='/'),
+            dac.SidebarMenuItem(id='tab_cards', label='Add a Dataset', icon='box', children=messagedatasetitems)
+        ]
+    ),
+    title='DASHBOARD',
+    color="primary",
+    brand_color="secondary",
+    url='/',
+    src="https://adminlte.io/themes/AdminLTE/dist/img/user2-160x160.jpg",
+    elevation=3,
+    opacity=0.8
+)
+
 message_data_file = html.Div([
     html.H1(className='sample_call_data_cellyzer', children='CELLYZER'),
-    html.Div([
-        html.H2(className='sample_call_dataset_Dashboard', children='Dashboard'),
-        html.Div([dcc.Link("Home", href='/')], className='index_page_dataset_div'),
-        html.Div([html.H5("Message Dataset")], className='index_dataset_Call_Dataset'),
-    ],
-        className='sample_dataset_Dashboard_div'),
+    messagedatasetidebar,
     html.Div([
         html.Div([
             html.H3('MESSAGE  DATASET  VISUALIZATION', className='index_dataset_add_call_data')],
             className='sample_dataset_visualize'),
     ]),
-    html.Div([
-        html.H4(id="file_name_message")
-    ]),
     html.Div(id='message_option', className='sample_call_data_visualize_option'),
     ],
     className='sample_call_dataset_div')
 
+viewmessagedatasetitems = [dac.SidebarMenuItem(id='add-message-records',
+                                            label='Add Message Record',
+                                            icon='arrow-circle-right',
+                                            children=html.Div(
+                                                html.Div(id="file_name_message", style={"margin-left": "40px", 'color':'white'})
+                                            )),
+                        ]
+
+viewmessagedatasetidebar = dac.Sidebar(
+    dac.SidebarMenu(
+        [
+            dac.SidebarHeader(children="Dataset Functions"),
+            dac.SidebarButton(id='add-cell-records', label='Home', icon='home', href='/'),
+            dac.SidebarMenuItem(id='tab_cards', label='Add a Dataset', icon='box', children=viewmessagedatasetitems)
+        ]
+    ),
+    title='DASHBOARD',
+    color="primary",
+    brand_color="secondary",
+    url='/',
+    src="https://adminlte.io/themes/AdminLTE/dist/img/user2-160x160.jpg",
+    elevation=3,
+    opacity=0.8
+)
+
 ############ page for view all message data
 view_all_message_data = html.Div([
     html.H1(className='sample_call_data_cellyzer', children='CELLYZER'),
-    html.Div([
-        html.H2(className='sample_call_dataset_Dashboard', children='Dashboard'),
-        html.Div([dcc.Link("Home", href='/')], className='index_page_dataset_div'),
-        html.Div([html.H5("Message Dataset")], className='index_dataset_Call_Dataset'),
-        html.Div([html.H6("All Data")], className='index_page_dataset_div_all_user')
-    ],
-        className='sample_dataset_Dashboard_div'
-    ),
+    viewmessagedatasetidebar,
     html.Div([
         html.Div([
-            html.H4('MESSAGE  DATASET  VISUALIZATION', className='index_dataset_add_call_data')],
-            className='index_dataset_add_call_data_div'),
+            html.H3('MESSAGE  DATASET  VISUALIZATION - GET ALL DATA', className='index_dataset_add_call_data')],
+            className='sample_dataset_visualize'),
     ]),
+    html.Hr(),
+    html.Br(),
     html.Div([
-        html.H4(children='Get All Data', className='sample_call_visualize_all_user')],
-        style={'padding-left': '30px', 'margin-top': '40px', 'margin-bottom': '20px'}
-    ),
-    html.Div([
-        html.Button('VIEW DATA', id='view_message', className='sample_call_dataset_viewdata'),
-        html.Button('CLOSED DATA', id='close_message', className='sample_call_dataset_close')],
+        dbc.Button('VIEW DATA', outline=True, id='view_message', color='success', className='sample_call_dataset_viewdata'),
+        dbc.Button('CLOSED DATA', outline=True, id='close_message', color='danger', className='sample_call_dataset_close')],
         className='sample_call_dataset_view_div'),
     html.Div(id='show_message_data', className='sample_call_dataset_show'),
-],
+    ],
     className='sample_call_dataset_div')
 
 ######## page for get all users in message dataset
 get_all_message_users = html.Div([
     html.H1(className='sample_call_data_cellyzer', children='CELLYZER'),
-    html.Div([
-        html.H2(className='sample_call_dataset_Dashboard', children='Dashboard'),
-        html.Div([dcc.Link("Home", href='/')], className='index_page_dataset_div'),
-        html.Div([html.H5("Message Dataset")], className='index_page_dataset_div'),
-        html.Div([html.H6("All Users")], className='index_page_dataset_div_all_user')
-    ],
-        className='sample_dataset_Dashboard_div'
-    ),
+    viewmessagedatasetidebar,
     html.Div([
         html.Div([
-            html.H3('MESSAGE  DATASET  VISUALIZATION', className='index_dataset_add_call_data')],
-            className='index_dataset_add_call_data_div')
+            html.H3('MESSAGE  DATASET  VISUALIZATION - GET ALL USERS', className='index_dataset_add_call_data')],
+            className='sample_dataset_visualize')
     ]),
+    html.Hr(),
+    html.Br(),
     html.Div([
-        html.H4(children='Get All Users', className='sample_call_visualize_all_user')],
-        style={'padding-left': '30px', 'margin-top': '40px', 'margin-bottom': '20px'}
-    ),
-    html.Div([
-        html.Button('Get All Users', id='get_message_users', className='sample_call_dataset_viewdata')],
+        dbc.Button('Get All Users', outline=True, color='success', id='get_message_users', className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div'
     ),
     html.Div(id='show_all_message_users', className='sample_call_dataset_show_all_users'),
@@ -1517,65 +1549,71 @@ get_all_message_users = html.Div([
 ####### page for show connected users of specific user im message dataset
 connected_message_users = html.Div([
     html.H1(className='sample_call_data_cellyzer', children='CELLYZER'),
-    html.Div([
-        html.H2(className='sample_call_dataset_Dashboard', children='Dashboard'),
-        html.Div([dcc.Link("Home", href='/')], className='index_page_dataset_div'),
-        html.Div([html.H5("Message Dataset")], className='index_page_dataset_div'),
-        html.Div([html.H6("Connected Users")], className='index_page_dataset_div_all_user')
-    ],
-        className='sample_dataset_Dashboard_div'
-    ),
+    viewmessagedatasetidebar,
     html.Div([
         html.Div([
-            html.H4('MESSAGE  DATASET  VISUALIZATION', className='index_dataset_add_call_data')],
-            className='index_dataset_add_call_data_div'),
+            html.H3('MESSAGE  DATASET  VISUALIZATION - SHOW CONNECTED USERS', className='index_dataset_add_call_data')],
+            className='sample_dataset_visualize'),
     ]),
+    html.Hr(),
+    html.Br(),
     html.Div([
-        html.H3(children='Connected Users Of Specific Message User', className='sample_call_visualize_all_user')],
-        style={'padding-left': '30px', 'margin-top': '40px', 'margin-bottom': '20px'}
-    ),
-    html.Div([
-        html.H6('Enter Specific User Number:'),
-        dcc.Input(id="user_message", type='text', placeholder='Enter number'),
-        html.Br(),
-        html.Br(),
-        html.Button('Connected Users', id='connected_message_users', className='sample_call_dataset_viewdata')],
+        dbc.FormGroup(
+            [
+                dbc.Label("Enter Specific User Number:", html_for="example-email"),
+                dbc.Input(type="text", id="user_message", placeholder="Enter number", style={'width':'500px'}),
+                dbc.FormText(
+                    "Input must be a 10 digit number",
+                    color="danger",
+                ),
+            ]
+        ),
+        dbc.Button('Connected Users', outline=True, color='success', id='connected_message_users', className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div'
     ),
     html.Div(id='show_connected_message_users', className='sample_call_dataset_show_all_users'),
 ],
     className='sample_call_dataset_div')
 
-###### get call rercords between 2 users
+###### get message rercords between 2 users
 message_records_between_users = html.Div([
     html.H1(className='sample_call_data_cellyzer', children='CELLYZER'),
-    html.Div([
-        html.H2(className='sample_call_dataset_Dashboard', children='Dashboard'),
-        html.Div([dcc.Link("Home", href='/')], className='index_page_dataset_div'),
-        html.Div([html.H5("Message Dataset")], className='index_page_dataset_div'),
-        html.Div([html.H6("Message Records Between Users")], className='index_page_dataset_div_all_user')
-    ],
-        className='sample_dataset_Dashboard_div'
-    ),
+    viewmessagedatasetidebar,
     html.Div([
         html.Div([
-            html.H3('MESSAGE  DATASET  VISUALIZATION', className='index_dataset_add_call_data')],
-            className='index_dataset_add_call_data_div'),
+            html.H3('MESSAGE  DATASET  VISUALIZATION - MESSAGE RECORDS BETWEEN 2 USERS', className='index_dataset_add_call_data')],
+            className='sample_dataset_visualize'),
     ]),
+    html.Hr(),
     html.Div([
-        html.H4(children='Message Records Between Two Users', className='sample_call_visualize_all_user')],
-        style={'padding-left': '30px', 'margin-top': '40px', 'margin-bottom': '20px'}
-    ),
-    html.Div([
-        html.H6('Enter Two Numbers:'),
-        dcc.Input(id="message_user2", type='text', placeholder='Enter number'),
+        html.H4('Enter Two Numbers:'),
         html.Br(),
-        html.Br(),
-        dcc.Input(id="message_user3", type='text', placeholder='Enter number'),
-        html.Br(),
-        html.Br(),
-        html.Button('Get Records', id='record_message_users', className='sample_call_dataset_viewdata')],
-        className='sample_call_dataset_view_div'
+        dbc.FormGroup(
+            [
+                dbc.Label("First Number", html_for="example-email-row", width=2),
+                dbc.Col(
+                    dbc.Input(
+                        type="text", id="message_user2", placeholder="Enter first number", style={'width': '500px'}
+                    ),
+                    width=10,
+                ),
+            ],
+            row=True,
+        ),
+        dbc.FormGroup(
+            [
+                dbc.Label("Second Number", html_for="example-email-row", width=2),
+                dbc.Col(
+                    dbc.Input(
+                        type="text", id="message_user3", placeholder="Enter second number", style={'width': '500px'}
+                    ),
+                    width=10,
+                ),
+            ],
+            row=True,
+        ),
+        dbc.Button('Get Records', id='record_message_users', color='success', outline=True, className='sample_call_dataset_viewdata')],
+        className='sample_call_dataset_view_div',
     ),
     html.Div(id='show_records_message_users', className='sample_call_dataset_show_all_users'),
 ],
@@ -1584,26 +1622,16 @@ message_records_between_users = html.Div([
 ##### visualize connections between all users
 visualize_message_connections = html.Div([
     html.H1(className='sample_call_data_cellyzer', children='CELLYZER'),
-    html.Div([
-        html.H2(className='sample_call_dataset_Dashboard', children='Dashboard'),
-        html.Div([dcc.Link("Home", href='/')], className='index_page_dataset_div'),
-        html.Div([html.H5("Message Dataset")], className='index_page_dataset_div'),
-        html.Div([html.H6("Visualize Connection")], className='index_page_dataset_div_all_user')
-    ],
-        className='sample_dataset_Dashboard_div'
-    ),
+    viewmessagedatasetidebar,
     html.Div([
         html.Div([
-            html.H3('MESSAGE  DATASET  VISUALIZATION', className='index_dataset_add_call_data')],
-            className='index_dataset_add_call_data_div'),
+            html.H3('MESSAGE  DATASET  VISUALIZATION - VISUALIZE CONNECTIONS', className='index_dataset_add_call_data')],
+            className='sample_dataset_visualize'),
     ]),
+    html.Hr(),
+    html.Br(),
     html.Div([
-        html.H4(children='Visualize Connections Between All Users', className='sample_call_visualize_all_user')],
-        style={'padding-left': '30px', 'margin-top': '40px', 'margin-bottom': '20px'}
-    ),
-    html.Div([
-        html.Button('Visualize Connection', id='visualize_message_connection',
-                    className='sample_call_dataset_viewdata')],
+        dbc.Button('Visualize Connection', id='visualize_message_connection',color='danger', outline=True, className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div'
     ),
     html.Div(id='show_visualize_message_connection', className='sample_call_dataset_show_all_users'),
