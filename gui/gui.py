@@ -115,7 +115,7 @@ callrecorditems = [dac.SidebarMenuItem(id='add-call-records',
 
 callpagesidebar = dac.Sidebar(
     dac.SidebarMenu(
-        [   
+        [
             dac.SidebarHeader(children="Dataset Functions"),
             dac.SidebarButton(id='add-cell-records', label='Home', icon='home', href='/'),
             dac.SidebarMenuItem(id='tab_cards', label='Add a Dataset', icon='box', children=callrecorditems)
@@ -183,8 +183,8 @@ calldatasetitems = [dac.SidebarMenuItem(id='add-call-records',
                                         label='Add Call Record',
                                         icon='arrow-circle-right',
                                         children=[
-                                           html.Div(id="file_name", style={"margin-left": "40px", 'color':'white'})
-                                       ]
+                                            html.Div(id="file_name", style={"margin-left": "40px", 'color': 'white'})
+                                        ]
                                         ),
                     ]
 
@@ -214,7 +214,7 @@ call_dataset_file = html.Div([
             className='sample_dataset_visualize'),
     ]),
     html.Div(id='call_option', className='sample_call_data_visualize_option'),
-    ],
+],
     className='sample_call_dataset_div')
 
 ############ page for view all call data
@@ -294,7 +294,8 @@ get_all_users = html.Div([
     html.Hr(),
     html.Br(),
     html.Div([
-        dbc.Button('Get All Users', outline=True, color='success', id='get_users', className='sample_call_dataset_viewdata')],
+        dbc.Button('Get All Users', outline=True, color='success', id='get_users',
+                   className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div'
     ),
     html.Div(id='show_all_users', className='sample_call_dataset_show_all_users'),
@@ -316,14 +317,15 @@ connected_users = html.Div([
         dbc.FormGroup(
             [
                 dbc.Label("Enter Specific User Number:", html_for="example-email"),
-                dbc.Input(type="text", id="search", placeholder="Enter number", style={'width':'500px'}),
+                dbc.Input(type="text", id="search", placeholder="Enter number", style={'width': '500px'}),
                 dbc.FormText(
                     "Input must be a 10 digit number",
                     color="danger",
                 ),
             ]
         ),
-        dbc.Button('Connected Users', outline=True, color='success', id='connected_users', className='sample_call_dataset_viewdata')],
+        dbc.Button('Connected Users', outline=True, color='success', id='connected_users',
+                   className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div'
     ),
     html.Div(id='show_connected_users', className='sample_call_dataset_show_all_users'),
@@ -336,7 +338,8 @@ records_between_users = html.Div([
     viewcalldatasetidebar,
     html.Div([
         html.Div([
-            html.H3('CALL  DATASET  VISUALIZATION - CALL RECORDS BETWEEN TWO USERS', className='index_dataset_add_call_data')],
+            html.H3('CALL  DATASET  VISUALIZATION - CALL RECORDS BETWEEN TWO USERS',
+                    className='index_dataset_add_call_data')],
             className='sample_dataset_visualize'),
     ]),
     html.Hr(),
@@ -367,7 +370,8 @@ records_between_users = html.Div([
             ],
             row=True,
         ),
-        dbc.Button('Get Records', id='record_users', color='success', outline=True, className='sample_call_dataset_viewdata')],
+        dbc.Button('Get Records', id='record_users', color='success', outline=True,
+                   className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div',
     ),
     html.Div(id='show_records_users', className='sample_call_dataset_show_all_users'),
@@ -380,8 +384,9 @@ close_contacts = html.Div([
     viewcalldatasetidebar,
     html.Div([
         html.Div([
-            html.H3('CALL  DATASET  VISUALIZATION - CLOSE CONTACTS OF A SELECTED USER', className='index_dataset_add_call_data')],
-            className='sample_dataset_visualize', style={'width':'1000px'}),
+            html.H3('CALL  DATASET  VISUALIZATION - CLOSE CONTACTS OF A SELECTED USER',
+                    className='index_dataset_add_call_data')],
+            className='sample_dataset_visualize', style={'width': '1000px'}),
     ]),
     html.Hr(),
     html.Div([
@@ -410,7 +415,8 @@ close_contacts = html.Div([
             ],
             row=True,
         ),
-        dbc.Button('Close Contacts', id='close_contacts', color='success', outline=True, className='sample_call_dataset_viewdata')],
+        dbc.Button('Close Contacts', id='close_contacts', color='success', outline=True,
+                   className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div'
     ),
     html.Div(id='show_close_contact', className='sample_call_dataset_show_all_users'),
@@ -423,8 +429,9 @@ ignore_call_detail = html.Div([
     viewcalldatasetidebar,
     html.Div([
         html.Div([
-            html.H3('CALL  DATASET  VISUALIZATION - IGNORED CALL DETAILS OF A SELECTED USER', className='index_dataset_add_call_data')],
-            className='sample_dataset_visualize', style={'width':'1100px'}),
+            html.H3('CALL  DATASET  VISUALIZATION - IGNORED CALL DETAILS OF A SELECTED USER',
+                    className='index_dataset_add_call_data')],
+            className='sample_dataset_visualize', style={'width': '1100px'}),
     ]),
     html.Hr(),
     html.Br(),
@@ -441,7 +448,8 @@ ignore_call_detail = html.Div([
             ],
             row=True,
         ),
-        dbc.Button('Ignored Call', id='ignore_call',  color='success', outline=True, className='sample_call_dataset_viewdata')],
+        dbc.Button('Ignored Call', id='ignore_call', color='success', outline=True,
+                   className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div'
     ),
     html.Div(id='show_ignore_call', className='sample_call_dataset_show_all_users'),
@@ -454,8 +462,9 @@ active_time_user = html.Div([
     viewcalldatasetidebar,
     html.Div([
         html.Div([
-            html.H3('CALL  DATASET  VISUALIZATION - ACTIVE TIME OF A SELECTED USER', className='index_dataset_add_call_data')],
-            className='sample_dataset_visualize', style={'width':'1000px'}),
+            html.H3('CALL  DATASET  VISUALIZATION - ACTIVE TIME OF A SELECTED USER',
+                    className='index_dataset_add_call_data')],
+            className='sample_dataset_visualize', style={'width': '1000px'}),
     ]),
     html.Hr(),
     html.Br(),
@@ -472,7 +481,8 @@ active_time_user = html.Div([
             ],
             row=True,
         ),
-        dbc.Button('Active Time', id='active_time', color='success', outline=True, className='sample_call_dataset_viewdata')],
+        dbc.Button('Active Time', id='active_time', color='success', outline=True,
+                   className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div'
     ),
     html.Div(id='show_active_time', className='sample_call_dataset_show_all_users'),
@@ -491,7 +501,8 @@ visualize_connections = html.Div([
     html.Hr(),
     html.Br(),
     html.Div([
-        dbc.Button('Visualize Connection', id='visualize_connection',color='danger', outline=True, className='sample_call_dataset_viewdata')],
+        dbc.Button('Visualize Connection', id='visualize_connection', color='danger', outline=True,
+                   className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div'
     ),
     html.Div(id='show_visualize_connection', className='sample_call_dataset_show_all_users'),
@@ -502,87 +513,96 @@ visualize_connections = html.Div([
 
 call_data_list = []
 update_call_data = []
-call_option=[]
-call_name =[]
+call_option = []
+call_name = []
+
 
 ###### add call data
 @app.callback(Output('call-data', 'children'),
-            [   
-                Input('upload-data_call', 'filename'),
-                Input('filepath', 'value')
-            ])
+              [
+                  Input('upload-data_call', 'filename'),
+                  Input('filepath', 'value')
+              ])
 def add_call_dataset(filename, filepath):
     try:
-        filename=filename[0]
-        path_File=os.path.join(filepath, filename)
-        call_data_list.append([filename, path_File])    
-        file_part=filename.split('.')
+        filename = filename[0]
+        path_File = os.path.join(filepath, filename)
+        call_data_list.append([filename, path_File])
+        file_part = filename.split('.')
         call_name.append(file_part[0])
-        option=[]
+        option = []
         option.append(dcc.Link('◙ Show All Data', href='/Call_Dataset/{}/view_data'.format(file_part[0])))
         option.append(html.Br())
         option.append(dcc.Link('◙ Show All Users', href='/Call_Dataset/{}/all_users'.format(file_part[0])))
         option.append(html.Br())
         option.append(dcc.Link('◙ Show Connected Users', href='/Call_Dataset/{}/connected_users'.format(file_part[0])))
         option.append(html.Br())
-        option.append(dcc.Link('◙ Call Records Between Two Selected Users', href='/Call_Dataset/{}/records_between_users'.format(file_part[0]))) 
-        option.append(html.Br()) 
-        option.append(dcc.Link('◙ Close Contacts Of Selected Users', href='/Call_Dataset/{}/close_contacts'.format(file_part[0])))
-        option.append(html.Br()) 
-        option.append(dcc.Link('◙ Ignored Call Details Of a User', href='/Call_Dataset/{}/ignored_call'.format(file_part[0]))) 
-        option.append(html.Br()) 
-        option.append(dcc.Link('◙ Active Time Of a User', href='/Call_Dataset/{}/active_time'.format(file_part[0]))) 
-        option.append(html.Br()) 
-        option.append(dcc.Link('◙ Visualize Connections Between All Users', href='/Call_Dataset/{}/visualize_connection'.format(file_part[0]))) 
+        option.append(dcc.Link('◙ Call Records Between Two Selected Users',
+                               href='/Call_Dataset/{}/records_between_users'.format(file_part[0])))
+        option.append(html.Br())
+        option.append(
+            dcc.Link('◙ Close Contacts Of Selected Users', href='/Call_Dataset/{}/close_contacts'.format(file_part[0])))
+        option.append(html.Br())
+        option.append(
+            dcc.Link('◙ Ignored Call Details Of a User', href='/Call_Dataset/{}/ignored_call'.format(file_part[0])))
+        option.append(html.Br())
+        option.append(dcc.Link('◙ Active Time Of a User', href='/Call_Dataset/{}/active_time'.format(file_part[0])))
+        option.append(html.Br())
+        option.append(dcc.Link('◙ Visualize Connections Between All Users',
+                               href='/Call_Dataset/{}/visualize_connection'.format(file_part[0])))
         call_option.append([file_part[0], option])
-        output_call=[]
+        output_call = []
         for x in call_data_list:
-            a=x[0].split('.')
+            a = x[0].split('.')
             output_call.append(html.Br())
-            output_call.append(dcc.Link(a[0], href='/Call_Dataset/'+str(a[0])))
-        name=html.Div(children=output_call)
-        return name    
+            output_call.append(dcc.Link(a[0], href='/Call_Dataset/' + str(a[0])))
+        name = html.Div(children=output_call)
+        return name
 
 
     except Exception as e:
         print(e)
-        output_call=[]
+        output_call = []
         for x in call_data_list:
-            a=x[0].split('.')
+            a = x[0].split('.')
             output_call.append(html.Br())
-            output_call.append(dcc.Link(a[0], href='/Call_Dataset/'+str(a[0])))
-        name=html.Div(children=output_call)
-        return name  
+            output_call.append(dcc.Link(a[0], href='/Call_Dataset/' + str(a[0])))
+        name = html.Div(children=output_call)
+        return name
 
-######## return file name to the next page
-@app.callback( dash.dependencies.Output('file_name', 'children'),              
-              [   dash.dependencies.Input('url', 'pathname')
-            ]) 
-def file_name(pathname): 
+    ######## return file name to the next page
+
+
+@app.callback(dash.dependencies.Output('file_name', 'children'),
+              [dash.dependencies.Input('url', 'pathname')
+               ])
+def file_name(pathname):
     file_call = pathname.split('/')
     for a in call_option:
         if file_call[-1] == a[0]:
             for data in call_data_list:
-                dataNew= data[0].split('.')
-                if file_call[-1]== dataNew[0]:
+                dataNew = data[0].split('.')
+                if file_call[-1] == dataNew[0]:
                     update_call_data.append(data)
-                    
+
             return file_call[-1]
 
+
 ######## get call option
-@app.callback( dash.dependencies.Output('call_option', 'children'),
-            [   dash.dependencies.Input('url', 'pathname')
-            ]) 
-def file_name2(pathname): 
+@app.callback(dash.dependencies.Output('call_option', 'children'),
+              [dash.dependencies.Input('url', 'pathname')
+               ])
+def file_name2(pathname):
     file_call = pathname.split('/')
     for a in call_option:
         if file_call[-1] == a[0]:
             return a[1]
 
+
 ######### view call dataset
 @app.callback(Output('show_data', 'children'),
-              [ Input('view', 'n_clicks'),
-                Input('close', 'n_clicks')
+              [Input('view', 'n_clicks'),
+               Input('close', 'n_clicks')
                ])
 def update_table(n_clicks, click2):
     table = html.Div()
@@ -926,31 +946,31 @@ cell_dataset = html.Div([
                 row=True,
             ),
             html.H5(
-                "Enter correct path of cell dataset folder",
-                style={'font-size': '17px', 'padding': '10px'}
-            ),
-            html.H5(
-                "Do not enter file name to the path",
-                style={'font-size': '17px', 'color': 'red', 'padding': '10px'}
+                "*Enter correct path of cell dataset folder and Do not enter file name to the path",
+                style={'font-size': '13px', 'color': 'red', 'padding': '10px'},
             ),
         ],
             style={
                 'padding-left': '30px'
             }),
-        html.Hr(),
         dcc.Upload(id='upload-data_cell',
-            children=html.Div([
-                html.Button('SELECT CELL DATA', className='index_celldata_add_button')]),
-            className='index_cell_dataset_upload_data',
-            multiple=True),
+                   children=html.Div([
+                       dbc.Button('SELECT CELL DATA', outline=True, color='success')]),
+                   className='index_cell_dataset_upload_data',
+                   multiple=True),
+        html.Hr(),
         html.Div([
-            html.H5('Please add call dataset before adding cell dataset', style={'font-size': '15px'}), 
-            html.Button('SELECT CALL DATA', id='call_for_cell' ,className='index_celldata_add_button'),
-            dcc.Dropdown(id='select_call', style={'width': '200px', 'float':'right', 'color':'red'}), 
-            ], style={'padding-right': '300px'}),
+            html.H5('*Please add call dataset before adding cell dataset', style={'font-size': '15px'}),
+            html.Div([
+                dbc.Button('SELECT CALL DATA', outline=True, color='success', id='call_for_cell'),
+                dcc.Dropdown(id='select_call', style={'width': '200px', 'float': 'right', 'color': 'red'})
+            ], style={'padding':'10px 0px'})
+        ], style={'padding-right': '300px'}),
+        html.Br(),
+        html.Hr(),
         html.Div([
-            html.Button('ADD DATA', id='show_cell_dash' ,className='index_celldata_add_button'),
-            ])
+            dbc.Button('ADD DATA', outline=True, color='danger', id='show_cell_dash'),
+        ])
     ], className='call_page_welcome_div'),
 
 ],
@@ -961,8 +981,9 @@ celldatasetitems = [dac.SidebarMenuItem(id='add-cell-records',
                                         label='Add Cell Record',
                                         icon='arrow-circle-right',
                                         children=[
-                                           html.Div(id="file_name_cell", style={"margin-left": "40px", 'color':'white'})
-                                       ]
+                                            html.Div(id="file_name_cell",
+                                                     style={"margin-left": "40px", 'color': 'white'})
+                                        ]
                                         ),
                     ]
 
@@ -992,7 +1013,7 @@ cell_dataset_file = html.Div([
             className='sample_dataset_visualize'),
     ]),
     html.Div(id='cell_option', className='sample_call_data_visualize_option'),
-    ],
+],
     className='sample_cell_dataset_div')
 
 ####### show all cell data
@@ -1042,8 +1063,10 @@ view_all_cell_data = html.Div([
     html.Hr(),
     html.Br(),
     html.Div([
-        dbc.Button('VIEW DATA', id='view_cell', outline=True, color='success', className='sample_call_dataset_viewdata'),
-        dbc.Button('CLOSED DATA', id='close_cell', outline=True, color='danger', className='sample_call_dataset_close')],
+        dbc.Button('VIEW DATA', id='view_cell', outline=True, color='success',
+                   className='sample_call_dataset_viewdata'),
+        dbc.Button('CLOSED DATA', id='close_cell', outline=True, color='danger',
+                   className='sample_call_dataset_close')],
         className='sample_call_dataset_view_div'),
     html.Div(id='show_cell_data', className='sample_call_dataset_show'),
 ],
@@ -1055,7 +1078,8 @@ records_of_cell = html.Div([
     viewcelldatasetidebar,
     html.Div([
         html.Div([
-            html.H3('CELL  DATASET  VISUALIZATION - RECORDS OF A SPECIFIC CELL', className='index_dataset_add_call_data')],
+            html.H3('CELL  DATASET  VISUALIZATION - RECORDS OF A SPECIFIC CELL',
+                    className='index_dataset_add_call_data')],
             className='sample_dataset_visualize'),
     ]),
     html.Hr(),
@@ -1073,7 +1097,8 @@ records_of_cell = html.Div([
             ],
             row=True,
         ),
-        dbc.Button('Records Cell', id='records_cell', outline=True, color='success', className='sample_call_dataset_viewdata')],
+        dbc.Button('Records Cell', id='records_cell', outline=True, color='success',
+                   className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div'
     ),
     html.Div(id='show_records_cell', className='ndex_dataset_cell_record_div'),
@@ -1086,13 +1111,15 @@ population_around_cell = html.Div([
     viewcelldatasetidebar,
     html.Div([
         html.Div([
-            html.H3('CELL  DATASET  VISUALIZATION - POPULATION AROUND CELL AND VISUALIZE', className='index_dataset_add_call_data')],
-            className='sample_dataset_visualize', style={'width':'1000px'}),
+            html.H3('CELL  DATASET  VISUALIZATION - POPULATION AROUND CELL AND VISUALIZE',
+                    className='index_dataset_add_call_data')],
+            className='sample_dataset_visualize', style={'width': '1000px'}),
     ]),
     html.Hr(),
     html.Br(),
     html.Div([
-        dbc.Button('Get Population', id='population_button', outline=True, color='danger', className='sample_call_dataset_viewdata')],
+        dbc.Button('Get Population', id='population_button', outline=True, color='danger',
+                   className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div'
     ),
     html.Div(id='show_population', className='sample_call_dataset_show_all_users'),
@@ -1123,7 +1150,8 @@ trip_visualize = html.Div([
             ],
             row=True,
         ),
-        dbc.Button('Trip Visualize', id='trip_visualize_button', outline=True, color='danger', className='sample_call_dataset_viewdata')],
+        dbc.Button('Trip Visualize', id='trip_visualize_button', outline=True, color='danger',
+                   className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div'
     ),
     html.Div(id='show_trip_visualize', className='sample_call_dataset_show_all_users'),
@@ -1134,61 +1162,62 @@ cell_data_list = []
 update_cell_data = []
 cell_option = []
 
+
 ####### add cell data
 @app.callback(Output('cell-data', 'children'),
 
-            [   Input('select_call', 'value'),
-                Input('upload-data_cell', 'filename'),
-                Input('filepath_cell', 'value'),
-                Input('show_cell_dash', 'n_clicks')
-            ])
+              [Input('select_call', 'value'),
+               Input('upload-data_cell', 'filename'),
+               Input('filepath_cell', 'value'),
+               Input('show_cell_dash', 'n_clicks')
+               ])
 def add_cell_dataset(call_file, filename, filepath, n_clicks):
     try:
         if n_clicks is not None:
-            filename=filename[0]
-            path_File=os.path.join(filepath, filename)
+            filename = filename[0]
+            path_File = os.path.join(filepath, filename)
             for call in call_data_list:
-                f_name= call[0].split('.')
+                f_name = call[0].split('.')
                 if call_file == f_name[0]:
                     cell_data_list.append([filename, path_File, call])
                     print(cell_data_list)
                     break
-            
-            
-            file_part=filename.split('.')
-            option=[]
+
+            file_part = filename.split('.')
+            option = []
             option.append(dcc.Link('◙ Show All Data', href='/Cell_Dataset/{}/view_cell_data'.format(file_part[0])))
             option.append(html.Br())
-            option.append(dcc.Link('◙ Records Of a Specific Cell', href='/Cell_Dataset/{}/records_cell_id'.format(file_part[0])))
+            option.append(
+                dcc.Link('◙ Records Of a Specific Cell', href='/Cell_Dataset/{}/records_cell_id'.format(file_part[0])))
             option.append(html.Br())
-            option.append(dcc.Link('◙ Population Around Cell', href='/Cell_Dataset/{}/population_around_cell'.format(file_part[0])))
+            option.append(dcc.Link('◙ Population Around Cell',
+                                   href='/Cell_Dataset/{}/population_around_cell'.format(file_part[0])))
             option.append(html.Br())
-            option.append(dcc.Link('◙ Trip Visualization', href='/Cell_Dataset/{}/trip_visualize'.format(file_part[0]))) 
+            option.append(dcc.Link('◙ Trip Visualization', href='/Cell_Dataset/{}/trip_visualize'.format(file_part[0])))
             cell_option.append([file_part[0], option])
-            output_cell=[]
+            output_cell = []
             for x in cell_data_list:
-                a=x[0].split('.')
-                output_cell.append(dcc.Link(a[0], href='/Cell_Dataset/'+str(a[0])))
+                a = x[0].split('.')
+                output_cell.append(dcc.Link(a[0], href='/Cell_Dataset/' + str(a[0])))
                 output_cell.append(html.Br())
-            name_cell=html.Div(children = output_cell)
+            name_cell = html.Div(children=output_cell)
             return name_cell
 
     except Exception as e:
         print(e)
-        output_cell=[]
+        output_cell = []
         for x in cell_data_list:
-            a=x[0].split('.')
-            output_cell.append(dcc.Link(a[0], href='/Cell_Dataset/'+str(a[0])))
+            a = x[0].split('.')
+            output_cell.append(dcc.Link(a[0], href='/Cell_Dataset/' + str(a[0])))
             output_cell.append(html.Br())
-        name_cell=html.Div(children = output_cell)
+        name_cell = html.Div(children=output_cell)
         return name_cell
-
 
 
 ########### show cell data
 @app.callback(Output('show_cell_data', 'children'),
-              [ Input('view_cell', 'n_clicks'), 
-                Input('close_cell', 'n_clicks')
+              [Input('view_cell', 'n_clicks'),
+               Input('close_cell', 'n_clicks')
                ])
 def view_cell_data(n_clicks, click2):
     table = html.Div()
@@ -1245,16 +1274,18 @@ def close_cell_data(n_clicks):
     if n_clicks is not None:
         return None
 
+
 ######## select call dataset using dropdown
 @app.callback(Output('select_call', 'options'),
-            [   Input('call_for_cell', 'n_clicks')
-            ])
+              [Input('call_for_cell', 'n_clicks')
+               ])
 def get_call_for_cell(n_clicks):
     if n_clicks is not None:
-        add_call=[]
+        add_call = []
         for name in call_name:
-            add_call.append({'label':name, 'value': name})
+            add_call.append({'label': name, 'value': name})
         return add_call
+
 
 ###### get cell_id records
 @app.callback(Output('show_records_cell', 'children'),
@@ -1320,33 +1351,37 @@ def trip_visualization(user, n_clicks):
 
         return cz.visualization.trip_visualization(trip_visualize)
 
+
 ######## return cell file name to the next page
-@app.callback( dash.dependencies.Output('file_name_cell', 'children'),              
-              [   dash.dependencies.Input('url', 'pathname')
-            ]) 
-def file_name_cell(pathname): 
+@app.callback(dash.dependencies.Output('file_name_cell', 'children'),
+              [dash.dependencies.Input('url', 'pathname')
+               ])
+def file_name_cell(pathname):
     file_cell = pathname.split('/')
     for a in cell_option:
         if file_cell[-1] == a[0]:
             print('hess')
             for data in cell_data_list:
                 print(data)
-                dataNew= data[0].split('.')
-                if file_cell[-1]== dataNew[0]:
+                dataNew = data[0].split('.')
+                if file_cell[-1] == dataNew[0]:
                     update_cell_data.append(data)
-                    
+
             print(update_cell_data)
             return file_cell[-1]
 
+
 ######## get cell option
-@app.callback( dash.dependencies.Output('cell_option', 'children'),
-            [   dash.dependencies.Input('url', 'pathname')
-            ]) 
-def cell_option_visu(pathname): 
+@app.callback(dash.dependencies.Output('cell_option', 'children'),
+              [dash.dependencies.Input('url', 'pathname')
+               ])
+def cell_option_visu(pathname):
     file_cell = pathname.split('/')
     for a in cell_option:
         if file_cell[-1] == a[0]:
             return a[1]
+
+
 # over cell
 ################################################################################################
 ################################################################################################
@@ -1436,7 +1471,7 @@ message_dataset = html.Div([
         dcc.Upload(id='upload-data_message',
                    children=html.Div([
                        html.Button('ADD MESSAGE DATA', className='index_messagedata_add_button')
-                        ]),
+                   ]),
                    className='index_message_dataset_upload_data',
                    # Allow multiple files to be uploaded
                    multiple=True
@@ -1447,13 +1482,14 @@ message_dataset = html.Div([
 )
 
 messagedatasetitems = [dac.SidebarMenuItem(id='add-message-records',
-                                        label='Add Message Record',
-                                        icon='arrow-circle-right',
-                                        children=[
-                                           html.Div(id="file_name_message", style={"margin-left": "40px", 'color':'white'})
-                                       ]
-                                        ),
-                    ]
+                                           label='Add Message Record',
+                                           icon='arrow-circle-right',
+                                           children=[
+                                               html.Div(id="file_name_message",
+                                                        style={"margin-left": "40px", 'color': 'white'})
+                                           ]
+                                           ),
+                       ]
 
 messagedatasetidebar = dac.Sidebar(
     dac.SidebarMenu(
@@ -1481,16 +1517,17 @@ message_data_file = html.Div([
             className='sample_dataset_visualize'),
     ]),
     html.Div(id='message_option', className='sample_call_data_visualize_option'),
-    ],
+],
     className='sample_call_dataset_div')
 
 viewmessagedatasetitems = [dac.SidebarMenuItem(id='add-message-records',
-                                            label='Add Message Record',
-                                            icon='arrow-circle-right',
-                                            children=html.Div(
-                                                html.Div(id="file_name_message", style={"margin-left": "40px", 'color':'white'})
-                                            )),
-                        ]
+                                               label='Add Message Record',
+                                               icon='arrow-circle-right',
+                                               children=html.Div(
+                                                   html.Div(id="file_name_message",
+                                                            style={"margin-left": "40px", 'color': 'white'})
+                                               )),
+                           ]
 
 viewmessagedatasetidebar = dac.Sidebar(
     dac.SidebarMenu(
@@ -1521,11 +1558,13 @@ view_all_message_data = html.Div([
     html.Hr(),
     html.Br(),
     html.Div([
-        dbc.Button('VIEW DATA', outline=True, id='view_message', color='success', className='sample_call_dataset_viewdata'),
-        dbc.Button('CLOSED DATA', outline=True, id='close_message', color='danger', className='sample_call_dataset_close')],
+        dbc.Button('VIEW DATA', outline=True, id='view_message', color='success',
+                   className='sample_call_dataset_viewdata'),
+        dbc.Button('CLOSED DATA', outline=True, id='close_message', color='danger',
+                   className='sample_call_dataset_close')],
         className='sample_call_dataset_view_div'),
     html.Div(id='show_message_data', className='sample_call_dataset_show'),
-    ],
+],
     className='sample_call_dataset_div')
 
 ######## page for get all users in message dataset
@@ -1540,7 +1579,8 @@ get_all_message_users = html.Div([
     html.Hr(),
     html.Br(),
     html.Div([
-        dbc.Button('Get All Users', outline=True, color='success', id='get_message_users', className='sample_call_dataset_viewdata')],
+        dbc.Button('Get All Users', outline=True, color='success', id='get_message_users',
+                   className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div'
     ),
     html.Div(id='show_all_message_users', className='sample_call_dataset_show_all_users'),
@@ -1562,14 +1602,15 @@ connected_message_users = html.Div([
         dbc.FormGroup(
             [
                 dbc.Label("Enter Specific User Number:", html_for="example-email"),
-                dbc.Input(type="text", id="user_message", placeholder="Enter number", style={'width':'500px'}),
+                dbc.Input(type="text", id="user_message", placeholder="Enter number", style={'width': '500px'}),
                 dbc.FormText(
                     "Input must be a 10 digit number",
                     color="danger",
                 ),
             ]
         ),
-        dbc.Button('Connected Users', outline=True, color='success', id='connected_message_users', className='sample_call_dataset_viewdata')],
+        dbc.Button('Connected Users', outline=True, color='success', id='connected_message_users',
+                   className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div'
     ),
     html.Div(id='show_connected_message_users', className='sample_call_dataset_show_all_users'),
@@ -1582,7 +1623,8 @@ message_records_between_users = html.Div([
     viewmessagedatasetidebar,
     html.Div([
         html.Div([
-            html.H3('MESSAGE  DATASET  VISUALIZATION - MESSAGE RECORDS BETWEEN 2 USERS', className='index_dataset_add_call_data')],
+            html.H3('MESSAGE  DATASET  VISUALIZATION - MESSAGE RECORDS BETWEEN 2 USERS',
+                    className='index_dataset_add_call_data')],
             className='sample_dataset_visualize'),
     ]),
     html.Hr(),
@@ -1613,7 +1655,8 @@ message_records_between_users = html.Div([
             ],
             row=True,
         ),
-        dbc.Button('Get Records', id='record_message_users', color='success', outline=True, className='sample_call_dataset_viewdata')],
+        dbc.Button('Get Records', id='record_message_users', color='success', outline=True,
+                   className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div',
     ),
     html.Div(id='show_records_message_users', className='sample_call_dataset_show_all_users'),
@@ -1626,13 +1669,15 @@ visualize_message_connections = html.Div([
     viewmessagedatasetidebar,
     html.Div([
         html.Div([
-            html.H3('MESSAGE  DATASET  VISUALIZATION - VISUALIZE CONNECTIONS', className='index_dataset_add_call_data')],
+            html.H3('MESSAGE  DATASET  VISUALIZATION - VISUALIZE CONNECTIONS',
+                    className='index_dataset_add_call_data')],
             className='sample_dataset_visualize'),
     ]),
     html.Hr(),
     html.Br(),
     html.Div([
-        dbc.Button('Visualize Connection', id='visualize_message_connection',color='danger', outline=True, className='sample_call_dataset_viewdata')],
+        dbc.Button('Visualize Connection', id='visualize_message_connection', color='danger', outline=True,
+                   className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div'
     ),
     html.Div(id='show_visualize_message_connection', className='sample_call_dataset_show_all_users'),
@@ -1641,48 +1686,51 @@ visualize_message_connections = html.Div([
 
 message_data_list = []
 update_message_data = []
-message_option=[]
+message_option = []
 
 
 ######## add message dataset 
 @app.callback(Output('message-data', 'children'),
-            [
-                Input('upload-data_message', 'filename'),
-                Input('filepath_message', 'value')
-            ])
+              [
+                  Input('upload-data_message', 'filename'),
+                  Input('filepath_message', 'value')
+              ])
 def add_message_dataset(filename, filepath):
     try:
-        filename=filename[0]
-        path_File=os.path.join(filepath, filename)
+        filename = filename[0]
+        path_File = os.path.join(filepath, filename)
         message_data_list.append([filename, path_File])
-        file_part=filename.split('.')
-        option=[]
+        file_part = filename.split('.')
+        option = []
         option.append(dcc.Link('◙ Show All Message Data', href='/Message_Dataset/{}/view_data'.format(file_part[0])))
         option.append(html.Br())
         option.append(dcc.Link('◙ Show All Users', href='/Message_Dataset/{}/all_users'.format(file_part[0])))
         option.append(html.Br())
-        option.append(dcc.Link('◙ Show Connected Users', href='/Message_Dataset/{}/connected_users'.format(file_part[0])))
+        option.append(
+            dcc.Link('◙ Show Connected Users', href='/Message_Dataset/{}/connected_users'.format(file_part[0])))
         option.append(html.Br())
-        option.append(dcc.Link('◙ Message Records Between Two Selected Users', href='/Message_Dataset/{}/records_between_users'.format(file_part[0]))) 
-        option.append(html.Br()) 
-        option.append(dcc.Link('◙ Visualize Connections Between All Users', href='/Message_Dataset/{}/visualize_connection'.format(file_part[0]))) 
+        option.append(dcc.Link('◙ Message Records Between Two Selected Users',
+                               href='/Message_Dataset/{}/records_between_users'.format(file_part[0])))
+        option.append(html.Br())
+        option.append(dcc.Link('◙ Visualize Connections Between All Users',
+                               href='/Message_Dataset/{}/visualize_connection'.format(file_part[0])))
         message_option.append([file_part[0], option])
-        output_message=[]
+        output_message = []
         for x in message_data_list:
-            a=x[0].split('.')
-            output_message.append(dcc.Link(a[0], href='/Message_Dataset/'+str(a[0])))
+            a = x[0].split('.')
+            output_message.append(dcc.Link(a[0], href='/Message_Dataset/' + str(a[0])))
             output_message.append(html.Br())
-        name_message=html.Div(children=output_message)
+        name_message = html.Div(children=output_message)
         return name_message
 
     except Exception as e:
         print(e)
-        output_message=[]
+        output_message = []
         for x in message_data_list:
-            a=x[0].split('.')
-            output_message.append(dcc.Link(a[0], href='/Message_Dataset/'+str(a[0])))
+            a = x[0].split('.')
+            output_message.append(dcc.Link(a[0], href='/Message_Dataset/' + str(a[0])))
             output_message.append(html.Br())
-        name_message=html.Div(children=output_message)
+        name_message = html.Div(children=output_message)
         return name_message
 
 
@@ -1888,26 +1936,28 @@ def show_visualize_message_connection(n_clicks):
         ])
         return table
 
+
 ######## return message file name to the next page
-@app.callback( dash.dependencies.Output('file_name_message', 'children'),              
-              [   dash.dependencies.Input('url', 'pathname')
-            ]) 
-def file_name_message(pathname): 
+@app.callback(dash.dependencies.Output('file_name_message', 'children'),
+              [dash.dependencies.Input('url', 'pathname')
+               ])
+def file_name_message(pathname):
     file_message = pathname.split('/')
     for a in message_option:
         if file_message[-1] == a[0]:
             for data in message_data_list:
-                dataNew= data[0].split('.')
-                if file_message[-1]== dataNew[0]:
+                dataNew = data[0].split('.')
+                if file_message[-1] == dataNew[0]:
                     update_message_data.append(data)
-                    
+
             return file_message[-1]
 
+
 ######## get message option
-@app.callback( dash.dependencies.Output('message_option', 'children'),
-            [   dash.dependencies.Input('url', 'pathname')
-            ]) 
-def message_option_visu(pathname): 
+@app.callback(dash.dependencies.Output('message_option', 'children'),
+              [dash.dependencies.Input('url', 'pathname')
+               ])
+def message_option_visu(pathname):
     file_message = pathname.split('/')
     for a in message_option:
         if file_message[-1] == a[0]:
@@ -1918,57 +1968,57 @@ def message_option_visu(pathname):
 ##################################################################################
 
 @app.callback(dash.dependencies.Output('page-content', 'children'),
-            [   dash.dependencies.Input('url', 'pathname')
-            ])       
+              [dash.dependencies.Input('url', 'pathname')
+               ])
 def display_page(pathname):
     path_set = pathname.split('/')
-    if pathname=='/Call_Dataset':
+    if pathname == '/Call_Dataset':
         return call_dataset
-    elif pathname=='/Cell_Dataset':
+    elif pathname == '/Cell_Dataset':
         return cell_dataset
-    elif pathname=='/Message_Dataset':
+    elif pathname == '/Message_Dataset':
         return message_dataset
-    elif len(path_set)==3 and path_set[-2]== 'Call_Dataset':
+    elif len(path_set) == 3 and path_set[-2] == 'Call_Dataset':
         return call_dataset_file
-    elif len(path_set)==4 and path_set[-3]== 'Call_Dataset' and path_set[-1]=='view_data':
+    elif len(path_set) == 4 and path_set[-3] == 'Call_Dataset' and path_set[-1] == 'view_data':
         return view_all_call_data
-    elif len(path_set)==4 and path_set[-3]== 'Call_Dataset' and path_set[-1]=='all_users':
+    elif len(path_set) == 4 and path_set[-3] == 'Call_Dataset' and path_set[-1] == 'all_users':
         return get_all_users
-    elif len(path_set)==4 and path_set[-3]== 'Call_Dataset' and path_set[-1]=='connected_users':
-        return connected_users  
-    elif len(path_set)==4 and path_set[-3]== 'Call_Dataset' and path_set[-1]== 'records_between_users':
-        return  records_between_users
-    elif len(path_set)==4 and path_set[-3]== 'Call_Dataset' and path_set[-1]== 'close_contacts':
+    elif len(path_set) == 4 and path_set[-3] == 'Call_Dataset' and path_set[-1] == 'connected_users':
+        return connected_users
+    elif len(path_set) == 4 and path_set[-3] == 'Call_Dataset' and path_set[-1] == 'records_between_users':
+        return records_between_users
+    elif len(path_set) == 4 and path_set[-3] == 'Call_Dataset' and path_set[-1] == 'close_contacts':
         return close_contacts
-    elif len(path_set)==4 and path_set[-3]== 'Call_Dataset' and path_set[-1]== 'ignored_call':
+    elif len(path_set) == 4 and path_set[-3] == 'Call_Dataset' and path_set[-1] == 'ignored_call':
         return ignore_call_detail
-    elif len(path_set)==4 and path_set[-3]== 'Call_Dataset' and path_set[-1]== 'active_time':
+    elif len(path_set) == 4 and path_set[-3] == 'Call_Dataset' and path_set[-1] == 'active_time':
         return active_time_user
-    elif len(path_set)==4 and path_set[-3]== 'Call_Dataset' and path_set[-1]== 'visualize_connection':
+    elif len(path_set) == 4 and path_set[-3] == 'Call_Dataset' and path_set[-1] == 'visualize_connection':
         return visualize_connections
-    elif len(path_set)==3 and  path_set[-2]== 'Cell_Dataset':
+    elif len(path_set) == 3 and path_set[-2] == 'Cell_Dataset':
         return cell_dataset_file
-    elif len(path_set)==4 and path_set[-3]== 'Cell_Dataset' and path_set[-1]=='view_cell_data':
+    elif len(path_set) == 4 and path_set[-3] == 'Cell_Dataset' and path_set[-1] == 'view_cell_data':
         return view_all_cell_data
-    elif len(path_set)==4 and path_set[-3]== 'Cell_Dataset' and path_set[-1]=='records_cell_id':
+    elif len(path_set) == 4 and path_set[-3] == 'Cell_Dataset' and path_set[-1] == 'records_cell_id':
         return records_of_cell
-    elif len(path_set)==4 and path_set[-3]== 'Cell_Dataset' and path_set[-1]=='population_around_cell':
+    elif len(path_set) == 4 and path_set[-3] == 'Cell_Dataset' and path_set[-1] == 'population_around_cell':
         return population_around_cell
-    elif len(path_set)==4 and path_set[-3]== 'Cell_Dataset' and path_set[-1]=='trip_visualize':
+    elif len(path_set) == 4 and path_set[-3] == 'Cell_Dataset' and path_set[-1] == 'trip_visualize':
         return trip_visualize
-    elif len(path_set)==3 and  path_set[-2]== 'Message_Dataset':
+    elif len(path_set) == 3 and path_set[-2] == 'Message_Dataset':
         return message_data_file
-    elif len(path_set)==4 and path_set[-3]== 'Message_Dataset' and path_set[-1]=='view_data':
+    elif len(path_set) == 4 and path_set[-3] == 'Message_Dataset' and path_set[-1] == 'view_data':
         return view_all_message_data
-    elif len(path_set)==4 and path_set[-3]== 'Message_Dataset' and path_set[-1]=='all_users':
+    elif len(path_set) == 4 and path_set[-3] == 'Message_Dataset' and path_set[-1] == 'all_users':
         return get_all_message_users
-    elif len(path_set)==4 and path_set[-3]== 'Message_Dataset' and path_set[-1]=='connected_users':
-        return connected_message_users  
-    elif len(path_set)==4 and path_set[-3]== 'Message_Dataset' and path_set[-1]== 'records_between_users':
-        return  message_records_between_users
-    elif len(path_set)==4 and path_set[-3]== 'Message_Dataset' and path_set[-1]== 'visualize_connection':
+    elif len(path_set) == 4 and path_set[-3] == 'Message_Dataset' and path_set[-1] == 'connected_users':
+        return connected_message_users
+    elif len(path_set) == 4 and path_set[-3] == 'Message_Dataset' and path_set[-1] == 'records_between_users':
+        return message_records_between_users
+    elif len(path_set) == 4 and path_set[-3] == 'Message_Dataset' and path_set[-1] == 'visualize_connection':
         return visualize_message_connections
-    elif pathname=='/':
+    elif pathname == '/':
         return index_page
     else:
         return index_page
