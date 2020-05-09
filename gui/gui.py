@@ -167,13 +167,17 @@ call_dataset = html.Div([
         html.Hr(),
         dcc.Upload(id='upload-data_call',
                    children=html.Div([
-                       dbc.Button('ADD CALL DATA', className='index_datatset_calldata_button', color='dark'
+                       dbc.Button('CHOOSE FILE', id='choose_call', className='index_datatset_calldata_button', color='dark'
                                   )
                    ]),
                    className='index_dataset_upload_data',
                    # Allow multiple files to be uploaded
                    multiple=True
                    ),
+        html.Div([
+            html.Button('ADD CALL DATA', id='adding_call' ,className='index_celldata_add_button',),
+            ]),
+        dbc.Alert(id='alert', dismissable=True, is_open=False, style={'width':'500px', 'background-color':'red','font-size':'18px'})
     ], className='call_page_welcome_div'),
 ],
     className='call_dataset_div'
@@ -408,7 +412,7 @@ close_contacts = html.Div([
                 dbc.Label("Enter No. Top Contact:", html_for="example-email-row", width=2),
                 dbc.Col(
                     dbc.Input(
-                        type="text", id="contact", placeholder="Enter number of top contact", style={'width': '500px'}
+                        type="number", id="contact", placeholder="Enter number of top contact", style={'width': '500px'}
                     ),
                     width=10,
                 ),
@@ -511,6 +515,7 @@ visualize_connections = html.Div([
 
 # over call dataset
 
+FilePath = []
 call_data_list = []
 update_call_data = []
 call_option = []
@@ -518,73 +523,95 @@ call_name = []
 
 
 ###### add call data
-@app.callback(Output('call-data', 'children'),
-              [
-                  Input('upload-data_call', 'filename'),
-                  Input('filepath', 'value')
-              ])
-def add_call_dataset(filename, filepath):
-    try:
-        filename = filename[0]
-        path_File = os.path.join(filepath, filename)
-        call_data_list.append([filename, path_File])
-        file_part = filename.split('.')
-        call_name.append(file_part[0])
-        option = []
-        option.append(dcc.Link('◙ Show All Data', href='/Call_Dataset/{}/view_data'.format(file_part[0])))
-        option.append(html.Br())
-        option.append(dcc.Link('◙ Show All Users', href='/Call_Dataset/{}/all_users'.format(file_part[0])))
-        option.append(html.Br())
-        option.append(dcc.Link('◙ Show Connected Users', href='/Call_Dataset/{}/connected_users'.format(file_part[0])))
-        option.append(html.Br())
-        option.append(dcc.Link('◙ Call Records Between Two Selected Users',
-                               href='/Call_Dataset/{}/records_between_users'.format(file_part[0])))
-        option.append(html.Br())
-        option.append(
-            dcc.Link('◙ Close Contacts Of Selected Users', href='/Call_Dataset/{}/close_contacts'.format(file_part[0])))
-        option.append(html.Br())
-        option.append(
-            dcc.Link('◙ Ignored Call Details Of a User', href='/Call_Dataset/{}/ignored_call'.format(file_part[0])))
-        option.append(html.Br())
-        option.append(dcc.Link('◙ Active Time Of a User', href='/Call_Dataset/{}/active_time'.format(file_part[0])))
-        option.append(html.Br())
-        option.append(dcc.Link('◙ Visualize Connections Between All Users',
-                               href='/Call_Dataset/{}/visualize_connection'.format(file_part[0])))
-        call_option.append([file_part[0], option])
-        output_call = []
+@app.callback([ Output('call-data', 'children'), Output('alert', 'is_open'), Output('alert', 'children')],
+              [ Input('upload-data_call', 'filename'), Input('filepath', 'value'), Input('adding_call', 'n_clicks')],
+              [  State('alert', 'is_open')]
+            )
+def add_call_dataset(filename, filepath, n_clicks, is_open):
+    if n_clicks is not None:
+        try:
+            FilePath.append(filepath)
+            filename=filename[0]
+            path_File=os.path.join(filepath, filename)
+            file_part=filename.split('.')
+            file_type = file_part[-1]
+            call_data = cz.read_call(path_File, file_type)
+            all_users = call_data.get_all_users()
+            call_data_list.append([filename, path_File, all_users, call_data])
+            call_name.append(file_part[0])
+            option=[]
+            option.append(dcc.Link('◙ Show All Data', href='/Call_Dataset/{}/view_data'.format(file_part[0])))
+            option.append(html.Br())
+            option.append(dcc.Link('◙ Show All Users', href='/Call_Dataset/{}/all_users'.format(file_part[0])))
+            option.append(html.Br())
+            option.append(dcc.Link('◙ Show Connected Users', href='/Call_Dataset/{}/connected_users'.format(file_part[0])))
+            option.append(html.Br())
+            option.append(dcc.Link('◙ Call Records Between Two Selected Users', href='/Call_Dataset/{}/records_between_users'.format(file_part[0]))) 
+            option.append(html.Br()) 
+            option.append(dcc.Link('◙ Close Contacts Of Selected Users', href='/Call_Dataset/{}/close_contacts'.format(file_part[0])))
+            option.append(html.Br()) 
+            option.append(dcc.Link('◙ Ignored Call Details Of a User', href='/Call_Dataset/{}/ignored_call'.format(file_part[0]))) 
+            option.append(html.Br()) 
+            option.append(dcc.Link('◙ Active Time Of a User', href='/Call_Dataset/{}/active_time'.format(file_part[0]))) 
+            option.append(html.Br()) 
+            option.append(dcc.Link('◙ Visualize Connections Between All Users', href='/Call_Dataset/{}/visualize_connection'.format(file_part[0]))) 
+            call_option.append([file_part[0], option])
+            output_call=[]
+            for x in call_data_list:
+                a=x[0].split('.')
+                output_call.append(html.Br())
+                output_call.append(dcc.Link(a[0], href='/Call_Dataset/'+str(a[0])))
+            name=html.Div(children=output_call)
+            print('safsagfjg')
+            return name, is_open, None
+
+        except Exception as e:
+            print(str(e))
+            if str(e) == "'NoneType' object has no attribute 'get_all_users'":
+                word = "File path is incorrect"
+            else:
+                word = "Dataset is not call dataset"
+            output_call=[]
+            for x in call_data_list:
+                a=x[0].split('.')
+                output_call.append(html.Br())
+                output_call.append(dcc.Link(a[0], href='/Call_Dataset/'+str(a[0])))
+            name=html.Div(children=output_call)
+            print('sa2')
+            return name, not is_open, word
+        
+    else:
+        print('sa')
+        output_call=[]
         for x in call_data_list:
-            a = x[0].split('.')
+            a=x[0].split('.')
             output_call.append(html.Br())
-            output_call.append(dcc.Link(a[0], href='/Call_Dataset/' + str(a[0])))
-        name = html.Div(children=output_call)
-        return name
+            output_call.append(dcc.Link(a[0], href='/Call_Dataset/'+str(a[0])))
+        name=html.Div(children=output_call)
+        return name, False , None
 
 
-    except Exception as e:
-        print(e)
-        output_call = []
-        for x in call_data_list:
-            a = x[0].split('.')
-            output_call.append(html.Br())
-            output_call.append(dcc.Link(a[0], href='/Call_Dataset/' + str(a[0])))
-        name = html.Div(children=output_call)
-        return name
+@app.callback(Output('adding_call', 'n_clicks'),
+              [Input('choose_call', 'n_clicks'), Input('filepath', 'value')])
+def adding_call_button(n_clicks, filepath):
+    if len(FilePath)>=1 and FilePath[-1]!=filepath:
+        return None
+    elif n_clicks is not None:
+        return None
 
-    ######## return file name to the next page
-
-
-@app.callback(dash.dependencies.Output('file_name', 'children'),
-              [dash.dependencies.Input('url', 'pathname')
-               ])
-def file_name(pathname):
+######## return file name to the next page
+@app.callback( dash.dependencies.Output('file_name', 'children'),              
+              [   dash.dependencies.Input('url', 'pathname')
+            ]) 
+def file_name(pathname): 
     file_call = pathname.split('/')
     for a in call_option:
         if file_call[-1] == a[0]:
             for data in call_data_list:
-                dataNew = data[0].split('.')
-                if file_call[-1] == dataNew[0]:
+                dataNew= data[0].split('.')
+                if file_call[-1]== dataNew[0]:
                     update_call_data.append(data)
-
+                    
             return file_call[-1]
 
 
@@ -598,11 +625,10 @@ def file_name2(pathname):
         if file_call[-1] == a[0]:
             return a[1]
 
-
 ######### view call dataset
 @app.callback(Output('show_data', 'children'),
-              [Input('view', 'n_clicks'),
-               Input('close', 'n_clicks')
+              [ Input('view', 'n_clicks'),
+                Input('close', 'n_clicks')
                ])
 def update_table(n_clicks, click2):
     table = html.Div()
@@ -610,11 +636,7 @@ def update_table(n_clicks, click2):
         return None
 
     if n_clicks is not None:
-        filepath = update_call_data[-1][1]
-        filename = update_call_data[-1][0]
-        split_name = filename.split('.')
-        file_type = split_name[-1]
-        call_data = cz.read_call(filepath, file_type)
+        call_data = update_call_data[-1][-1]
         dict_list = []
         for record in call_data.get_records():
             dict_list.append(vars(record))
@@ -637,7 +659,7 @@ def update_table(n_clicks, click2):
                 row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
             tab.append(html.Tr(children=row_content, style={'height': '5px'}))
         table = html.Div([
-            html.H2(filename),
+            # html.H2(filename),
             html.Table(children=tab,
                        style={'border-collapse': 'collapse',
                               'border': '1px solid black',
@@ -663,12 +685,7 @@ def close_data(n_clicks):
 def show_all_users(n_clicks):
     table = html.Div()
     if n_clicks is not None:
-        filepath = update_call_data[-1][1]
-        filename = update_call_data[-1][0]
-        split_name = filename.split('.')
-        file_type = split_name[-1]
-        call_data = cz.read_call(filepath, file_type)
-        all_users = call_data.get_all_users()
+        all_users = update_call_data[-1][2]
         tab = []
         column = []
         column.append(
@@ -688,7 +705,7 @@ def show_all_users(n_clicks):
         return table
 
 
-######## show cnnected users of specific user
+######## show connected users of specific user
 @app.callback(Output('show_connected_users', 'children'),
               [Input('connected_users', 'n_clicks'),
                Input('search', 'value')
@@ -696,28 +713,28 @@ def show_all_users(n_clicks):
 def show_connected_users(n_clicks, searchUser):
     table = html.Div()
     if n_clicks is not None:
-        filepath = update_call_data[-1][1]
-        filename = update_call_data[-1][0]
-        split_name = filename.split('.')
-        file_type = split_name[-1]
-        call_data = cz.read_call(filepath, file_type)
-        connected_users = call_data.get_connected_users(searchUser)
-        tab = []
-        column = []
-        column.append(html.Th('Connected Users',
-                              style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
-        tab.append(html.Tr(children=column))
-        for user in connected_users:
-            row_content = []
-            row_content.append(html.Td(user, style={'border': '1px solid black', 'padding-left': '10px'}))
-            tab.append(html.Tr(children=row_content, style={'height': '5px'}))
-        table = html.Div([
-            html.Table(children=tab,
-                       style={'border-collapse': 'collapse',
-                              'border': '1px solid black',
-                              'width': '200px'
-                              })
-        ])
+        call_data = update_call_data[-1][-1]
+        connected_users = call_data.get_connected_users(searchUser)   
+        if len(connected_users)==0:
+            table=html.Div([
+                html.H5(children='User does not exist', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
+        else:
+            tab = []
+            column = []
+            column.append(html.Th('Connected Users',
+                                style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
+            tab.append(html.Tr(children=column))
+            for user in connected_users:
+                row_content = []
+                row_content.append(html.Td(user, style={'border': '1px solid black', 'padding-left': '10px'}))
+                tab.append(html.Tr(children=row_content, style={'height': '5px'}))
+            table = html.Div([
+                html.Table(children=tab,
+                        style={'border-collapse': 'collapse',
+                                'border': '1px solid black',
+                                'width': '200px'
+                                })
+            ])
         return table
 
 
@@ -731,40 +748,47 @@ def between_users_records(user_1, user_2, click):
     table = html.Div()
 
     if click is not None:
-        filepath = update_call_data[-1][1]
-        filename = update_call_data[-1][0]
-        split_name = filename.split('.')
-        file_type = split_name[-1]
-        call_data = cz.read_call(filepath, file_type)
+        call_data = update_call_data[-1][-1]
+        call_users = update_call_data[-1][2]
         dict_list = []
-        for record in call_data.get_records(user_1, user_2):
-            dict_list.append(vars(record))
-        header = list(dict_list[0].keys())
-        tab = []
-        column = []
-        for i in header:
-            column.append(
-                html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
-        tab.append(html.Tr(children=column))
-        count = 0
-        for j in dict_list:
-            value = list(j.values())
-            count += 1
-            row_content = []
-            if count > 100:
-                break
-            for x in value:
-                row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
-            tab.append(html.Tr(children=row_content, style={'height': '5px'}))
-        table = html.Div([
-            html.Table(children=tab,
-                       style={'border-collapse': 'collapse',
-                              'border': '1px solid black',
-                              'width': '100%'
-                              })
-        ])
+        if user_1 not in call_users:
+            table=html.Div([
+                html.H5(children='User 2 does not exist', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
+        elif user_2 not in call_users:
+            table=html.Div([
+                html.H5(children='User 1 does not exist', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})]) 
+        else:
+            for record in call_data.get_records(user_1, user_2):
+                dict_list.append(vars(record))
+            header = list(dict_list[0].keys())              
+            if len(dict_list)==0:
+                table=html.Div([
+                    html.H5(children='No records between two users', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
+            else:                  
+                tab = []
+                column = []
+                for i in header:
+                    column.append(
+                        html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
+                tab.append(html.Tr(children=column))
+                count = 0
+                for j in dict_list:
+                    value = list(j.values())
+                    count += 1
+                    row_content = []
+                    if count > 100:
+                        break
+                    for x in value:
+                        row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
+                    tab.append(html.Tr(children=row_content, style={'height': '5px'}))
+                table = html.Div([
+                    html.Table(children=tab,
+                            style={'border-collapse': 'collapse',
+                                    'border': '1px solid black',
+                                    'width': '100%'
+                                    })
+                ])
         return table
-
 
 ######## show close contacts
 @app.callback(Output('show_close_contact', 'children'),
@@ -775,53 +799,66 @@ def between_users_records(user_1, user_2, click):
 def show_close_contatcs(user_3, contact, n_clicks):
     table = html.Div()
     if n_clicks is not None:
-        filepath = update_call_data[-1][1]
-        filename = update_call_data[-1][0]
-        split_name = filename.split('.')
-        file_type = split_name[-1]
-        call_data = cz.read_call(filepath, file_type)
+        call_data = update_call_data[-1][-1]
+        call_users = update_call_data[-1][2]
         connected_users = call_data.get_close_contacts(user_3, contact)
-        tab = []
-        column = []
-        col1 = html.Th("Contact No.",
-                       style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'})
-        column.append(col1)
-        col2 = html.Th("No of interactions between users",
-                       style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'})
-        column.append(col2)
-        tab.append(html.Tr(children=column))
-        numbers = list(connected_users.keys())
-        NoContacts = list(connected_users.values())
-        for j in range(len(numbers)):
-            row_content = []
-            row_content.append(html.Td(numbers[j], style={'border': '1px solid black', 'padding-left': '10px'}))
-            row_content.append(html.Td(str(NoContacts[j]), style={'border': '1px solid black', 'padding-left': '10px'}))
-            tab.append(html.Tr(children=row_content, style={'height': '5px'}))
-        table = html.Div([
-            html.Table(children=tab,
-                       style={'border-collapse': 'collapse',
-                              'border': '1px solid black',
-                              'width': '50%'
-                              })
-        ])
+        if user_3 not in call_users:
+            table=html.Div([
+                html.H5(children='User does not exist', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
+        else:
+            connected_users = call_data.get_close_contacts(user_3, contact)
+            if len(connected_users)==0:
+                table=html.Div([
+                    html.H5(children='No connected users', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
+            else:
+                tab = []
+                column = []
+                col1 = html.Th("Contact No.",
+                            style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'})
+                column.append(col1)
+                col2 = html.Th("No of interactions between users",
+                            style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'})
+                column.append(col2)
+                tab.append(html.Tr(children=column))
+                numbers = list(connected_users.keys())
+                NoContacts = list(connected_users.values())
+                for j in range(len(numbers)):
+                    row_content = []
+                    row_content.append(html.Td(numbers[j], style={'border': '1px solid black', 'padding-left': '10px'}))
+                    row_content.append(html.Td(str(NoContacts[j]), style={'border': '1px solid black', 'padding-left': '10px'}))
+                    tab.append(html.Tr(children=row_content, style={'height': '5px'}))
+                table = html.Div([
+                    html.Table(children=tab,
+                            style={'border-collapse': 'collapse',
+                                    'border': '1px solid black',
+                                    'width': '50%'
+                                    })
+                ])
         return table
 
 
 ######## show most active time
-@app.callback(Output('show_active_time', 'figure'),
+@app.callback(Output('show_active_time', 'children'),
               [Input('active_time', 'n_clicks'),
                Input('user_4', 'value')
                ])
 def show_active_time(n_clicks, user_4):
-    if n_clicks is not None:
-        filepath = update_call_data[-1][1]
-        filename = update_call_data[-1][0]
-        split_name = filename.split('.')
-        file_type = split_name[-1]
-        call_data = cz.read_call(filepath, file_type)
-        active_time = call_data.get_most_active_time(user_4)
-        return cz.visualization.active_time_bar_chart(active_time)
-
+    table = html.Div()
+    try:
+        if n_clicks is not None:
+            call_data = update_call_data[-1][-1]
+            call_users = update_call_data[-1][2]
+            if user_4 not in call_users:
+                table=html.Div([
+                    html.H5(children='User does not exist', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])          
+            else:
+                active_time = call_data.get_most_active_time(user_4)
+                cz.visualization.active_time_bar_chart(active_time)
+            return table
+    
+    except Exception as e:
+        print(e)
+    
 
 ######### Show ignored call
 @app.callback(Output('show_ignore_call', 'children'),
@@ -831,32 +868,33 @@ def show_active_time(n_clicks, user_4):
 def show_ignore_call(user_5, n_clicks):
     table = html.Div()
     if n_clicks is not None:
-        filepath = update_call_data[-1][1]
-        filename = update_call_data[-1][0]
-        split_name = filename.split('.')
-        file_type = split_name[-1]
-        call_data = cz.read_call(filepath, file_type)
-        ignore_call = call_data.get_ignored_call_details(user_5)
-        key = list(ignore_call[0].keys())
-        tab = []
-        column = []
-        for i in key:
-            column.append(
-                html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
-        tab.append(html.Tr(children=column))
-        for j in ignore_call:
-            value = list(j.values())
-            row_content = []
-            for x in value:
-                row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
-            tab.append(html.Tr(children=row_content, style={'height': '5px'}))
-        table = html.Div([
-            html.Table(children=tab,
-                       style={'border-collapse': 'collapse',
-                              'border': '1px solid black',
-                              'width': '100%'
-                              })
-        ])
+        call_data = update_call_data[-1][-1]
+        call_users = update_call_data[-1][2]
+        if user_5 not in call_users:
+            table=html.Div([
+                html.H5(children='User does not exist', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
+        else:
+            ignore_call = call_data.get_ignored_call_details(user_5)
+            key = list(ignore_call[0].keys())
+            tab = []
+            column = []
+            for i in key:
+                column.append(
+                    html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
+            tab.append(html.Tr(children=column))
+            for j in ignore_call:
+                value = list(j.values())
+                row_content = []
+                for x in value:
+                    row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
+                tab.append(html.Tr(children=row_content, style={'height': '5px'}))
+            table = html.Div([
+                html.Table(children=tab,
+                        style={'border-collapse': 'collapse',
+                                'border': '1px solid black',
+                                'width': '100%'
+                                })
+            ])
         return table
 
 
@@ -866,11 +904,7 @@ def show_ignore_call(user_5, n_clicks):
                ])
 def show_visualize_connection(n_clicks):
     if n_clicks is not None:
-        filepath = update_call_data[-1][1]
-        filename = update_call_data[-1][0]
-        split_name = filename.split('.')
-        file_type = split_name[-1]
-        call_data = cz.read_call(filepath, file_type)
+        call_data = update_call_data[-1][-1]
         visu_conn = call_data.visualize_connection_network()
         tab = []
         column = []
@@ -1105,7 +1139,7 @@ records_of_cell = html.Div([
 ],
     className='sample_call_dataset_div')
 
-######## page for get ppulation and visualize
+######## page for get population and visualize
 population_around_cell = html.Div([
     html.H1(className='sample_call_data_cellyzer', children='CELLYZER'),
     viewcelldatasetidebar,
@@ -1143,7 +1177,7 @@ trip_visualize = html.Div([
                 dbc.Label("Enter user number:", html_for="example-email-row", width=2),
                 dbc.Col(
                     dbc.Input(
-                        type="number", id="trip_user", placeholder="Enter number", style={'width': '500px'}
+                        type="text", id="trip_user", placeholder="Enter number", style={'width': '500px'}
                     ),
                     width=10,
                 ),
@@ -1166,58 +1200,56 @@ cell_option = []
 ####### add cell data
 @app.callback(Output('cell-data', 'children'),
 
-              [Input('select_call', 'value'),
-               Input('upload-data_cell', 'filename'),
-               Input('filepath_cell', 'value'),
-               Input('show_cell_dash', 'n_clicks')
-               ])
+            [   Input('select_call', 'value'),
+                Input('upload-data_cell', 'filename'),
+                Input('filepath_cell', 'value'),
+                Input('show_cell_dash', 'n_clicks')
+            ])
 def add_cell_dataset(call_file, filename, filepath, n_clicks):
     try:
         if n_clicks is not None:
-            filename = filename[0]
-            path_File = os.path.join(filepath, filename)
+            filename=filename[0]
+            path_File=os.path.join(filepath, filename)
+            file_part=filename.split('.')
+            file_type = file_part[-1]
             for call in call_data_list:
-                f_name = call[0].split('.')
+                f_name= call[0].split('.')
                 if call_file == f_name[0]:
-                    cell_data_list.append([filename, path_File, call])
-                    print(cell_data_list)
+                    cell_data = cz.read_cell(path_File, call[1], call[-1], file_type)
+                    cell_data_list.append([filename, path_File, call[2], cell_data])
                     break
-
-            file_part = filename.split('.')
-            option = []
+            option=[]
             option.append(dcc.Link('◙ Show All Data', href='/Cell_Dataset/{}/view_cell_data'.format(file_part[0])))
             option.append(html.Br())
-            option.append(
-                dcc.Link('◙ Records Of a Specific Cell', href='/Cell_Dataset/{}/records_cell_id'.format(file_part[0])))
+            option.append(dcc.Link('◙ Records Of a Specific Cell', href='/Cell_Dataset/{}/records_cell_id'.format(file_part[0])))
             option.append(html.Br())
-            option.append(dcc.Link('◙ Population Around Cell',
-                                   href='/Cell_Dataset/{}/population_around_cell'.format(file_part[0])))
+            option.append(dcc.Link('◙ Population Around Cell', href='/Cell_Dataset/{}/population_around_cell'.format(file_part[0])))
             option.append(html.Br())
-            option.append(dcc.Link('◙ Trip Visualization', href='/Cell_Dataset/{}/trip_visualize'.format(file_part[0])))
+            option.append(dcc.Link('◙ Trip Visualization', href='/Cell_Dataset/{}/trip_visualize'.format(file_part[0]))) 
             cell_option.append([file_part[0], option])
-            output_cell = []
+            output_cell=[]
             for x in cell_data_list:
-                a = x[0].split('.')
-                output_cell.append(dcc.Link(a[0], href='/Cell_Dataset/' + str(a[0])))
+                a=x[0].split('.')
+                output_cell.append(dcc.Link(a[0], href='/Cell_Dataset/'+str(a[0])))
                 output_cell.append(html.Br())
-            name_cell = html.Div(children=output_cell)
+            name_cell=html.Div(children = output_cell)
             return name_cell
 
     except Exception as e:
         print(e)
-        output_cell = []
+        output_cell=[]
         for x in cell_data_list:
-            a = x[0].split('.')
-            output_cell.append(dcc.Link(a[0], href='/Cell_Dataset/' + str(a[0])))
+            a=x[0].split('.')
+            output_cell.append(dcc.Link(a[0], href='/Cell_Dataset/'+str(a[0])))
             output_cell.append(html.Br())
-        name_cell = html.Div(children=output_cell)
+        name_cell=html.Div(children = output_cell)
         return name_cell
 
 
 ########### show cell data
 @app.callback(Output('show_cell_data', 'children'),
-              [Input('view_cell', 'n_clicks'),
-               Input('close_cell', 'n_clicks')
+              [ Input('view_cell', 'n_clicks'), 
+                Input('close_cell', 'n_clicks')
                ])
 def view_cell_data(n_clicks, click2):
     table = html.Div()
@@ -1225,18 +1257,9 @@ def view_cell_data(n_clicks, click2):
         return None
 
     if n_clicks is not None:
-        filepath = update_cell_data[-1][1]
-        filename = update_cell_data[-1][0]
-        filepath_call = update_cell_data[-1][2][1]
-        filename_call = update_cell_data[-1][2][0]
-        split_call_name = filename_call.split('.')
-        file_type_call = split_call_name[-1]
-        call_data = cz.read_call(filepath_call, file_type_call)
-        split_name = filename.split('.')
-        file_type = split_name[-1]
-        c = cz.read_cell(filepath, filepath_call, call_data, file_type)
+        cell_data = update_cell_data[-1][-1]
         dict_list = []
-        for record in c.get_records():
+        for record in cell_data.get_records():
             dict_list.append(vars(record))
         header = list(dict_list[0].keys())
         tab = []
@@ -1257,7 +1280,7 @@ def view_cell_data(n_clicks, click2):
                 row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
             tab.append(html.Tr(children=row_content, style={'height': '5px'}))
         table = html.Div([
-            html.H2(filename),
+            # html.H2(filename),
             html.Table(children=tab,
                        style={'border-collapse': 'collapse',
                               'border': '1px solid black',
@@ -1274,18 +1297,16 @@ def close_cell_data(n_clicks):
     if n_clicks is not None:
         return None
 
-
 ######## select call dataset using dropdown
 @app.callback(Output('select_call', 'options'),
-              [Input('call_for_cell', 'n_clicks')
-               ])
+            [   Input('call_for_cell', 'n_clicks')
+            ])
 def get_call_for_cell(n_clicks):
     if n_clicks is not None:
-        add_call = []
+        add_call=[]
         for name in call_name:
-            add_call.append({'label': name, 'value': name})
+            add_call.append({'label':name, 'value': name})
         return add_call
-
 
 ###### get cell_id records
 @app.callback(Output('show_records_cell', 'children'),
@@ -1294,19 +1315,14 @@ def get_call_for_cell(n_clicks):
                ])
 def get_cell_records(n_clicks, cell_id):
     if n_clicks is not None:
-        filepath = update_cell_data[-1][1]
-        filename = update_cell_data[-1][0]
-        filepath_call = update_cell_data[-1][2][1]
-        filename_call = update_cell_data[-1][2][0]
-        split_call_name = filename_call.split('.')
-        file_type_call = split_call_name[-1]
-        call_data = cz.read_call(filepath_call, file_type_call)
-        split_name = filename.split('.')
-        file_type = split_name[-1]
-        antana_dataset = cz.read_cell(filepath, filepath_call, call_data, file_type)
-        record_cell = antana_dataset.get_cell_records(cell_id)
-        cell = record_cell.get_cell_id()
-
+        try:
+            antana_dataset = update_cell_data[-1][-1]
+            record_cell = antana_dataset.get_cell_records(cell_id)
+            cell = record_cell.get_cell_id()
+        
+        except Exception as e:
+            print(e)
+            cell="Id does not exist"
         return html.H5('Cell_id: ' + cell, className='index_dataset_add_call_data')
 
 
@@ -1316,16 +1332,7 @@ def get_cell_records(n_clicks, cell_id):
                ])
 def get_population(n_clicks):
     if n_clicks is not None:
-        filepath = update_cell_data[-1][1]
-        filename = update_cell_data[-1][0]
-        filepath_call = update_cell_data[-1][2][1]
-        filename_call = update_cell_data[-1][2][0]
-        split_call_name = filename_call.split('.')
-        file_type_call = split_call_name[-1]
-        call_data = cz.read_call(filepath_call, file_type_call)
-        split_name = filename.split('.')
-        file_type = split_name[-1]
-        antana_dataset = cz.read_cell(filepath, filepath_call, call_data, file_type)
+        antana_dataset = update_cell_data[-1][-1]
         population = antana_dataset.get_population()
         return cz.visualization.cell_population_visualization(population)
 
@@ -1336,51 +1343,42 @@ def get_population(n_clicks):
                Input('trip_visualize_button', 'n_clicks')
                ])
 def trip_visualization(user, n_clicks):
+    table = html.Div()
     if n_clicks is not None:
-        filepath = update_cell_data[-1][1]
-        filename = update_cell_data[-1][0]
-        filepath_call = update_cell_data[-1][2][1]
-        filename_call = update_cell_data[-1][2][0]
-        split_call_name = filename_call.split('.')
-        file_type_call = split_call_name[-1]
-        call_data = cz.read_call(filepath_call, file_type_call)
-        split_name = filename.split('.')
-        file_type = split_name[-1]
-        antana_dataset = cz.read_cell(filepath, filepath_call, call_data, file_type)
-        trip_visualize = antana_dataset.get_trip_details(user)
-
-        return cz.visualization.trip_visualization(trip_visualize)
-
+        all_users= update_cell_data[-1][2]
+        if user not in all_users:
+            table=html.Div([
+                html.H5(children='User does not exist', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
+        else:
+            antana_dataset = update_cell_data[-1][-1]
+            trip_visualize = antana_dataset.get_trip_details(user)
+            cz.visualization.trip_visualization(trip_visualize)
+        return table
 
 ######## return cell file name to the next page
-@app.callback(dash.dependencies.Output('file_name_cell', 'children'),
-              [dash.dependencies.Input('url', 'pathname')
-               ])
-def file_name_cell(pathname):
+@app.callback( dash.dependencies.Output('file_name_cell', 'children'),              
+              [   dash.dependencies.Input('url', 'pathname')
+            ]) 
+def file_name_cell(pathname): 
     file_cell = pathname.split('/')
     for a in cell_option:
         if file_cell[-1] == a[0]:
-            print('hess')
             for data in cell_data_list:
-                print(data)
-                dataNew = data[0].split('.')
-                if file_cell[-1] == dataNew[0]:
+                dataNew= data[0].split('.')
+                if file_cell[-1]== dataNew[0]:
                     update_cell_data.append(data)
-
-            print(update_cell_data)
+                    
             return file_cell[-1]
 
-
 ######## get cell option
-@app.callback(dash.dependencies.Output('cell_option', 'children'),
-              [dash.dependencies.Input('url', 'pathname')
-               ])
-def cell_option_visu(pathname):
+@app.callback( dash.dependencies.Output('cell_option', 'children'),
+            [   dash.dependencies.Input('url', 'pathname')
+            ]) 
+def cell_option_visu(pathname): 
     file_cell = pathname.split('/')
     for a in cell_option:
         if file_cell[-1] == a[0]:
             return a[1]
-
 
 # over cell
 ################################################################################################
@@ -1691,46 +1689,46 @@ message_option = []
 
 ######## add message dataset 
 @app.callback(Output('message-data', 'children'),
-              [
-                  Input('upload-data_message', 'filename'),
-                  Input('filepath_message', 'value')
-              ])
+            [
+                Input('upload-data_message', 'filename'),
+                Input('filepath_message', 'value')
+            ])
 def add_message_dataset(filename, filepath):
     try:
-        filename = filename[0]
-        path_File = os.path.join(filepath, filename)
-        message_data_list.append([filename, path_File])
-        file_part = filename.split('.')
-        option = []
+        filename=filename[0]
+        path_File=os.path.join(filepath, filename)
+        file_part=filename.split('.')
+        file_type = file_part[-1]
+        message_data = cz.read_msg(path_File, file_type) 
+        all_users = message_data.get_all_users()
+        message_data_list.append([filename, path_File, all_users, message_data])
+        option=[]
         option.append(dcc.Link('◙ Show All Message Data', href='/Message_Dataset/{}/view_data'.format(file_part[0])))
         option.append(html.Br())
         option.append(dcc.Link('◙ Show All Users', href='/Message_Dataset/{}/all_users'.format(file_part[0])))
         option.append(html.Br())
-        option.append(
-            dcc.Link('◙ Show Connected Users', href='/Message_Dataset/{}/connected_users'.format(file_part[0])))
+        option.append(dcc.Link('◙ Show Connected Users', href='/Message_Dataset/{}/connected_users'.format(file_part[0])))
         option.append(html.Br())
-        option.append(dcc.Link('◙ Message Records Between Two Selected Users',
-                               href='/Message_Dataset/{}/records_between_users'.format(file_part[0])))
-        option.append(html.Br())
-        option.append(dcc.Link('◙ Visualize Connections Between All Users',
-                               href='/Message_Dataset/{}/visualize_connection'.format(file_part[0])))
+        option.append(dcc.Link('◙ Message Records Between Two Selected Users', href='/Message_Dataset/{}/records_between_users'.format(file_part[0]))) 
+        option.append(html.Br()) 
+        option.append(dcc.Link('◙ Visualize Connections Between All Users', href='/Message_Dataset/{}/visualize_connection'.format(file_part[0]))) 
         message_option.append([file_part[0], option])
-        output_message = []
+        output_message=[]
         for x in message_data_list:
-            a = x[0].split('.')
-            output_message.append(dcc.Link(a[0], href='/Message_Dataset/' + str(a[0])))
+            a=x[0].split('.')
+            output_message.append(dcc.Link(a[0], href='/Message_Dataset/'+str(a[0])))
             output_message.append(html.Br())
-        name_message = html.Div(children=output_message)
+        name_message=html.Div(children=output_message)
         return name_message
 
     except Exception as e:
         print(e)
-        output_message = []
+        output_message=[]
         for x in message_data_list:
-            a = x[0].split('.')
-            output_message.append(dcc.Link(a[0], href='/Message_Dataset/' + str(a[0])))
+            a=x[0].split('.')
+            output_message.append(dcc.Link(a[0], href='/Message_Dataset/'+str(a[0])))
             output_message.append(html.Br())
-        name_message = html.Div(children=output_message)
+        name_message=html.Div(children=output_message)
         return name_message
 
 
@@ -1744,11 +1742,7 @@ def view_message_data(n_clicks, click2):
         return None
 
     if n_clicks is not None:
-        filename_message = update_message_data[-1][0]
-        filepath_message = update_message_data[-1][1]
-        split_name = filename_message.split('.')
-        file_type = split_name[-1]
-        message_data = cz.read_msg(filepath_message, file_type)
+        message_data = update_message_data[-1][-1]
         dict_list = []
         for record in message_data.get_records():
             dict_list.append(vars(record))
@@ -1771,7 +1765,7 @@ def view_message_data(n_clicks, click2):
                 row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
             tab.append(html.Tr(children=row_content, style={'height': '5px'}))
         table = html.Div([
-            html.H2(filename_message),
+            # html.H2(filename_message),
             html.Table(children=tab,
                        style={'border-collapse': 'collapse',
                               'border': '1px solid black',
@@ -1797,12 +1791,7 @@ def close_message_data(n_clicks):
 def show_all_message_users(n_clicks):
     table = html.Div()
     if n_clicks is not None:
-        filename_message = update_message_data[-1][0]
-        filepath_message = update_message_data[-1][1]
-        split_name = filename_message.split('.')
-        file_type = split_name[-1]
-        message_data = cz.read_msg(filepath_message, file_type)
-        all_users = message_data.get_all_users()
+        all_users = update_message_data[-1][2]
         tab = []
         column = []
         column.append(
@@ -1822,7 +1811,7 @@ def show_all_message_users(n_clicks):
         return table
 
 
-######## show cnnected users of specific user in message dataset
+######## show connected users of specific user in message dataset
 @app.callback(Output('show_connected_message_users', 'children'),
               [Input('connected_message_users', 'n_clicks'),
                Input('user_message', 'value')
@@ -1830,28 +1819,29 @@ def show_all_message_users(n_clicks):
 def show_connected_message_users(n_clicks, searchUser):
     table = html.Div()
     if n_clicks is not None:
-        filename_message = update_message_data[-1][0]
-        filepath_message = update_message_data[-1][1]
-        split_name = filename_message.split('.')
-        file_type = split_name[-1]
-        message_data = cz.read_msg(filepath_message, file_type)
-        connected_users = message_data.get_connected_users(searchUser)
-        tab = []
-        column = []
-        column.append(html.Th('Connected Users',
-                              style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
-        tab.append(html.Tr(children=column))
-        for user in connected_users:
-            row_content = []
-            row_content.append(html.Td(user, style={'border': '1px solid black', 'padding-left': '10px'}))
-            tab.append(html.Tr(children=row_content, style={'height': '5px'}))
-        table = html.Div([
-            html.Table(children=tab,
-                       style={'border-collapse': 'collapse',
-                              'border': '1px solid black',
-                              'width': '200px'
-                              })
-        ])
+        message_data = update_message_data[-1][-1]
+        all_users = update_message_data[-1][2]
+        if searchUser not in all_users:
+            table=html.Div([
+                html.H5(children='User does not exist', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
+        else:
+            connected_users = message_data.get_connected_users(searchUser)
+            tab = []
+            column = []
+            column.append(html.Th('Connected Users',
+                                style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
+            tab.append(html.Tr(children=column))
+            for user in connected_users:
+                row_content = []
+                row_content.append(html.Td(user, style={'border': '1px solid black', 'padding-left': '10px'}))
+                tab.append(html.Tr(children=row_content, style={'height': '5px'}))
+            table = html.Div([
+                html.Table(children=tab,
+                        style={'border-collapse': 'collapse',
+                                'border': '1px solid black',
+                                'width': '200px'
+                                })
+            ])
         return table
 
 
@@ -1865,38 +1855,42 @@ def between_message_users_records(user_1, user_2, click):
     table = html.Div()
 
     if click is not None:
-        filename_message = update_message_data[-1][0]
-        filepath_message = update_message_data[-1][1]
-        split_name = filename_message.split('.')
-        file_type = split_name[-1]
-        message_data = cz.read_msg(filepath_message, file_type)
-        dict_list = []
-        for record in message_data.get_records(user_1, user_2):
-            dict_list.append(vars(record))
-        header = list(dict_list[0].keys())
-        tab = []
-        column = []
-        for i in header:
-            column.append(
-                html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
-        tab.append(html.Tr(children=column))
-        count = 0
-        for j in dict_list:
-            value = list(j.values())
-            count += 1
-            row_content = []
-            if count > 100:
-                break
-            for x in value:
-                row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
-            tab.append(html.Tr(children=row_content, style={'height': '5px'}))
-        table = html.Div([
-            html.Table(children=tab,
-                       style={'border-collapse': 'collapse',
-                              'border': '1px solid black',
-                              'width': '100%'
-                              })
-        ])
+        message_data = update_message_data[-1][-1]
+        all_users = update_message_data[-1][2]
+        if user_1 not in all_users:
+            table=html.Div([
+                html.H5(children='User 2 does not exist', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
+        elif user_2 not in all_users:
+            table=html.Div([
+                html.H5(children='User 1 does not exist', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})]) 
+        else:
+            dict_list = []
+            for record in message_data.get_records(user_1, user_2):
+                dict_list.append(vars(record))
+            header = list(dict_list[0].keys())
+            tab = []
+            column = []
+            for i in header:
+                column.append(
+                    html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
+            tab.append(html.Tr(children=column))
+            count = 0
+            for j in dict_list:
+                value = list(j.values())
+                count += 1
+                row_content = []
+                if count > 100:
+                    break
+                for x in value:
+                    row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
+                tab.append(html.Tr(children=row_content, style={'height': '5px'}))
+            table = html.Div([
+                html.Table(children=tab,
+                        style={'border-collapse': 'collapse',
+                                'border': '1px solid black',
+                                'width': '100%'
+                                })
+            ])
         return table
 
 
@@ -1908,11 +1902,7 @@ def show_visualize_message_connection(n_clicks):
     table = html.Div()
 
     if n_clicks is not None:
-        filename_message = update_message_data[-1][0]
-        filepath_message = update_message_data[-1][1]
-        split_name = filename_message.split('.')
-        file_type = split_name[-1]
-        message_data = cz.read_msg(filepath_message, file_type)
+        message_data = update_message_data[-1][-1]
         visu_conn = message_data.visualize_connection_network()
         tab = []
         column = []
@@ -1936,28 +1926,27 @@ def show_visualize_message_connection(n_clicks):
         ])
         return table
 
-
+        
 ######## return message file name to the next page
-@app.callback(dash.dependencies.Output('file_name_message', 'children'),
-              [dash.dependencies.Input('url', 'pathname')
-               ])
-def file_name_message(pathname):
+@app.callback( dash.dependencies.Output('file_name_message', 'children'),              
+              [   dash.dependencies.Input('url', 'pathname')
+            ]) 
+def file_name_message(pathname): 
     file_message = pathname.split('/')
     for a in message_option:
         if file_message[-1] == a[0]:
             for data in message_data_list:
-                dataNew = data[0].split('.')
-                if file_message[-1] == dataNew[0]:
+                dataNew= data[0].split('.')
+                if file_message[-1]== dataNew[0]:
                     update_message_data.append(data)
-
+                    
             return file_message[-1]
 
-
 ######## get message option
-@app.callback(dash.dependencies.Output('message_option', 'children'),
-              [dash.dependencies.Input('url', 'pathname')
-               ])
-def message_option_visu(pathname):
+@app.callback( dash.dependencies.Output('message_option', 'children'),
+            [   dash.dependencies.Input('url', 'pathname')
+            ]) 
+def message_option_visu(pathname): 
     file_message = pathname.split('/')
     for a in message_option:
         if file_message[-1] == a[0]:
