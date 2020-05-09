@@ -562,7 +562,6 @@ def add_call_dataset(filename, filepath, n_clicks, is_open):
                 output_call.append(html.Br())
                 output_call.append(dcc.Link(a[0], href='/Call_Dataset/'+str(a[0])))
             name=html.Div(children=output_call)
-            print('safsagfjg')
             return name, is_open, None
 
         except Exception as e:
@@ -577,11 +576,9 @@ def add_call_dataset(filename, filepath, n_clicks, is_open):
                 output_call.append(html.Br())
                 output_call.append(dcc.Link(a[0], href='/Call_Dataset/'+str(a[0])))
             name=html.Div(children=output_call)
-            print('sa2')
             return name, not is_open, word
         
     else:
-        print('sa')
         output_call=[]
         for x in call_data_list:
             a=x[0].split('.')
@@ -1468,12 +1465,16 @@ message_dataset = html.Div([
         html.Hr(),
         dcc.Upload(id='upload-data_message',
                    children=html.Div([
-                       html.Button('ADD MESSAGE DATA', className='index_messagedata_add_button')
-                   ]),
+                       html.Button('CHOOSE FILE', id='choose_message',className='index_messagedata_add_button')
+                        ]),
                    className='index_message_dataset_upload_data',
                    # Allow multiple files to be uploaded
                    multiple=True
                    ),
+        html.Div([
+            html.Button('ADD MESSAGE DATA', id='adding_message' ,className='index_celldata_add_button',),
+            ]),
+        dbc.Alert(id='alert_message', dismissable=True, is_open=False, style={'width':'500px', 'background-color':'red','font-size':'18px'})
     ], className='call_page_welcome_div'),
 ],
     className='call_dataset_div'
@@ -1684,52 +1685,74 @@ visualize_message_connections = html.Div([
 
 message_data_list = []
 update_message_data = []
-message_option = []
-
+message_option=[]
+FilePath_message =[]
 
 ######## add message dataset 
-@app.callback(Output('message-data', 'children'),
-            [
-                Input('upload-data_message', 'filename'),
-                Input('filepath_message', 'value')
-            ])
-def add_message_dataset(filename, filepath):
-    try:
-        filename=filename[0]
-        path_File=os.path.join(filepath, filename)
-        file_part=filename.split('.')
-        file_type = file_part[-1]
-        message_data = cz.read_msg(path_File, file_type) 
-        all_users = message_data.get_all_users()
-        message_data_list.append([filename, path_File, all_users, message_data])
-        option=[]
-        option.append(dcc.Link('◙ Show All Message Data', href='/Message_Dataset/{}/view_data'.format(file_part[0])))
-        option.append(html.Br())
-        option.append(dcc.Link('◙ Show All Users', href='/Message_Dataset/{}/all_users'.format(file_part[0])))
-        option.append(html.Br())
-        option.append(dcc.Link('◙ Show Connected Users', href='/Message_Dataset/{}/connected_users'.format(file_part[0])))
-        option.append(html.Br())
-        option.append(dcc.Link('◙ Message Records Between Two Selected Users', href='/Message_Dataset/{}/records_between_users'.format(file_part[0]))) 
-        option.append(html.Br()) 
-        option.append(dcc.Link('◙ Visualize Connections Between All Users', href='/Message_Dataset/{}/visualize_connection'.format(file_part[0]))) 
-        message_option.append([file_part[0], option])
-        output_message=[]
-        for x in message_data_list:
-            a=x[0].split('.')
-            output_message.append(dcc.Link(a[0], href='/Message_Dataset/'+str(a[0])))
-            output_message.append(html.Br())
-        name_message=html.Div(children=output_message)
-        return name_message
+@app.callback([Output('message-data', 'children'), Output('alert_message', 'is_open'), Output('alert_message', 'children')],
+            [ Input('upload-data_message', 'filename'), Input('filepath_message', 'value'), Input('adding_message', 'n_clicks')],
+              [  State('alert_message', 'is_open')]
+            )
+def add_message_dataset(filename, filepath, n_clicks, is_open):
+    if n_clicks is not None:
+        try:
+            FilePath_message.append(filepath)
+            filename=filename[0]
+            path_File=os.path.join(filepath, filename)
+            file_part=filename.split('.')
+            file_type = file_part[-1]
+            message_data = cz.read_msg(path_File, file_type) 
+            all_users = message_data.get_all_users()
+            message_data_list.append([filename, path_File, all_users, message_data])
+            option=[]
+            option.append(dcc.Link('◙ Show All Message Data', href='/Message_Dataset/{}/view_data'.format(file_part[0])))
+            option.append(html.Br())
+            option.append(dcc.Link('◙ Show All Users', href='/Message_Dataset/{}/all_users'.format(file_part[0])))
+            option.append(html.Br())
+            option.append(dcc.Link('◙ Show Connected Users', href='/Message_Dataset/{}/connected_users'.format(file_part[0])))
+            option.append(html.Br())
+            option.append(dcc.Link('◙ Message Records Between Two Selected Users', href='/Message_Dataset/{}/records_between_users'.format(file_part[0]))) 
+            option.append(html.Br()) 
+            option.append(dcc.Link('◙ Visualize Connections Between All Users', href='/Message_Dataset/{}/visualize_connection'.format(file_part[0]))) 
+            message_option.append([file_part[0], option])
+            output_message=[]
+            for x in message_data_list:
+                a=x[0].split('.')
+                output_message.append(dcc.Link(a[0], href='/Message_Dataset/'+str(a[0])))
+                output_message.append(html.Br())
+            name_message=html.Div(children=output_message)
+            return name_message, is_open, None
 
-    except Exception as e:
-        print(e)
+        except Exception as e:
+            print(str(e))
+            if str(e) == "'NoneType' object has no attribute 'get_all_users'":
+                word = "File path is incorrect"
+            else:
+                word = "Dataset is not message dataset"
+            output_message=[]
+            for x in message_data_list:
+                a=x[0].split('.')
+                output_message.append(dcc.Link(a[0], href='/Message_Dataset/'+str(a[0])))
+                output_message.append(html.Br())
+            name_message=html.Div(children=output_message)
+            return name_message, not is_open, word
+    else:
         output_message=[]
         for x in message_data_list:
             a=x[0].split('.')
             output_message.append(dcc.Link(a[0], href='/Message_Dataset/'+str(a[0])))
             output_message.append(html.Br())
         name_message=html.Div(children=output_message)
-        return name_message
+        return name_message, False , None
+
+@app.callback(Output('adding_message', 'n_clicks'),
+              [Input('choose_message', 'n_clicks'), Input('filepath_message', 'value')])
+def adding_message_button(n_clicks, filepath):
+    if len(FilePath_message)>=1 and FilePath_message[-1]!=filepath:
+        return None
+    elif n_clicks is not None:
+        return None
+
 
 
 ####### view all message data
