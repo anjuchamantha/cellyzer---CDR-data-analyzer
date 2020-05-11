@@ -191,9 +191,9 @@
 }
 
 .sample_dataset_visualize {
-    width: 1075px;
+    width: 1065px;
     margin-top: 50px;
-    padding-left: 10px;
+    padding-left: 0px;
     margin-bottom: 40px;
 }
 
@@ -236,6 +236,7 @@
 .sample_call_dataset_div {
     margin-left: 222px;
     padding: 0px 10px;   
+    padding-left: 28px; 
 }
 
 .index_cell_dataset_cellyzer {
