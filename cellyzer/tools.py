@@ -2,6 +2,7 @@ import datetime
 import tabulate
 import logging
 import sys
+import ipywidgets as widgets
 
 
 class _AnsiColorizer(object):
@@ -102,7 +103,11 @@ def get_weighted_edge_list(edge_list, directed):
 
 
 def print_matrix(matrix, headers):
-    print(tabulate.tabulate(matrix, headers=headers, tablefmt='pretty'))
+    if len(matrix) > 10:
+        print(len(matrix))
+        html_tbl = tabulate.tabulate(matrix, headers=headers, tablefmt='html')
+    else:
+        print(tabulate.tabulate(matrix, headers=headers, tablefmt='pretty'))
 
 
 def get_datetime_from_timestamp(timestamp):

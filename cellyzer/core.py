@@ -19,7 +19,8 @@ class Record:
 
 class CallRecord(Record):
 
-    def __init__(self, user, other_user, direction, duration, timestamp, cell_id, cost):
+    def __init__(self, user, other_user, direction, duration, timestamp, cell_id, cost, index=""):
+        self.index = index
         self.user = user
         self.other_user = other_user
         self.direction = direction
@@ -143,7 +144,8 @@ class CallMessageDataSet(DataSet):
                     records.append(record)
             if (user1 is not None) and (user2 is not None):
                 # returns a list of Record objects where the given 2 users are involved
-                if (str(user1) == user and str(user2) == other_user) or (str(user1) == other_user and str(user2) == user):
+                if (str(user1) == user and str(user2) == other_user) or (
+                        str(user1) == other_user and str(user2) == user):
                     records.append(record)
         return records
 

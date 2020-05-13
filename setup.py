@@ -32,6 +32,6 @@ setup(
         "datetime == 4.3",
         "networkx == 2.4",
         "matplotlib == 3.2.1",
-        "folium == 0.10.1"
+        "folium == 0.10.1", 'IPython'
     ],
 )

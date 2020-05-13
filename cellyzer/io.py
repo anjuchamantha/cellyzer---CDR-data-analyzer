@@ -355,7 +355,8 @@ def create_call_obj(calls, fieldnames, hash):
     if calls is not None:
 
         call_records = []
-        for call in calls:
+        for i in range(0, len(calls)):
+            call = calls[i]
             user = other_user = direction = duration = timestamp = cell_id = cost = None
 
             for key in call:
@@ -383,7 +384,7 @@ def create_call_obj(calls, fieldnames, hash):
             # print(user, other_user, direction, length, timestamp)
 
             call_record_obj = CallRecord(
-                user, other_user, direction, duration, timestamp, cell_id, cost)
+                user, other_user, direction, duration, timestamp, cell_id, cost, index=i)
             call_records.append(call_record_obj)
 
         filtered_call_records, bad_records = parse_records(call_records, fieldnames)
