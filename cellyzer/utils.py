@@ -8,7 +8,7 @@ def print_record_lists(records):
         print(vars(record))
 
 
-def print_dataset(dataset_obj, notebook=False, name="Dataset", rows=None, summerize=False,head=5,tail=5):
+def print_dataset(dataset_obj, notebook=False, name="Dataset", rows=None, summerize=False, head=5, tail=5):
     if rows is not None:
         if rows > 50:
             summerize = True

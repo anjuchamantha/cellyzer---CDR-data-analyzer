@@ -210,14 +210,15 @@ class CallMessageDataSet(DataSet):
         headers.insert(0, "")
         tools.print_matrix(matrix, headers)
 
-    def get_connections(self, users=[]):
+    def get_connections(self, users=[], allow_duplicates=False):
         """
         returns a list of lists of [user1,user2]
         user1 makes a call to user2
 
         :return: connections : list
         """
-        connections = []
+        connections = set()
+        connections_dup = []
         for record in self.get_records():
             if not users:
                 connection, direction = [record.get_user(), record.get_other_user()], record.get_direction()
@@ -230,8 +231,14 @@ class CallMessageDataSet(DataSet):
                     continue
             if direction == "Incoming":
                 connection.reverse()
-            connections.append(connection)
-        return connections
+            if allow_duplicates:
+                connections_dup.append(connection)
+            else:
+                connections.add(tuple(connection))
+        if allow_duplicates:
+            return connections_dup
+        else:
+            return connections
 
     def visualize_connection_network(self, directed=True, users=[]):
         """
@@ -244,7 +251,7 @@ class CallMessageDataSet(DataSet):
         :return: connections : list
                  directed : boolean
         """
-        connections = self.get_connections(users)
+        connections = self.get_connections(users, allow_duplicates=True)
         weighted_edge_list = tools.get_weighted_edge_list(connections, directed)
         visualization.network_graph(weighted_edge_list, directed)
         # return connections

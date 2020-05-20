@@ -123,6 +123,7 @@ def print_matrix(matrix, headers):
         f.close()
         webbrowser.open_new_tab('connection_matrix.html')
     else:
+        print(">> connection matrix")
         print(tabulate.tabulate(matrix, headers=headers, tablefmt='pretty'))
 
 

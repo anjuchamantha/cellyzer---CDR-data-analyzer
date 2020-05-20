@@ -92,7 +92,7 @@ class TestCallMessageDataSet(unittest.TestCase):
                             ['7331c02864', '0041628436'], ['7331c02864', '0041628436'], ['7331c02864', '0c47c9c382'],
                             ['7331c02864', '1ed77db846']]
 
-        self.assertEqual(self.callDataSet.get_connections(), call_connections)
+        self.assertEqual(self.callDataSet.get_connections(allow_duplicates=True), call_connections)
 
         msg_connections = [['78c4ca6671', '8d27cf2694'], ['0041628436', '329233d117'], ['329233d117', '0041628436'],
                            ['329233d117', 'bac412f897'], ['bac412f897', '322692e582'], ['322692e582', 'bac412f897'],
@@ -112,7 +112,7 @@ class TestCallMessageDataSet(unittest.TestCase):
                            ['322692e582', 'bac412f897'], ['bac412f897', '322692e582'], ['322692e582', 'bac412f897'],
                            ['bac412f897', '322692e582']]
 
-        self.assertEqual(self.msgDataSet.get_connections(), msg_connections)
+        self.assertEqual(self.msgDataSet.get_connections(allow_duplicates=True), msg_connections)
 
 
 if __name__ == '__main__':
