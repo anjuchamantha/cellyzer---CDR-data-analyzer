@@ -30,7 +30,7 @@ callDataSet.print_connection_matrix()
 # print(a)
 # print(b)
 
-callDataSet.visualize_connection_network()
+callDataSet.visualize_connection_network(users=["265034e175"])
 
 close_contacts = callDataSet.get_close_contacts(search_user_call_3, top_contact=4)
 print(">> close contacts of %s : %s" % (search_user_call_1, close_contacts))

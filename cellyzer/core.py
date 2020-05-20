@@ -209,9 +209,8 @@ class CallMessageDataSet(DataSet):
         headers = all_users
         headers.insert(0, "")
         tools.print_matrix(matrix, headers)
-        return matrix, headers
 
-    def get_connections(self):
+    def get_connections(self, users=[]):
         """
         returns a list of lists of [user1,user2]
         user1 makes a call to user2
@@ -220,25 +219,35 @@ class CallMessageDataSet(DataSet):
         """
         connections = []
         for record in self.get_records():
-            connection, direction = [record.get_user(), record.get_other_user()], record.get_direction()
+            if not users:
+                connection, direction = [record.get_user(), record.get_other_user()], record.get_direction()
+            else:
+                u1 = record.get_user()
+                u2 = record.get_other_user()
+                if u1 in users or u2 in users:
+                    connection, direction = [u1, u2], record.get_direction()
+                else:
+                    continue
             if direction == "Incoming":
                 connection.reverse()
             connections.append(connection)
         return connections
 
-    def visualize_connection_network(self, directed=True):
+    def visualize_connection_network(self, directed=True, users=[]):
         """
         generates a directed graph of connected users
 
         :param directed: boolean
+        :param users: list
+                list of users
 
         :return: connections : list
                  directed : boolean
         """
-        connections = self.get_connections()
+        connections = self.get_connections(users)
         weighted_edge_list = tools.get_weighted_edge_list(connections, directed)
         visualization.network_graph(weighted_edge_list, directed)
-        return connections, directed
+        # return connections
 
     def get_most_active_time(self, user):
         """

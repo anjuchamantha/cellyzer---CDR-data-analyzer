@@ -12,6 +12,8 @@ from folium.plugins import MarkerCluster
 import webbrowser
 import os
 
+plt.rcParams['figure.dpi'] = 200
+
 
 def network_graph(edge_list, directed):
     if directed:
@@ -29,7 +31,11 @@ def network_graph(edge_list, directed):
                      edge_color="dodgerblue",
                      style="solid", width=2)
     nx.draw_networkx_edge_labels(g, pos, edge_labels=labels, with_labels=True, font_size=8, label_pos=0.3)
+    # plt.figure(figsize=(50, 50), dpi=80, facecolor='w', edgecolor='k')
+    mng = plt.get_current_fig_manager()
+    mng.window.state('zoomed')
     plt.savefig("connection_network.png")
+
     plt.show()
 
 
@@ -46,6 +52,8 @@ def active_time_bar_chart(time_dict):
     plt.ylabel("Activity")
     plt.xlabel("Hours")
     plt.title("Most active times during day")
+    mng = plt.get_current_fig_manager()
+    mng.window.state('zoomed')
     plt.show()
 
 
