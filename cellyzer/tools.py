@@ -2,6 +2,7 @@ import datetime
 import tabulate
 import logging
 import sys
+import webbrowser
 import ipywidgets as widgets
 
 
@@ -104,8 +105,23 @@ def get_weighted_edge_list(edge_list, directed):
 
 def print_matrix(matrix, headers):
     if len(matrix) > 10:
-        print(len(matrix))
-        html_tbl = tabulate.tabulate(matrix, headers=headers, tablefmt='html')
+        print("Matrix Length : ", len(matrix))
+        html = """
+        <html>
+        <body>
+            <h1>Connection Matrix</h1>
+            <br>
+            {table}
+        </body>
+        </html>
+        """
+        table = tabulate.tabulate(matrix, headers=headers, tablefmt='html', stralign='center')
+        # print(table)
+        b = table.encode('utf-8')
+        f = open('connection_matrix.html', 'wb')
+        f.write(b)
+        f.close()
+        webbrowser.open_new_tab('connection_matrix.html')
     else:
         print(tabulate.tabulate(matrix, headers=headers, tablefmt='pretty'))
 
