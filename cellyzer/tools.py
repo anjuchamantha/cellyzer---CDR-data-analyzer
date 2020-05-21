@@ -134,7 +134,7 @@ def print_matrix(matrix, headers):
 def print_matrix_new(matrix, headers):
     if len(matrix) > 10:
         print("Matrix Length : ", len(matrix))
-        html_head = '<head> \n <link=href"connection_matrix.css" rel="stylesheet" type="text/css"></link> \n </head>'
+        html_head = '<head> \n <link href="connection_matrix.css" rel="stylesheet" type="text/css"></link> \n </head>'
         html_tag = "<html> \n {} \n <body> \n <h1>Connection Matrix</h1> \n ".format(html_head)
         table_header = create_header(headers)
         table_body = create_rows(matrix)
