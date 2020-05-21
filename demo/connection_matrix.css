@@ -1,5 +1,21 @@
+body { height: 1000px; }
+#header-fixed {
+    position: fixed;
+    top: 0px; display:none;
+    background-color:white;
+}
+
 th, td{
     border: 1px solid #dddddd;
     text-align: left;
     padding: 8px;
 }
+
+#main-row {
+    background-color: #dddddd;
+}
+
+#main-column {
+    background-color: #dddddd;
+}
+

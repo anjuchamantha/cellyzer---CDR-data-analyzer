@@ -132,13 +132,15 @@ def print_matrix(matrix, headers):
 
 
 def print_matrix_new(matrix, headers):
-    if len(matrix) > 10:
+    if len(matrix) > 0:
         print("Matrix Length : ", len(matrix))
+        header_fixed_script = '<table id="header-fixed"></table>'
         html_head = '<head> \n <link href="connection_matrix.css" rel="stylesheet" type="text/css"></link> \n </head>'
+        js_script = '<script src="js_script.js"></script><script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>'
         html_tag = "<html> \n {} \n <body> \n <h1>Connection Matrix</h1> \n ".format(html_head)
         table_header = create_header(headers)
         table_body = create_rows(matrix)
-        html_tag += '<table> \n {} \n {} \n </table> \n </body> \n</html>'.format(table_header, table_body)
+        html_tag += '<table id="table-1"> \n {} \n {} \n </table> \n {} \n {} \n </body> \n</html>'.format(table_header, table_body, header_fixed_script, js_script)
         f = open('connection_matrix.html', 'w')
         f.write(html_tag)
         f.close()
@@ -151,7 +153,10 @@ def create_rows(matrix, text_align='center'):
         if each_row[0] != '':
             each_row_tag = '<tr>'
             for each_row_item in each_row:
-                each_row_items = '<td style="text-align: {};"> {} </td>'.format(text_align, each_row_item)
+                if each_row_item == each_row[0]:
+                    each_row_items = '<td style="text-align: {};" id="main-row"> {} </td>'.format(text_align, each_row_item)
+                else:
+                    each_row_items = '<td style="text-align: {};"> {} </td>'.format(text_align, each_row_item)
                 each_row_tag += each_row_items
             each_row_tag_end = each_row_tag + '</tr> \n'
             row_tag_list += each_row_tag_end
@@ -162,7 +167,7 @@ def create_rows(matrix, text_align='center'):
 def create_header(headers, text_align='center'):
     new_tag = '<thead> \n <tr>'
     for each_header in headers:
-        tag = '<th style="text-align: {};"> {} </th>'.format(text_align, each_header)
+        tag = '<th style="text-align: {};" id="main-column"> {} </th>'.format(text_align, each_header)
         new_tag += tag
     tag_end = new_tag + '</tr> \n </thead>'
     return tag_end
