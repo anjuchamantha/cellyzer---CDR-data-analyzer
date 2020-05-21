@@ -4,6 +4,8 @@ import logging
 import sys
 import webbrowser
 import ipywidgets as widgets
+import dash_bootstrap_components as dbc
+import dash_html_components as html
 
 
 class _AnsiColorizer(object):
@@ -104,6 +106,8 @@ def get_weighted_edge_list(edge_list, directed):
 
 
 def print_matrix(matrix, headers):
+    print('matrix : ', matrix)
+    print('header : ', headers)
     if len(matrix) > 10:
         print("Matrix Length : ", len(matrix))
         html = """
@@ -116,7 +120,7 @@ def print_matrix(matrix, headers):
         </html>
         """
         table = tabulate.tabulate(matrix, headers=headers, tablefmt='html', stralign='center')
-        # print(table)
+        print('table : ', table)
         b = table.encode('utf-8')
         f = open('connection_matrix.html', 'wb')
         f.write(b)
@@ -125,6 +129,45 @@ def print_matrix(matrix, headers):
     else:
         print(">> connection matrix")
         print(tabulate.tabulate(matrix, headers=headers, tablefmt='pretty'))
+
+
+def print_matrix_new(matrix, headers):
+    if len(matrix) > 10:
+        print("Matrix Length : ", len(matrix))
+        html_head = '<head> \n <link=href"connection_matrix.css" rel="stylesheet" type="text/css">'
+        html_tag = "<html> \n {} \n <body> \n <h1>Connection Matrix</h1> \n ".format(html_head)
+        table_header = create_header(headers)
+        table_body = create_rows(matrix)
+        table_styles = '{} \n {} \n {}'.format(table_header, table_body, styles)
+        html_tag += '<table> \n {} \n {} \n </table> \n </body> \n</html>'.format(table_header, table_body)
+        print('html : ', html_tag)
+        f = open('connection_matrix_new.html', 'w')
+        f.write(html_tag)
+        f.close()
+        webbrowser.open_new_tab('connection_matrix_new.html')
+
+
+def create_rows(matrix, text_align='center'):
+    row_tag_list = '<tbody>'
+    for each_row in matrix:
+        if each_row[0] != '':
+            each_row_tag = '<tr>'
+            for each_row_item in each_row:
+                each_row_items = '<td style="text-align: {};"> {} </td>'.format(text_align, each_row_item)
+                each_row_tag += each_row_items
+            each_row_tag_end = each_row_tag + '</tr> \n'
+            row_tag_list += each_row_tag_end
+    row_tag_list_end = row_tag_list + '</tbody>'
+    return row_tag_list_end
+
+
+def create_header(headers, text_align='center'):
+    new_tag = '<thead> \n <tr>'
+    for each_header in headers:
+        tag = '<th style="text-align: {};"> {} </th>'.format(text_align, each_header)
+        new_tag += tag
+    tag_end = new_tag + '</tr> \n </thead>'
+    return tag_end
 
 
 def get_datetime_from_timestamp(timestamp):

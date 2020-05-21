@@ -208,7 +208,7 @@ class CallMessageDataSet(DataSet):
             matrix.append(row)
         headers = all_users
         headers.insert(0, "")
-        tools.print_matrix(matrix, headers)
+        tools.print_matrix_new(matrix, headers)
 
     def get_connections(self, users=[], allow_duplicates=False):
         """
