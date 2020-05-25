@@ -2082,58 +2082,60 @@ def message_option_visu(pathname):
             [   dash.dependencies.Input('url', 'pathname')
             ])       
 def display_page(pathname):
-    path_set = pathname.split('/')
-    if pathname=='/Call_Dataset':
-        return call_dataset
-    elif pathname=='/Cell_Dataset':
-        return cell_dataset
-    elif pathname=='/Message_Dataset':
-        return message_dataset
-    elif len(path_set)==3 and path_set[-2]== 'Call_Dataset':
-        return call_dataset_file
-    elif len(path_set)==4 and path_set[-3]== 'Call_Dataset' and path_set[-1]=='view_data':
-        return view_all_call_data
-    elif len(path_set)==4 and path_set[-3]== 'Call_Dataset' and path_set[-1]=='all_users':
-        return get_all_users
-    elif len(path_set)==4 and path_set[-3]== 'Call_Dataset' and path_set[-1]=='connected_users':
-        return connected_users  
-    elif len(path_set)==4 and path_set[-3]== 'Call_Dataset' and path_set[-1]== 'records_between_users':
-        return  records_between_users
-    elif len(path_set)==4 and path_set[-3]== 'Call_Dataset' and path_set[-1]== 'close_contacts':
-        return close_contacts
-    elif len(path_set)==4 and path_set[-3]== 'Call_Dataset' and path_set[-1]== 'ignored_call':
-        return ignore_call_detail
-    elif len(path_set)==4 and path_set[-3]== 'Call_Dataset' and path_set[-1]== 'active_time':
-        return active_time_user
-    elif len(path_set)==4 and path_set[-3]== 'Call_Dataset' and path_set[-1]== 'visualize_connection':
-        return visualize_connections
-    elif len(path_set)==3 and  path_set[-2]== 'Cell_Dataset':
-        return cell_dataset_file
-    elif len(path_set)==4 and path_set[-3]== 'Cell_Dataset' and path_set[-1]=='view_cell_data':
-        return view_all_cell_data
-    elif len(path_set)==4 and path_set[-3]== 'Cell_Dataset' and path_set[-1]=='records_cell_id':
-        return records_of_cell
-    elif len(path_set)==4 and path_set[-3]== 'Cell_Dataset' and path_set[-1]=='population_around_cell':
-        return population_around_cell
-    elif len(path_set)==4 and path_set[-3]== 'Cell_Dataset' and path_set[-1]=='trip_visualize':
-        return trip_visualize
-    elif len(path_set)==3 and  path_set[-2]== 'Message_Dataset':
-        return message_data_file
-    elif len(path_set)==4 and path_set[-3]== 'Message_Dataset' and path_set[-1]=='view_data':
-        return view_all_message_data
-    elif len(path_set)==4 and path_set[-3]== 'Message_Dataset' and path_set[-1]=='all_users':
-        return get_all_message_users
-    elif len(path_set)==4 and path_set[-3]== 'Message_Dataset' and path_set[-1]=='connected_users':
-        return connected_message_users  
-    elif len(path_set)==4 and path_set[-3]== 'Message_Dataset' and path_set[-1]== 'records_between_users':
-        return  message_records_between_users
-    elif len(path_set)==4 and path_set[-3]== 'Message_Dataset' and path_set[-1]== 'visualize_connection':
-        return visualize_message_connections
-    elif pathname=='/':
-        return index_page
-    else:
-        return index_page
-
+    try:
+        path_set = pathname.split('/')
+        if pathname=='/Call_Dataset':
+            return call_dataset
+        elif pathname=='/Cell_Dataset':
+            return cell_dataset
+        elif pathname=='/Message_Dataset':
+            return message_dataset
+        elif len(path_set)==3 and path_set[-2]== 'Call_Dataset':
+            return call_dataset_file
+        elif len(path_set)==4 and path_set[-3]== 'Call_Dataset' and path_set[-1]=='view_data':
+            return view_all_call_data
+        elif len(path_set)==4 and path_set[-3]== 'Call_Dataset' and path_set[-1]=='all_users':
+            return get_all_users
+        elif len(path_set)==4 and path_set[-3]== 'Call_Dataset' and path_set[-1]=='connected_users':
+            return connected_users  
+        elif len(path_set)==4 and path_set[-3]== 'Call_Dataset' and path_set[-1]== 'records_between_users':
+            return  records_between_users
+        elif len(path_set)==4 and path_set[-3]== 'Call_Dataset' and path_set[-1]== 'close_contacts':
+            return close_contacts
+        elif len(path_set)==4 and path_set[-3]== 'Call_Dataset' and path_set[-1]== 'ignored_call':
+            return ignore_call_detail
+        elif len(path_set)==4 and path_set[-3]== 'Call_Dataset' and path_set[-1]== 'active_time':
+            return active_time_user
+        elif len(path_set)==4 and path_set[-3]== 'Call_Dataset' and path_set[-1]== 'visualize_connection':
+            return visualize_connections
+        elif len(path_set)==3 and  path_set[-2]== 'Cell_Dataset':
+            return cell_dataset_file
+        elif len(path_set)==4 and path_set[-3]== 'Cell_Dataset' and path_set[-1]=='view_cell_data':
+            return view_all_cell_data
+        elif len(path_set)==4 and path_set[-3]== 'Cell_Dataset' and path_set[-1]=='records_cell_id':
+            return records_of_cell
+        elif len(path_set)==4 and path_set[-3]== 'Cell_Dataset' and path_set[-1]=='population_around_cell':
+            return population_around_cell
+        elif len(path_set)==4 and path_set[-3]== 'Cell_Dataset' and path_set[-1]=='trip_visualize':
+            return trip_visualize
+        elif len(path_set)==3 and  path_set[-2]== 'Message_Dataset':
+            return message_data_file
+        elif len(path_set)==4 and path_set[-3]== 'Message_Dataset' and path_set[-1]=='view_data':
+            return view_all_message_data
+        elif len(path_set)==4 and path_set[-3]== 'Message_Dataset' and path_set[-1]=='all_users':
+            return get_all_message_users
+        elif len(path_set)==4 and path_set[-3]== 'Message_Dataset' and path_set[-1]=='connected_users':
+            return connected_message_users  
+        elif len(path_set)==4 and path_set[-3]== 'Message_Dataset' and path_set[-1]== 'records_between_users':
+            return  message_records_between_users
+        elif len(path_set)==4 and path_set[-3]== 'Message_Dataset' and path_set[-1]== 'visualize_connection':
+            return visualize_message_connections
+        elif pathname=='/':
+            return index_page
+        else:
+            return index_page
+    except Exception as e:
+            print(str(e))
 
 if __name__ == '__main__':
     app.run_server(debug=True)
