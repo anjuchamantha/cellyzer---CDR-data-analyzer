@@ -46,18 +46,21 @@ app.layout = html.Div([
 indexrecorditems = [dac.SidebarButton(id='add-call-records',
                                       label='Add Call Record',
                                       icon='arrow-circle-right',
-                                      href='/Call_Dataset'
+                                      href='/Call_Dataset',
                                       ),
+                    html.Div(id="call-data_name", style={"margin-left": "40px", 'color':'white'}),
                     dac.SidebarButton(id='add-msg-records',
                                       label='Add Message Record',
                                       icon='arrow-circle-right',
                                       href='/Message_Dataset'
                                       ),
+                    html.Div(id="message-data_name", style={"margin-left": "40px", 'color':'white'}),
                     dac.SidebarButton(id='add-cell-records',
                                       label='Add Cell Record',
                                       icon='arrow-circle-right',
                                       href='/Cell_Dataset'
                                       ),
+                    html.Div(id="cell-data_name", style={"margin-left": "40px", 'color':'white'}),
                     ]
 # Sidebar
 indexpagesidebar = dac.Sidebar(
@@ -103,7 +106,7 @@ index_page = html.Div([
 )
 # over front page
 
-#######################################################################
+################################################################################################
 ## page for call dataset
 
 callrecorditems = [dac.SidebarMenuItem(id='add-call-records',
@@ -606,8 +609,21 @@ def adding_call_button(n_clicks, filepath):
     elif n_clicks is not None:
         return None
 
+######## return call file name to the home page
+@app.callback( dash.dependencies.Output('call-data_name', 'children'),              
+              [   dash.dependencies.Input('url', 'pathname')
+            ]) 
+def file_name_home_page(pathname): 
+    if len(call_data_list)>0 :
+        call_data_name = []
+        for x in call_data_list:
+            a=x[0].split('.')                
+            call_data_name.append(html.H6(a[0]))
+            call_data_name.append(html.Br())
+        name=html.Div(children=call_data_name[:-1])
+        return name
 
-######## return file name to the next page
+######## return call file name to the next page
 @app.callback( dash.dependencies.Output('file_name', 'children'),              
               [   dash.dependencies.Input('url', 'pathname')
             ]) 
@@ -1449,6 +1465,20 @@ def cell_option_visu(pathname):
         if file_cell[2] == a[0] and len(file_cell)>=2:
             return a[1]
 
+######## return cell file name to the home page
+@app.callback( dash.dependencies.Output('cell-data_name', 'children'),              
+              [   dash.dependencies.Input('url', 'pathname')
+            ]) 
+def file_name_cell_home_page(pathname): 
+    if len(cell_data_list)>0 :
+        cell_data_name = []
+        for x in cell_data_list:
+            a=x[0].split('.')                
+            cell_data_name.append(html.H6(a[0]))
+            cell_data_name.append(html.Br())
+        name=html.Div(children=cell_data_name[:-1])
+        return name
+
 # over cell callback
 
 ################################################################################################
@@ -2073,6 +2103,20 @@ def message_option_visu(pathname):
     for a in message_option:
         if file_message[2] == a[0] and len(file_message)>=2:
             return a[1]
+
+######## return message file name to the home page
+@app.callback( dash.dependencies.Output('message-data_name', 'children'),              
+              [   dash.dependencies.Input('url', 'pathname')
+            ]) 
+def message_file_name_home_page(pathname): 
+    if len(message_data_list)>0 :
+        message_data_name = []
+        for x in message_data_list:
+            a=x[0].split('.')                
+            message_data_name.append(html.H6(a[0]))
+            message_data_name.append(html.Br())
+        name=html.Div(children=message_data_name[:-1])
+        return name
 
 
 # over message dataset
