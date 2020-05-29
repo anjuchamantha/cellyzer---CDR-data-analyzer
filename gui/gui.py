@@ -48,19 +48,16 @@ indexrecorditems = [dac.SidebarButton(id='add-call-records',
                                       icon='arrow-circle-right',
                                       href='/Call_Dataset',
                                       ),
-                    html.Div(id="call-data_name", style={"margin-left": "40px", 'color':'white'}),
                     dac.SidebarButton(id='add-msg-records',
                                       label='Add Message Record',
                                       icon='arrow-circle-right',
                                       href='/Message_Dataset'
                                       ),
-                    html.Div(id="message-data_name", style={"margin-left": "40px", 'color':'white'}),
                     dac.SidebarButton(id='add-cell-records',
                                       label='Add Cell Record',
                                       icon='arrow-circle-right',
                                       href='/Cell_Dataset'
                                       ),
-                    html.Div(id="cell-data_name", style={"margin-left": "40px", 'color':'white'}),
                     ]
 # Sidebar
 indexpagesidebar = dac.Sidebar(
@@ -80,7 +77,7 @@ indexpagesidebar = dac.Sidebar(
     opacity=0.8
 )
 
-## Front page
+## Home page
 index_page = html.Div([
     html.H1(className='index_page_CELLYZER',
             children='CELLYZER'
@@ -99,7 +96,12 @@ index_page = html.Div([
                 className='index_page_welcome'
             )
         ],
-            className='index_page_welcome_div')
+            className='index_page_welcome_div'),
+        html.Div([
+            html.Div(id="call_record_home", style={'margin-bottom': '80px'}),
+            html.Div(id="message_record_home", style={'margin-bottom': '80px'}),
+            html.Div(id="cell_record_home", style={'margin-bottom': '80px'}),
+        ], style={'margin-left': '50px', 'margin-top': '80px'})
     ])
 ],
     className='index_page_div'
@@ -495,6 +497,25 @@ visualize_connections = html.Div([
 
 # over call dataset
 
+def DataSetCard(name, records="-", link=None):
+    return dbc.Card(
+        children=[
+            dbc.CardHeader(html.H5(name, style={"text-align": "center"})),
+            dbc.CardBody(
+                [
+                    html.H5(records, style={"font-size": 50, "margin-bottom": 0}),
+                    html.P(
+                        "records", style={}
+                    ),
+                    html.Br(),
+                    dbc.Button("Visit DataSet", color="primary", href=link),
+                ],
+                style={"text-align": "center"}
+            ),
+        ],
+        style={"width": 300, "margin-right": 20, "margin-bottom": 20}
+    )
+
 all_file_path = []
 FilePath = []
 call_data_list = []
@@ -525,8 +546,9 @@ def add_call_dataset(filename, filepath, n_clicks):
                 file_part=filename.split('.')
                 file_type = file_part[-1]
                 call_data = cz.read_call(path_File, file_type)
+                record = call_data.get_records() 
                 all_users = call_data.get_all_users()
-                call_data_list.append([filename, path_File, all_users, call_data])
+                call_data_list.append([filename, path_File, all_users, record, call_data])
                 all_file_path.append(path_File)
                 call_name.append(file_part[0])
                 option=[]
@@ -623,20 +645,24 @@ def file_name_home_page(pathname):
         name=html.Div(children=call_data_name[:-1])
         return name
 
-######## return call file name to the next page
-@app.callback( dash.dependencies.Output('file_name', 'children'),              
+######## return call records card to the home page
+@app.callback( dash.dependencies.Output('call_record_home', 'children'),              
               [   dash.dependencies.Input('url', 'pathname')
             ]) 
-def file_name(pathname): 
-    file_call = pathname.split('/')
-    for a in call_option:
-        if file_call[2] == a[0] and len(file_call)>=2:
-            for data in call_data_list:
-                dataNew= data[0].split('.')
-                if file_call[2]== dataNew[0]:
-                    update_call_data.append(data)
-                    
-            return file_call[2] 
+def call_record_card_home(pathname):
+    if len(call_data_list)>0 :
+        call_data_name = []
+        for x in call_data_list:
+            a=x[0].split('.')
+            record = len(x[3])
+            link = '/Call_Dataset/'+str(a[0])
+            call_data_name.append(DataSetCard(a[0], record, link))
+        name= [
+                html.H2("Call DataSets", style={"margin-bottom": 30}),
+                dbc.Row(call_data_name),
+            ]
+        return name    
+
 
 ######## get call option
 @app.callback( dash.dependencies.Output('call_option', 'children'),
@@ -645,7 +671,7 @@ def file_name(pathname):
 def file_name2(pathname): 
     file_call = pathname.split('/')
     for a in call_option:
-        if file_call[2] == a[0] and len(file_call)>=2:
+        if len(file_call)>2 and file_call[2] == a[0]:
             return a[1]
 
 ######### view call dataset
@@ -659,9 +685,9 @@ def update_table(n_clicks, click2):
         return None
 
     if n_clicks is not None:
-        call_data = update_call_data[-1][-1]
+        record_call = update_call_data[-1][3]
         dict_list = []
-        for record in call_data.get_records():
+        for record in record_call:
             dict_list.append(vars(record))
         header = list(dict_list[0].keys())
         tab = []
@@ -682,7 +708,6 @@ def update_table(n_clicks, click2):
                 row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
             tab.append(html.Tr(children=row_content, style={'height': '5px'}))
         table = html.Div([
-            # html.H2(filename),
             html.Table(children=tab,
                        style={'border-collapse': 'collapse',
                               'border': '1px solid black',
@@ -1241,9 +1266,10 @@ def add_cell_dataset(call_file, filename, filepath, n_clicks):
                     if call_file == f_name[0]:
                         cell_data = cz.read_cell(path_File, call[1], call[-1], file_type)
                         dict_list = []
-                        for record in cell_data.get_records():
+                        cell_record = cell_data.get_records()
+                        for record in cell_record:
                             dict_list.append(vars(record))
-                        cell_data_list.append([filename, path_File, call[2], cell_data])
+                        cell_data_list.append([filename, path_File, call[2], cell_record, cell_data])
                         all_file_path_cell.append(path_File)
                         break
                 option=[]
@@ -1342,9 +1368,9 @@ def view_cell_data(n_clicks, click2):
         return None
 
     if n_clicks is not None:
-        cell_data = update_cell_data[-1][-1]
+        cell_records = update_cell_data[-1][3]
         dict_list = []
-        for record in cell_data.get_records():
+        for record in cell_records:
             dict_list.append(vars(record))
         header = list(dict_list[0].keys())
         tab = []
@@ -1365,7 +1391,6 @@ def view_cell_data(n_clicks, click2):
                 row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
             tab.append(html.Tr(children=row_content, style={'height': '5px'}))
         table = html.Div([
-            # html.H2(filename),
             html.Table(children=tab,
                        style={'border-collapse': 'collapse',
                               'border': '1px solid black',
@@ -1387,11 +1412,14 @@ def close_cell_data(n_clicks):
             [   Input('call_for_cell', 'n_clicks')
             ])
 def get_call_for_cell(n_clicks):
-    if n_clicks is not None:
-        add_call=[]
-        for name in call_name:
-            add_call.append({'label':name, 'value': name})
-        return add_call
+    try:
+        if n_clicks is not None:
+            add_call=[]
+            for name in call_name:
+                add_call.append({'label':name, 'value': name})
+            return add_call
+    except Exception as e:
+        print(str(e))   
 
 ###### get cell_id records
 @app.callback(Output('show_records_cell', 'children'),
@@ -1447,7 +1475,7 @@ def trip_visualization(user, n_clicks):
 def file_name_cell(pathname): 
     file_cell = pathname.split('/')
     for a in cell_option:
-        if file_cell[2] == a[0] and len(file_cell)>=2:
+        if len(file_cell)>2 and file_cell[2] == a[0]:
             for data in cell_data_list:
                 dataNew= data[0].split('.')
                 if file_cell[2]== dataNew[0]:
@@ -1462,22 +1490,27 @@ def file_name_cell(pathname):
 def cell_option_visu(pathname): 
     file_cell = pathname.split('/')
     for a in cell_option:
-        if file_cell[2] == a[0] and len(file_cell)>=2:
+        if len(file_cell)>2 and file_cell[2] == a[0]:
             return a[1]
 
-######## return cell file name to the home page
-@app.callback( dash.dependencies.Output('cell-data_name', 'children'),              
+
+######## return cell records card to the home page
+@app.callback( dash.dependencies.Output('cell_record_home', 'children'),              
               [   dash.dependencies.Input('url', 'pathname')
             ]) 
-def file_name_cell_home_page(pathname): 
+def cell_record_card_home(pathname):
     if len(cell_data_list)>0 :
         cell_data_name = []
         for x in cell_data_list:
-            a=x[0].split('.')                
-            cell_data_name.append(html.H6(a[0]))
-            cell_data_name.append(html.Br())
-        name=html.Div(children=cell_data_name[:-1])
-        return name
+            a=x[0].split('.')
+            record = len(x[3])
+            link = '/Cell_Dataset/'+str(a[0])
+            cell_data_name.append(DataSetCard(a[0], record, link))
+        name= [
+                html.H2("Cell DataSets", style={"margin-bottom": 30}),
+                dbc.Row(cell_data_name),
+            ]
+        return name   
 
 # over cell callback
 
@@ -1809,7 +1842,8 @@ def add_message_dataset(filename, filepath, n_clicks):
                 file_type = file_part[-1]
                 message_data = cz.read_msg(path_File, file_type) 
                 all_users = message_data.get_all_users()
-                message_data_list.append([filename, path_File, all_users, message_data])
+                message_record = message_data.get_records()
+                message_data_list.append([filename, path_File, all_users, message_record, message_data])
                 all_message_path.append(path_File)
                 option=[]
                 option.append(dcc.Link('◙ Show All Message Data', href='/Message_Dataset/{}/view_data'.format(file_part[0])))
@@ -1895,9 +1929,9 @@ def view_message_data(n_clicks, click2):
         return None
 
     if n_clicks is not None:
-        message_data = update_message_data[-1][-1]
+        message_record = update_message_data[-1][3]
         dict_list = []
-        for record in message_data.get_records():
+        for record in message_record:
             dict_list.append(vars(record))
         header = list(dict_list[0].keys())
         tab = []
@@ -1918,7 +1952,6 @@ def view_message_data(n_clicks, click2):
                 row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
             tab.append(html.Tr(children=row_content, style={'height': '5px'}))
         table = html.Div([
-            # html.H2(filename_message),
             html.Table(children=tab,
                        style={'border-collapse': 'collapse',
                               'border': '1px solid black',
@@ -2086,7 +2119,7 @@ def show_visualize_message_connection(n_clicks):
 def file_name_message(pathname): 
     file_message = pathname.split('/')
     for a in message_option:
-        if file_message[2] == a[0] and len(file_message)>=2:
+        if len(file_message)>2 and file_message[2] == a[0]:
             for data in message_data_list:
                 dataNew= data[0].split('.')
                 if file_message[2]== dataNew[0]:
@@ -2101,23 +2134,27 @@ def file_name_message(pathname):
 def message_option_visu(pathname): 
     file_message = pathname.split('/')
     for a in message_option:
-        if file_message[2] == a[0] and len(file_message)>=2:
+        if len(file_message)>2 and file_message[2] == a[0]:
             return a[1]
 
-######## return message file name to the home page
-@app.callback( dash.dependencies.Output('message-data_name', 'children'),              
+
+######## return message records card to the home page
+@app.callback( dash.dependencies.Output('message_record_home', 'children'),              
               [   dash.dependencies.Input('url', 'pathname')
             ]) 
-def message_file_name_home_page(pathname): 
+def message_record_card_home(pathname):
     if len(message_data_list)>0 :
         message_data_name = []
         for x in message_data_list:
-            a=x[0].split('.')                
-            message_data_name.append(html.H6(a[0]))
-            message_data_name.append(html.Br())
-        name=html.Div(children=message_data_name[:-1])
-        return name
-
+            a=x[0].split('.')
+            record = len(x[3])
+            link = '/Message_Dataset/'+str(a[0])
+            message_data_name.append(DataSetCard(a[0], record, link))
+        name= [
+                html.H2("Message DataSets", style={"margin-bottom": 30}),
+                dbc.Row(message_data_name),
+            ]
+        return name   
 
 # over message dataset
 ##################################################################################
