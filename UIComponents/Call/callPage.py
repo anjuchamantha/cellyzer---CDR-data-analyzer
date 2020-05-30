@@ -3,11 +3,35 @@ import dash_html_components as html
 import dash_core_components as dcc
 import dash
 
-from Call.callNavBar import CallNavBar
+from simpleTitleBar import SimpleTitleBar
 
 
-def CallPage():
-    navbar = CallNavBar()
+def DataSetCard(name, records="-", field_names=["user", "other_user"], ):
+    return dbc.Card(
+        children=[
+            dbc.CardHeader(html.H5(name, style={"text-align": "center"})),
+            dbc.CardBody(
+                [
+                    html.H5(records, style={"font-size": 50, "margin-bottom": 0}),
+                    html.P(
+                        "records", style={}
+                    ),
+                    html.Br(),
+                    html.H5("7", style={"font-size": 50, "margin-bottom": 0}),
+                    html.P(
+                        "fields", style={}
+                    ),
+                ],
+                style={"text-align": "center", "height": 250}
+            ),
+        ],
+        style={"width": 300, "margin-right": 20, "margin-bottom": 50, }
+    )
+
+
+def CallPage(name="<Calls>"):
+    navbar = SimpleTitleBar(name="Call Dataset : %s" % name)
+    dataset_card = DataSetCard(name=name, records="1324")
     func_dropdown = dbc.FormGroup(
         [
             dbc.Label("Select Function", html_for="dropdown"),
@@ -67,16 +91,11 @@ def CallPage():
 
     content = html.Div(
         children=[
+            dataset_card,
             form,
         ],
         style={"margin": 20, "margin-top": 100, }
 
     )
-
-    # @CallPage.callback(
-    #     dash.dependencies.Output('dd-output-container', 'children'),
-    #     [dash.dependencies.Input('demo-dropdown', 'value')])
-    # def update_output(value):
-    #     return 'You have selected "{}"'.format(value)
 
     return html.Div(children=[content, navbar])

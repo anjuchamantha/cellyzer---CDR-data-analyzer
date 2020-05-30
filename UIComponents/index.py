@@ -4,11 +4,14 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 
+from HomePage.homePage import HomePage
 from Call.callPage import CallPage
+from Call.addCallDatasetPage import AddCallDatasetPage
+from Message.addMessageDatasetPage import AddMessageDatasetPage
+from Cell.addCellDatasetPage import AddCellDatasetPage
 from DataSetPage.datasetPage import DataSetPage
 
 app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
-
 # the style arguments for the sidebar. We use position:fixed and a fixed width
 SIDEBAR_STYLE = {
     "position": "fixed",
@@ -19,7 +22,6 @@ SIDEBAR_STYLE = {
     "padding": "2rem 1rem",
     "background-color": "#f8f9fa",
 }
-
 
 # the styles for the main content position it to the right of the sidebar and
 # add some padding.
@@ -36,7 +38,7 @@ sidebar = html.Div(
             [
                 dbc.NavLink("Home", href="/home", id="home"),
                 dbc.NavLink("DataSets", href="/dataset", id="dataset"),
-                dbc.NavLink("Analytics", href="/analytics", id="analytics"),
+                dbc.NavLink("About", href="/about", id="about"),
 
             ],
             vertical=True,
@@ -55,16 +57,16 @@ app.layout = html.Div([dcc.Location(id="url"), sidebar, content])
 # this callback uses the current pathname to set the active state of the
 # corresponding nav link to true, allowing users to tell see page they are on
 @app.callback(
-    [Output(f"{i}", "active") for i in ["home", "dataset", "analytics"]],
+    [Output(f"{i}", "active") for i in ["home", "dataset", "about"]],
     [Input("url", "pathname")],
 )
 def toggle_active_links(pathname):
     if pathname == "/" or pathname == "/home":
         # Treat page 1 as the homepage / index
         return True, False, False
-    if pathname == "/dataset":
+    elif pathname == "/dataset":
         return False, True, False
-    if pathname == "/analytics":
+    elif pathname == "/about":
         return False, False, True
 
 
@@ -74,14 +76,19 @@ datasetpage = DataSetPage()
 @app.callback(Output("page-content", "children"), [Input("url", "pathname")])
 def render_page_content(pathname):
     if pathname in ["/", "/home"]:
-        return html.P("HomePage")
+        return HomePage()
     elif pathname == "/dataset":
         return datasetpage
-    elif pathname == "/analytics":
-        return html.P("Analytics Page")
+    elif pathname == "/about":
+        return html.P("About Page")
     elif pathname == "/dataset/call":
         return CallPage()
-
+    elif pathname == "/add_call_dataset":
+        return AddCallDatasetPage()
+    elif pathname == "/add_message_dataset":
+        return AddMessageDatasetPage()
+    elif pathname == "/add_cell_dataset":
+        return AddCellDatasetPage()
 
     # If the user tries to reach a different page, return a 404 message
     return dbc.Jumbotron(

@@ -2,19 +2,19 @@ import dash_bootstrap_components as dbc
 import dash_html_components as html
 
 
-def CallNavBar(name="<Dataset Name>"):
+def SimpleTitleBar(name="<Sub Title>"):
     return html.Div(
         dbc.NavbarSimple(
-            children=[
-                dbc.Button("View DataSet", color="secondary", size="sm", style={"margin": 4}),
-                dbc.Button("Functions", color="warning", size="sm", style={"margin": 4}),
-            ],
-            brand="Call DataSet : " + name,
+            # children=[
+            #     dbc.Button("View DataSet", color="secondary", size="sm", style={"margin": 4}),
+            #     dbc.Button("Functions", color="warning", size="sm", style={"margin": 4}),
+            # ],
+            brand=name,
             brand_href="#",
             color="dark",
             dark=True,
             fluid=True,
-            # sticky=True,
+            sticky=True,
 
         ),
         style={

@@ -5,11 +5,10 @@ def NavBar():
     return html.Div(
         dbc.NavbarSimple(
             children=[
-                dbc.Button("Overview", color="secondary", size="sm", style={"margin": 4}),
-                dbc.Button("Add DataSet", color="success", size="sm", style={"margin": 4}),
+                # dbc.Button("Overview", color="secondary", size="sm", style={"margin": 4}),
+                # dbc.Button("Add DataSet", color="success", size="sm", style={"margin": 4}),
             ],
-            brand="DataSets",
-            brand_href="#",
+            brand="Datasets",
             color="dark",
             dark=True,
             fluid=True,
