@@ -6,6 +6,8 @@ from dash.dependencies import Input, Output
 
 from HomePage.homePage import HomePage
 from Call.callPage import CallPage
+from Message.messagePage import MessagePage
+from Cell.cellPage import CellPage
 from Call.addCallDatasetPage import AddCallDatasetPage
 from Message.addMessageDatasetPage import AddMessageDatasetPage
 from Cell.addCellDatasetPage import AddCellDatasetPage
@@ -49,7 +51,7 @@ sidebar = html.Div(
     style=SIDEBAR_STYLE,
 )
 
-content = html.Div(id="page-content", style=CONTENT_STYLE)
+content = html.Div(id="page-content-main", style=CONTENT_STYLE)
 
 app.layout = html.Div([dcc.Location(id="url"), sidebar, content])
 
@@ -73,7 +75,7 @@ def toggle_active_links(pathname):
 datasetpage = DataSetPage()
 
 
-@app.callback(Output("page-content", "children"), [Input("url", "pathname")])
+@app.callback(Output("page-content-main", "children"), [Input("url", "pathname")])
 def render_page_content(pathname):
     if pathname in ["/", "/home"]:
         return HomePage()
@@ -85,6 +87,10 @@ def render_page_content(pathname):
         return CallPage()
     elif pathname == "/add_call_dataset":
         return AddCallDatasetPage()
+    elif pathname == "/dataset/msg":
+        return MessagePage()
+    elif pathname == "/dataset/cell":
+        return CellPage()
     elif pathname == "/add_message_dataset":
         return AddMessageDatasetPage()
     elif pathname == "/add_cell_dataset":

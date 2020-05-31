@@ -1,3 +1,5 @@
+from builtins import int
+
 import dash_bootstrap_components as dbc
 import dash_html_components as html
 import dash_core_components as dcc
@@ -36,20 +38,21 @@ def AddCellDatasetPage():
 
     call_dataset = dbc.FormGroup(
         [
-            dbc.Label("Select the Call Dataset to link", width=2),
+            dbc.Label("Select Call Dataset", html_for="dropdown", width=2),
             dbc.Col(
-                dbc.DropdownMenu(
-                    label="Select Call Dataset",
-                    children=[
-                        dbc.DropdownMenuItem("Call Dataset 1"),
-                        dbc.DropdownMenuItem("Call Dataset 2"),
-                        dbc.DropdownMenuItem("Call Dataset 3"),
+                dcc.Dropdown(
+                    id="call_dataset_link",
+                    placeholder="Select the Call Dataset to link",
+                    options=[
+                        {"label": "Call Dataset 1", "value": 1},
+                        {"label": "Call Dataset 2", "value": 2},
                     ],
-                )
-            ),
 
+                ),
+            ),
         ],
         row=True,
+        style={"margin-bottom": 20}
     )
 
     form = dbc.Form([data_set_input, data_set_name, call_dataset])

@@ -29,7 +29,7 @@ def DataSetCard(name, records="-", field_names=["user", "other_user"], ):
     )
 
 
-def CallPage(name="<Calls>"):
+def CellPage(name="<Cell>"):
     navbar = SimpleTitleBar(name="Call Dataset : %s" % name)
     dataset_card = DataSetCard(name=name, records="1324")
 
@@ -37,24 +37,12 @@ def CallPage(name="<Calls>"):
         [
             dbc.Row(dbc.Button("Show All Data", color="light", className="mr-1", block=True,
                                style={"margin-bottom": 10, "text-align": 'start'})),
-            dbc.Row(dbc.Button("Show All the users", color="light", className="mr-1", block=True,
+            dbc.Row(dbc.Button("Get Records of a specific cell", color="light", className="mr-1", block=True,
                                style={"margin-bottom": 10, "text-align": 'start'})),
-            dbc.Row(dbc.Button("Show connected users", color="light", className="mr-1", block=True,
+            dbc.Row(dbc.Button("Population Around cells", color="light", className="mr-1", block=True,
                                style={"margin-bottom": 10, "text-align": 'start'})),
-            dbc.Row(dbc.Button("Call records between 2 selected users", color="light", className="mr-1", block=True,
+            dbc.Row(dbc.Button("Visualize trips of a given user", color="light", className="mr-1", block=True,
                                style={"margin-bottom": 10, "text-align": 'start'})),
-            dbc.Row(dbc.Button("Close contacts of selected users", color="light", className="mr-1", block=True,
-                               style={"margin-bottom": 10, "text-align": 'start'})),
-            dbc.Row(dbc.Button("Ignored Call details of a given user", color="light", className="mr-1", block=True,
-                               style={"margin-bottom": 10, "text-align": 'start'})),
-            dbc.Row(dbc.Button("Active time of a given user", color="light", className="mr-1", block=True,
-                               style={"margin-bottom": 10, "text-align": 'start'})),
-            dbc.Row(dbc.Button(["Visualize connections between all users ",
-                                dbc.Badge("Heavy Function", color="danger", className="mr-1")],
-                               color="light",
-                               className="mr-1",
-                               block=True,
-                               style={"margin-bottom": 10, "text-align": 'start'}, )),
         ]
     )
 
