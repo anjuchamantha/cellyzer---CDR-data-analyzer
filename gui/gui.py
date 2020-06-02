@@ -155,7 +155,7 @@ NavBar = html.Div(
         }
     )
 
-## Dataset page
+####### Dataset page
 index_page = html.Div(children=[
     NavBar,
     homepageSidebar,
@@ -499,7 +499,7 @@ def add_call_dataset(filename, filepath, n_clicks):
             FilePath.append(filepath)
             call_files_name.append(filename)
             path_File=filepath
-            if path_File in all_file_path or filename in call_name:
+            if path_File in all_file_path or filename in call_name or ' ' in filename:
                 output_call=[]
                 for x in call_data_list:
                     a=x[0]
@@ -566,27 +566,38 @@ def add_call_dataset(filename, filepath, n_clicks):
         name=html.Div(children=output_call)
         return name
 
+
 ########### alert for call data
-@app.callback( [ Output('alert', 'is_open'), Output('alert', 'children'),],
+@app.callback( [ Output('alert', 'is_open'), Output('alert', 'children')],
             [  Input('upload-data_call', 'value'), Input('filepath', 'value'), Input('adding_call', 'n_clicks')],
              [  State('alert', 'is_open')]
             )
 def add_call_dataset_alert(filename, filepath, n_clicks, is_open):
     if n_clicks is not None:
         try:
-            path_File=filepath 
-            file_part=filepath.split('\\')
-            file_call = file_part[-1].split('.')
-            file_type = file_call[-1]
-            call_data = cz.read_call(path_File, file_type)
-            all_users = call_data.get_all_users()
-            if path_File in all_file_path:
+            if filepath is None:
+                word = 'Please enter filepath'
+                return True, word
+            elif filename is None:
+                word = 'Please enter filename'
+                return True, word
+            elif filepath in all_file_path:
                 word = 'This file already exist'
                 return True, word
             elif filename in call_name:
                 word = 'Please enter other name'
                 return True, word
+            elif ' ' in filename:
+                word = 'Do not enter space into filename'
+                return True, word
             else:
+                path_File=filepath 
+                file_part=filepath.split('\\')
+                file_call = file_part[-1].split('.')
+                file_type = file_call[-1]
+                call_data = cz.read_call(path_File, file_type)
+                all_users = call_data.get_all_users()
+
                 return False, None
 
         except Exception as e:
@@ -612,9 +623,7 @@ def call_direct_datset(filename, filepath):
         file_type = file_call[-1]
         call_data = cz.read_call(path_File, file_type)
         all_users = call_data.get_all_users()
-        if filename in call_name:
-            return None
-        elif path_File in all_file_path:
+        if (filename in call_name) or (path_File in all_file_path) or (filepath is None) or (filename is None) or (' ' in filename):
             return None
         else:
             href = '/Dataset'
@@ -668,11 +677,12 @@ def call_record_card_home(pathname):
     else:
         return AddDataSetCard('call')
 
-########### get visualize option for navigation bar
+########### get call visualize option for navigation bar
 @app.callback( dash.dependencies.Output('navbar_call_visu', 'children'),
             [   dash.dependencies.Input('url', 'pathname')
             ]) 
 def get_navbar_visu_call(pathname):
+    print('xxx')
     path_set = pathname.split('/')
     if len(path_set)==4 and path_set[-3]== 'Call_Dataset':
         if path_set[-1]=='view_data':
@@ -691,7 +701,6 @@ def get_navbar_visu_call(pathname):
             return SimpleTitleBar("Call Dataset :<%s> => Active Time" % path_set[-2])
         elif path_set[-1]== 'visualize_connection':
             return SimpleTitleBar("Call Dataset :<%s> => Visualize Connection" % path_set[-2])
-
 
 ######## get call option
 @app.callback( dash.dependencies.Output('call_option', 'children'),
@@ -1025,184 +1034,148 @@ def show_visualize_connection(n_clicks):
 
 ## Page for cell dataset
 
-cellrecorditems = [dac.SidebarMenuItem(id='add-cell-records',
-                                       label='Add Cell Record',
-                                       icon='arrow-circle-right',
-                                       children=[
-                                           html.Div(id="cell-data", style={"margin-left": "40px"})
-                                       ]
-                                       ),
-                   ]
-
 cellpagesidebar = dac.Sidebar(
     dac.SidebarMenu(
-        [
-            dac.SidebarHeader(children="Dataset Functions"),
+        [   
             dac.SidebarButton(id='add-cell-records', label='Home', icon='home', href='/'),
-            dac.SidebarMenuItem(id='tab_cards', label='Add a Dataset', icon='box', children=cellrecorditems)
+            dac.SidebarButton(id='add-cell-records', label='Dataset', icon='box', href='/Dataset'),
+            html.Div(id="cell-data", style={"margin-left": "40px"})
         ]
     ),
-    title='DASHBOARD',
+    title='CELLYZER',
     color="primary",
     brand_color="secondary",
-    url='/',
     src="https://adminlte.io/themes/AdminLTE/dist/img/user2-160x160.jpg",
     elevation=3,
     opacity=0.8
 )
 
+############ add cell dataset
 cell_dataset = html.Div([
-    html.H1(className='index_cell_dataset_cellyzer', children='CELLYZER'),
+    SimpleTitleBar(name="ADD CELL/ANTENNA DATASET"),
     cellpagesidebar,
     html.Div([
-        html.H2("ADD CELL DATASET"),
-        html.Hr(),
         html.Div([
             dbc.FormGroup(
                 [
-                    dbc.Label("Get File Path:", html_for="example-email-row", width=2),
+                    dbc.Label("Cell DataSet File path", html_for="example-email-row", width=2, ),
                     dbc.Col(
                         dbc.Input(
-                            type="text", id="filepath_cell", placeholder="Enter path",
-                            style={'width': '500px'}
+                            type="text", id="filepath_cell", placeholder="Ex:   D:\datasets\cells.csv",
+                            style={'width': '800px'}
                         ),
                         width=10,
                     ),
                 ],
                 row=True,
             ),
-            html.H5(
-                "Enter correct path of cell dataset folder",
-                style={'font-size': '17px', 'padding': '10px'}
+            dbc.FormGroup(
+                [
+                    dbc.Label("Cell Dataset Name", html_for="example-email-row", width=2, color='black'),
+                    dbc.Col(
+                        dbc.Input(
+                            type="text", id="upload-data_cell", placeholder="How do you want to call this dataset?",
+                            style={'width': '800px'}
+                        ),
+                        width=10,
+                    ),
+                ],
+                row=True,
             ),
-            html.H5(
-                "Do not enter file name to the path",
-                style={'font-size': '17px', 'color': 'red', 'padding': '10px'}
+            html.H6('Do not enter space into file name', style={'color':'red', 'font-size':15}),
+            html.Br(),
+            dbc.FormGroup(
+                [
+                    dbc.Label("Select Call Dataset", html_for="dropdown", width=2),
+                    dbc.Col(
+                        dcc.Dropdown(
+                            id="select_call",
+                            placeholder="Select the Call Dataset to link",
+                            style = {'width':800}
+                        ),
+                    ),
+                ],
+                row=True,
+                style={"margin-bottom": 20}
             ),
-        ], 
+            html.H6('Add call dataset before adding cell dataset', style={'color':'red', 'font-size':15}),
+        ],
             style={
                 'padding-left': '30px'
             }),
-        html.Hr(),
-        dcc.Upload(id='upload-data_cell',
-            children=html.Div([
-                html.Button('CHOOSE CELL DATA', id='choose_cell', className='index_celldata_add_button')]),
-            className='index_cell_dataset_upload_data',
-            multiple=True),
-        html.Hr(),
         html.Div([
-            html.H5('Please add call dataset before adding cell dataset', style={'font-size': '15px'}), 
-            html.Button('SELECT CALL DATA', id='call_for_cell' ,className='index_celldata_add_button'),
-            dcc.Dropdown(id='select_call', style={'width': '200px', 'float':'right', 'color':'red'}), 
-            ], style={'padding-right': '300px'}),
-        html.Br(),
-        html.Div([
-            html.Button('ADD DATA', id='show_cell_dash' ,className='index_celldata_add_button'),
-            ]),
+            dbc.Button("Add DataSet", color="primary", className="mr-1 float-right", id='show_cell_dash')
+            ], style={"margin-top": '40px'}),
         dbc.Alert(id='alert_cell', dismissable=True, is_open=False, style={'width':'500px', 'background-color':'red','font-size':'18px'})
-    ], className='call_page_welcome_div'),
-
+    ], className='call_page_welcome_div', style={'margin': '20px', "margin-top": '150px'}),
 ],
-    className='sample_call_dataset_div'
+    className='index_page_div'
 )
 
-celldatasetitems = [dac.SidebarMenuItem(id='add-cell-records',
-                                        label='Add Cell Record',
-                                        icon='arrow-circle-right',
-                                        children=[
-                                           html.Div(id="file_name_cell", style={"margin-left": "40px", 'color':'white'})
-                                       ]
-                                        ),
-                    ]
 
-celldatasetidebar = dac.Sidebar(
+############## navbar for cell_dataset_file page
+navbar_cell_dataset_file = html.Div(id= 'file_name_cell')
+
+############# side navbar for cell dataset visualization
+cellpagevisualizesidebar = dac.Sidebar(
     dac.SidebarMenu(
-        [
-            dac.SidebarHeader(children="Dataset Functions"),
+        [   
             dac.SidebarButton(id='add-cell-records', label='Home', icon='home', href='/'),
-            dac.SidebarMenuItem(id='tab_cards', label='Add a Dataset', icon='box', children=celldatasetitems)
+            dac.SidebarButton(id='add-cell-records', label='Dataset', icon='box', href='/Dataset'),
+            html.P('Cell Dataset', style={"margin-left": "40px", 'font-size':20, 'color':'white'}),
+            html.Div(id="cell_data_visu_sidebar", style={"margin-left": "40px"})
         ]
     ),
-    title='DASHBOARD',
+    title='CELLYZER',
     color="primary",
     brand_color="secondary",
-    url='/',
     src="https://adminlte.io/themes/AdminLTE/dist/img/user2-160x160.jpg",
     elevation=3,
     opacity=0.8
 )
 
+########### page for call dataset file visualization
 cell_dataset_file = html.Div([
-    html.H1(className='sample_cell_data_cellyzer', children='CELLYZER'),
-    celldatasetidebar,
-    html.Div([
-        html.Div([
-            html.H3('CELL  DATASET  VISUALIZATION', className='index_dataset_add_call_data')],
-            className='sample_dataset_visualize'),
-    ]),
-    html.Div(id='cell_option', className='sample_call_data_visualize_option'),
-    ],
-    className='sample_cell_dataset_div')
+    navbar_cell_dataset_file,
+    cellpagevisualizesidebar,
+    dbc.Row(
+        children=[
 
-####### show all cell data
+            dbc.Card(
+                children=[
+                    dbc.CardHeader(html.H5("Available Functions", style={"text-align": "center"})),
+                    dbc.CardBody(
+                        html.Div(id='cell_option'),
+                        style={"text-align": "center"}
+                    ),
+                ],
+                style={"margin-right": 20, "margin-bottom": 50, "width": "60%"}
+            ),
+        ],
+        style={"margin": 20, "margin-top": 100, 'margin-left':50}
 
-viewcelldatasetitems = [dac.SidebarMenuItem(id='add-cell-records',
-                                            label='Add Cell Record',
-                                            icon='arrow-circle-right',
-                                            children=html.Div([
-                                            html.Div(id="file_name_cell", style={"margin-left": "40px", 'color':'white'}),
-                                            html.Br(),
-                                            html.Div(id="cell_option", style={'font-size': '12px', 'margin-left': '10px'})
-                                            ])
-                                            ),
-                        ]
+    )], className='index_page_div' )
 
-viewcelldatasetidebar = dac.Sidebar(
-    dac.SidebarMenu(
-        [
-            dac.SidebarHeader(children="Dataset Functions"),
-            dac.SidebarButton(id='add-cell-records', label='Home', icon='home', href='/'),
-            dac.SidebarMenuItem(id='tab_cards', label='Add a Dataset', icon='box', children=viewcelldatasetitems)
-        ]
-    ),
-    title='DASHBOARD',
-    color="primary",
-    brand_color="secondary",
-    url='/',
-    src="https://adminlte.io/themes/AdminLTE/dist/img/user2-160x160.jpg",
-    elevation=3,
-    opacity=0.8
-)
 
+############ navbar for cell dataset visualization
+navbar_cell_dataset_visualize = html.Div(id='navbar_cell_visu')
+
+############ page for view all cell data
 view_all_cell_data = html.Div([
-    html.H1(className='sample_call_data_cellyzer', children='CELLYZER'),
-    viewcelldatasetidebar,
-    html.Div([
-        html.Div([
-            html.H3('CELL  DATASET  VISUALIZATION - GET ALL DATA', className='index_dataset_add_call_data')],
-            className='sample_dataset_visualize'),
-    ]),
-    html.Hr(),
-    html.Br(),
+    navbar_cell_dataset_visualize,
+    cellpagevisualizesidebar,
     html.Div([
         dbc.Button('VIEW DATA', id='view_cell', outline=True, color='success', className='sample_call_dataset_viewdata'),
         dbc.Button('CLOSED DATA', id='close_cell', outline=True, color='danger', className='sample_call_dataset_close')],
-        className='sample_call_dataset_view_div'),
+        className='sample_call_dataset_view_div', style={"margin": 20, "margin-top": 100}),
     html.Div(id='show_cell_data', className='sample_call_dataset_show'),
 ],
-    className='sample_call_dataset_div')
+    className='index_page_div')
 
 ###### get records of specific cell
 records_of_cell = html.Div([
-    html.H1(className='sample_call_data_cellyzer', children='CELLYZER'),
-    viewcelldatasetidebar,
-    html.Div([
-        html.Div([
-            html.H3('CELL  DATASET  VISUALIZATION - RECORDS OF A SPECIFIC CELL', className='index_dataset_add_call_data')],
-            className='sample_dataset_visualize'),
-    ]),
-    html.Hr(),
-    html.Br(),
+    navbar_cell_dataset_visualize,
+    cellpagevisualizesidebar,
     html.Div([
         dbc.FormGroup(
             [
@@ -1217,42 +1190,29 @@ records_of_cell = html.Div([
             row=True,
         ),
         dbc.Button('Records Cell', id='records_cell', outline=True, color='success', className='sample_call_dataset_viewdata')],
-        className='sample_call_dataset_view_div'
+        className='sample_call_dataset_view_div', style={"margin": 20, "margin-top": 100}
     ),
     html.Div(id='show_records_cell', className='ndex_dataset_cell_record_div'),
 ],
-    className='sample_call_dataset_div')
+    className='index_page_div')
 
 ######## page for get population and visualize
 population_around_cell = html.Div([
-    html.H1(className='sample_call_data_cellyzer', children='CELLYZER'),
-    viewcelldatasetidebar,
-    html.Div([
-        html.Div([
-            html.H3('CELL  DATASET  VISUALIZATION - POPULATION AROUND CELL AND VISUALIZE', className='index_dataset_add_call_data')],
-            className='sample_dataset_visualize', style={'width':'1000px'}),
-    ]),
-    html.Hr(),
-    html.Br(),
+    navbar_cell_dataset_visualize,
+    cellpagevisualizesidebar,
     html.Div([
         dbc.Button('Get Population', id='population_button', outline=True, color='danger', className='sample_call_dataset_viewdata')],
-        className='sample_call_dataset_view_div'
+        className='sample_call_dataset_view_div', style={"margin": 20, "margin-top": 100}
     ),
     html.Div(id='show_population', className='sample_call_dataset_show_all_users'),
 ],
-    className='sample_call_dataset_div')
+    className='index_page_div')
 
 ######## page for trip visualization
 trip_visualize = html.Div([
-    html.H1(className='sample_call_data_cellyzer', children='CELLYZER'),
-    viewcelldatasetidebar,
-    html.Div([
-        html.Div([
-            html.H3('CELL  DATASET  VISUALIZATION - TRIP VISAULIZATION', className='index_dataset_add_call_data')],
-            className='sample_dataset_visualize'),
-    ]),
-    html.Hr(),
-    html.Br(),
+    navbar_cell_dataset_visualize,
+    cellpagevisualizesidebar,
+
     html.Div([
         dbc.FormGroup(
             [
@@ -1267,11 +1227,11 @@ trip_visualize = html.Div([
             row=True,
         ),
         dbc.Button('Trip Visualize', id='trip_visualize_button', outline=True, color='danger', className='sample_call_dataset_viewdata')],
-        className='sample_call_dataset_view_div'
+        className='sample_call_dataset_view_div', style={"margin": 20, "margin-top": 100}
     ),
     html.Div(id='show_trip_visualize', className='sample_call_dataset_show_all_users'),
 ],
-    className='sample_call_dataset_div')
+    className='index_page_div')
 
 ########### over cell pages
 
@@ -1281,32 +1241,36 @@ cell_option = []
 File_Path_cell =[]
 all_file_path_cell = []
 adding_call = []
+cell_file_name =[]
+added_cell_name = []
+
 
 ####### add cell data
 @app.callback(  Output('cell-data', 'children'),
-              [  Input('select_call', 'value'), Input('upload-data_cell', 'filename'), Input('filepath_cell', 'value'), Input('show_cell_dash', 'n_clicks')],
+              [  Input('select_call', 'value'), Input('upload-data_cell', 'value'), Input('filepath_cell', 'value'), Input('show_cell_dash', 'n_clicks')],
             )
 def add_cell_dataset(call_file, filename, filepath, n_clicks):
     if n_clicks is not None:
         try:
             File_Path_cell.append(filepath)
             adding_call.append(call_file)
-            filename=filename[0]
-            path_File=os.path.join(filepath, filename)
-            if path_File in all_file_path_cell:
+            cell_file_name.append(filename)
+            path_File = filepath
+            if path_File in all_file_path_cell or filename in added_cell_name or ' ' in filename:
                 output_cell=[]
                 for x in cell_data_list:
-                    a=x[0].split('.')
-                    output_cell.append(dcc.Link(a[0], href='/Cell_Dataset/'+str(a[0])))
+                    a=x[0]
+                    output_cell.append(dcc.Link(a, href='/Cell_Dataset/'+str(a)))
                     output_cell.append(html.Br())
                 name_cell=html.Div(children = output_cell)
                 return name_cell
             else:
-                file_part=filename.split('.')
-                file_type = file_part[-1]
+                file_part=filepath.split('\\')
+                file_cell = file_part[-1].split('.')
+                file_type = file_cell[-1]
                 for call in call_data_list:
-                    f_name= call[0].split('.')
-                    if call_file == f_name[0]:
+                    f_name= call[0]
+                    if call_file == f_name:
                         cell_data = cz.read_cell(path_File, call[1], call[-1], file_type)
                         dict_list = []
                         cell_record = cell_data.get_records()
@@ -1314,20 +1278,22 @@ def add_cell_dataset(call_file, filename, filepath, n_clicks):
                             dict_list.append(vars(record))
                         cell_data_list.append([filename, path_File, call[2], cell_record, cell_data])
                         all_file_path_cell.append(path_File)
+                        added_cell_name.append(filename)
                         break
                 option=[]
-                option.append(dcc.Link('◙ Show All Data', href='/Cell_Dataset/{}/view_cell_data'.format(file_part[0])))
-                option.append(html.Br())
-                option.append(dcc.Link('◙ Records Of a Specific Cell', href='/Cell_Dataset/{}/records_cell_id'.format(file_part[0])))
-                option.append(html.Br())
-                option.append(dcc.Link('◙ Population Around Cell', href='/Cell_Dataset/{}/population_around_cell'.format(file_part[0])))
-                option.append(html.Br())
-                option.append(dcc.Link('◙ Trip Visualization', href='/Cell_Dataset/{}/trip_visualize'.format(file_part[0]))) 
-                cell_option.append([file_part[0], option])
+                option.append(dbc.Row(dbc.Button("Show All Data", href='/Cell_Dataset/{}/view_cell_data'.format(filename), color="light", className="mr-1", block=True, 
+                               style={"margin-bottom": 10, "text-align": 'start'})))
+                option.append(dbc.Row(dbc.Button("Records Of a Specific Cell", href='/Cell_Dataset/{}/records_cell_id'.format(filename), color="light", className="mr-1", block=True,
+                               style={"margin-bottom": 10, "text-align": 'start'})))
+                option.append(dbc.Row(dbc.Button("Population Around Cell", href='/Cell_Dataset/{}/population_around_cell'.format(filename), color="light", className="mr-1", block=True,
+                               style={"margin-bottom": 10, "text-align": 'start'})))
+                option.append(dbc.Row(dbc.Button("Trip Visualization", href='/Cell_Dataset/{}/trip_visualize'.format(filename), color="light", className="mr-1", block=True,
+                               style={"margin-bottom": 10, "text-align": 'start'})))
+                cell_option.append([filename, option])
                 output_cell=[]
                 for x in cell_data_list:
-                    a=x[0].split('.')
-                    output_cell.append(dcc.Link(a[0], href='/Cell_Dataset/'+str(a[0])))
+                    a=x[0]
+                    output_cell.append(dcc.Link(a, href='/Cell_Dataset/'+str(a)))
                     output_cell.append(html.Br())
                 name_cell=html.Div(children = output_cell)
                 return name_cell
@@ -1336,8 +1302,8 @@ def add_cell_dataset(call_file, filename, filepath, n_clicks):
             print(str(e))
             output_cell=[]
             for x in cell_data_list:
-                a=x[0].split('.')
-                output_cell.append(dcc.Link(a[0], href='/Cell_Dataset/'+str(a[0])))
+                a=x[0]
+                output_cell.append(dcc.Link(a, href='/Cell_Dataset/'+str(a)))
                 output_cell.append(html.Br())
             name_cell=html.Div(children = output_cell)
             return name_cell
@@ -1345,33 +1311,53 @@ def add_cell_dataset(call_file, filename, filepath, n_clicks):
     else :
         output_cell=[]
         for x in cell_data_list:
-            a=x[0].split('.')
-            output_cell.append(dcc.Link(a[0], href='/Cell_Dataset/'+str(a[0])))
+            a=x[0]
+            output_cell.append(dcc.Link(a, href='/Cell_Dataset/'+str(a)))
             output_cell.append(html.Br())
         name_cell=html.Div(children = output_cell)
         return name_cell
 
+
 ############## error alert for cell data
 @app.callback([  Output('alert_cell', 'is_open'), Output('alert_cell', 'children')],
-              [  Input('select_call', 'value'), Input('upload-data_cell', 'filename'), Input('filepath_cell', 'value'), Input('show_cell_dash', 'n_clicks')],
+              [  Input('select_call', 'value'), Input('upload-data_cell', 'value'), Input('filepath_cell', 'value'), Input('show_cell_dash', 'n_clicks')],
               [  State('alert_cell', 'is_open')] 
             )
 def add_cell_dataset_alert(call_file, filename, filepath, n_clicks, is_open):
     if n_clicks is not None:
         try:
-            filename=filename[0]
-            path_File=os.path.join(filepath, filename)
-            file_part=filename.split('.')
-            file_type = file_part[-1]
-            for call in call_data_list:
-                f_name= call[0].split('.')
-                if call_file == f_name[0]:
-                    cell_data = cz.read_cell(path_File, call[1], call[-1], file_type)
-                    dict_list = []
-                    for record in cell_data.get_records():
-                        dict_list.append(vars(record))
-                    break
-            return False, None
+            if filepath is None:
+                word = 'Please enter filepath'
+                return True, word
+            elif filename is None:
+                word = 'Please enter filename'
+                return True, word
+            elif call_file is None:
+                word = 'Please add call dataset'
+                return True, word
+            elif filepath in all_file_path_cell:
+                word = 'This file already exist'
+                return True, word
+            elif filename in added_cell_name:
+                word = 'Please enter other name'
+                return True, word
+            elif ' ' in filename:
+                word = 'Do not enter space into filename'
+                return True, word
+            else:
+                path_File = filepath
+                file_part=filepath.split('\\')
+                file_cell = file_part[-1].split('.')
+                file_type = file_cell[-1]
+                for call in call_data_list:
+                    f_name= call[0]
+                    if call_file == f_name:
+                        cell_data = cz.read_cell(path_File, call[1], call[-1], file_type)
+                        dict_list = []
+                        for record in cell_data.get_records():
+                            dict_list.append(vars(record))
+                        break
+                return False, None
 
         except Exception as e:
             print(str(e))
@@ -1386,15 +1372,42 @@ def add_cell_dataset_alert(call_file, filename, filepath, n_clicks, is_open):
     else :
         return False , None
 
+######## direct for the datset page after adding cell dataset
+@app.callback(  Output('show_cell_dash', 'href'),
+            [  Input('select_call', 'value'), Input('upload-data_cell', 'value'), Input('filepath_cell', 'value')]
+            )
+def cell_direct_datset(call_file, filename, filepath):
+    try:
+        path_File = filepath
+        file_part=filepath.split('\\')
+        file_cell = file_part[-1].split('.')
+        file_type = file_cell[-1]
+        for call in call_data_list:
+            f_name= call[0]
+            if call_file == f_name:
+                cell_data = cz.read_cell(path_File, call[1], call[-1], file_type)
+                dict_list = []
+                for record in cell_data.get_records():
+                    dict_list.append(vars(record))
+                break
+        if (filename in added_cell_name) or (path_File in all_file_path_cell) or (filepath is None) or (filename is None) or (call_file is None) or (' ' in filename):
+            return None
+        else:
+            href = '/Dataset'
+            return href
+
+    except Exception as e:
+        # print(e)
+        return None
+
+
 ########### set button n_clicks to zero
 @app.callback(Output('show_cell_dash', 'n_clicks'),
-              [ Input('select_call', 'value'), Input('choose_cell', 'n_clicks'), Input('call_for_cell', 'n_clicks'), Input('filepath_cell', 'value')])
-def adding_cell_button(call_file, n_clicks, select_call, filepath):
+              [ Input('select_call', 'value'), Input('upload-data_cell', 'value'), Input('filepath_cell', 'value')])
+def adding_cell_button(call_file, filename, filepath):
     if len(File_Path_cell)>=1 and File_Path_cell[-1]!=filepath:
         return None
-    elif n_clicks is not None:
-        return None
-    elif select_call is not None:
+    elif len(cell_file_name)>=1 and cell_file_name[-1]!=filename:
         return None
     elif len(adding_call)>=1 and adding_call[-1]!=call_file:
         return None
@@ -1452,17 +1465,15 @@ def close_cell_data(n_clicks):
 
 ######## select call dataset using dropdown
 @app.callback(Output('select_call', 'options'),
-            [   Input('call_for_cell', 'n_clicks')
+            [   Input('filepath_cell', 'value')
             ])
-def get_call_for_cell(n_clicks):
-    try:
-        if n_clicks is not None:
-            add_call=[]
-            for name in call_name:
-                add_call.append({'label':name, 'value': name})
-            return add_call
-    except Exception as e:
-        print(str(e))   
+def get_call_for_cell(filepath):
+    if filepath is not None and len(call_data_list)>=1:
+        add_call=[]
+        for name in call_name:
+            add_call.append({'label':name, 'value': name})
+        return add_call
+
 
 ###### get cell_id records
 @app.callback(Output('show_records_cell', 'children'),
@@ -1511,6 +1522,7 @@ def trip_visualization(user, n_clicks):
             cz.visualization.trip_visualization(trip_visualize)
         return table
 
+
 ######## return cell file name to the next page
 @app.callback( dash.dependencies.Output('file_name_cell', 'children'),              
               [   dash.dependencies.Input('url', 'pathname')
@@ -1523,8 +1535,9 @@ def file_name_cell(pathname):
                 dataNew= data[0].split('.')
                 if file_cell[2]== dataNew[0]:
                     update_cell_data.append(data)
-                    
-            return file_cell[2]
+
+            name = "Cell Dataset :<%s>" % file_cell[2]
+            return SimpleTitleBar(name)              
 
 ######## get cell option
 @app.callback( dash.dependencies.Output('cell_option', 'children'),
@@ -1536,7 +1549,6 @@ def cell_option_visu(pathname):
         if len(file_cell)>2 and file_cell[2] == a[0]:
             return a[1]
 
-
 ######## return cell records card to the home page
 @app.callback( dash.dependencies.Output('cell_record_home', 'children'),              
               [   dash.dependencies.Input('url', 'pathname')
@@ -1545,18 +1557,46 @@ def cell_record_card_home(pathname):
     if len(cell_data_list)>0 :
         cell_data_name = []
         for x in cell_data_list:
-            a=x[0].split('.')
+            a=x[0]
             record = len(x[3])
-            link = '/Cell_Dataset/'+str(a[0])
-            cell_data_name.append(DataSetCard(a[0], record, link))
+            link = '/Cell_Dataset/'+str(a)
+            cell_data_name.append(DataSetCard(a, record, link))
         cell_data_name.append(AddDataSetCard('cell'))
-        # name= [
-        #         html.H2("Cell DataSets", style={"margin-bottom": 30}),
-        #         dbc.Row(cell_data_name),
-        #     ]
         return cell_data_name
     else:
         return AddDataSetCard('cell')
+
+
+########### get cell visualize option for navigation bar
+@app.callback( dash.dependencies.Output('navbar_cell_visu', 'children'),
+            [   dash.dependencies.Input('url', 'pathname')
+            ]) 
+def get_navbar_visu_cell(pathname):
+    path_set = pathname.split('/')
+    if len(path_set)==4 and path_set[-3]== 'Cell_Dataset':
+        if path_set[-1]=='view_cell_data':
+            return SimpleTitleBar("Cell Dataset :<%s> => All Data" % path_set[-2])
+        elif path_set[-1]=='records_cell_id':
+            return SimpleTitleBar("Cell Dataset :<%s> => Records Of a Specific Cell" % path_set[-2])
+        elif path_set[-1]=='population_around_cell':
+            return SimpleTitleBar("Cell Dataset :<%s> => Population Around Cell" % path_set[-2])
+        elif path_set[-1]=='trip_visualize':
+            return SimpleTitleBar("Cell Dataset :<%s> => Trip Visualization" % path_set[-2])
+
+
+######## return all cell file names into cell visualize sidebar
+@app.callback( dash.dependencies.Output('cell_data_visu_sidebar', 'children'),              
+              [   dash.dependencies.Input('url', 'pathname')
+            ]) 
+def cell_visu_sidebar(pathname):
+    if len(call_data_list)>=1:
+        output_cell=[]
+        for x in cell_data_list:
+            a=x[0]
+            output_cell.append(dcc.Link(a, href='/Cell_Dataset/'+str(a)))
+            output_cell.append(html.Br())
+        name_cell=html.Div(children = output_cell)
+        return name_cell
 
 # over cell callback
 
@@ -1789,7 +1829,7 @@ def add_message_dataset(filename, filepath, n_clicks):
             FilePath_message.append(filepath)
             file_name_message.append(filename)
             path_File=filepath
-            if path_File in all_message_path or filename in added_message_name:
+            if path_File in all_message_path or filename in added_message_name or ' ' in filename:
                 output_message=[]
                 for x in message_data_list:
                     a=x[0]
@@ -1849,6 +1889,7 @@ def add_message_dataset(filename, filepath, n_clicks):
         name_message=html.Div(children=output_message)
         return name_message 
 
+
 ######### show message alert 
 @app.callback([Output('alert_message', 'is_open'), Output('alert_message', 'children')],
             [ Input('upload-data_message', 'value'), Input('filepath_message', 'value'), Input('adding_message', 'n_clicks')],
@@ -1857,20 +1898,30 @@ def add_message_dataset(filename, filepath, n_clicks):
 def add_message_dataset_alert(filename, filepath, n_clicks, is_open):
     if n_clicks is not None:
         try:
-            path_File=filepath 
-            file_part=filepath.split('\\')
-            file_message = file_part[-1].split('.')
-            file_type = file_message[-1]
-            cz.read_msg(path_File, file_type) 
-            message_data = cz.read_msg(path_File, file_type) 
-            all_users = message_data.get_all_users()
-            if path_File in all_message_path:
+            if filepath is None:
+                word = 'Please enter filepath'
+                return True, word
+            elif filename is None:
+                word = 'Please enter filename'
+                return True, word
+            elif filepath in all_message_path:
                 word = 'This file already exist'
                 return True, word
             elif filename in added_message_name:
                 word = 'Please enter other name'
                 return True, word
+            elif ' ' in filename:
+                word = 'Do not enter space into filename'
+                return True, word
             else:
+                path_File=filepath 
+                file_part=filepath.split('\\')
+                file_message = file_part[-1].split('.')
+                file_type = file_message[-1]
+                cz.read_msg(path_File, file_type) 
+                message_data = cz.read_msg(path_File, file_type) 
+                all_users = message_data.get_all_users()
+
                 return False, None
 
         except Exception as e:
@@ -1896,9 +1947,7 @@ def message_direct_datset(filename, filepath):
         cz.read_msg(path_File, file_type) 
         message_data = cz.read_msg(path_File, file_type) 
         all_users = message_data.get_all_users()
-        if filename in added_message_name:
-            return None
-        elif path_File in all_message_path:
+        if (filename in added_message_name) or (path_File in all_message_path) or (filepath is None) or (filename is None) or (' ' in filename):
             return None
         else:
             href = '/Dataset'
