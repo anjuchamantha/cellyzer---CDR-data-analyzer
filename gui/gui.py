@@ -10,7 +10,7 @@ import dash_admin_components as dac
 import dash_bootstrap_components as dbc
 import dash_table
 import folium
-import pymsgbox
+# import pymsgbox
 import flask
 import os
 import sys
