@@ -60,7 +60,7 @@ def DataSetCard(name, records="-", link=None):
                         "records", style={}
                     ),
                     html.Br(),
-                    dbc.Button("Visit DataSet", color="primary", href=link),
+                    dbc.Button("Visit DataSet", color="primary", href=link, id=name),
                 ],
                 style={"text-align": "center"}
             ),
@@ -72,15 +72,18 @@ def AddDataSetCard(d_type="call"):
     url = ""
     if d_type == "call":
         url = "/Call_Dataset"
+        id = 'call_card'
     elif d_type == "message":
         url = "/Message_Dataset"
+        id = 'message_card'
     elif d_type == "cell":
         url = "/Cell_Dataset"
+        id = 'cell_card'
     return dbc.Card(
         children=[
             dbc.CardBody(
                 [
-                    dbc.Button("+", color="secondary", outline=True, href=url,
+                    dbc.Button("+", color="secondary", outline=True, href=url, id= id,
                                style={"font-size": 140, "height": 260, "width": 260
                                       }),
                 ],
@@ -94,7 +97,7 @@ homepageSidebar = dac.Sidebar(
     dac.SidebarMenu(
         [   
             dac.SidebarButton(id='add-cell-records', label='Home', icon='home', href='/'),
-            dac.SidebarButton(id='add-cell-records', label='Dataset', icon='box', href='/Dataset'),
+            dac.SidebarButton(id='add-cell-records-dataset', label='Dataset', icon='box', href='/Dataset'),
         ]
     ),
     title='CELLYZER',
@@ -252,7 +255,7 @@ callpagevisualizesidebar = dac.Sidebar(
     dac.SidebarMenu(
         [   
             dac.SidebarButton(id='add-cell-records', label='Home', icon='home', href='/'),
-            dac.SidebarButton(id='add-cell-records', label='Dataset', icon='box', href='/Dataset'),
+            dac.SidebarButton(id='add-cell-records-dataset', label='Dataset', icon='box', href='/Dataset'),
             html.P('Call Dataset', style={"margin-left": "40px", 'font-size':20, 'color':'white'}),
             html.Div(id="call_data_visu_sidebar", style={"margin-left": "40px"})
         ]
@@ -303,7 +306,6 @@ view_all_call_data = html.Div([
 
 ######## page for get all users
 get_all_users = html.Div([
-    # homepageSidebar,
     navbar_call_dataset_visualize,
     callpagevisualizesidebar,
     html.Div([
@@ -316,7 +318,6 @@ get_all_users = html.Div([
 
 ####### page for show connected users of specific user
 connected_users = html.Div([
-    # homepageSidebar,
     navbar_call_dataset_visualize,
     callpagevisualizesidebar,    
     html.Div([
@@ -341,7 +342,6 @@ connected_users = html.Div([
 
 ###### get call rercords between 2 users
 records_between_users = html.Div([
-    # homepageSidebar,
     navbar_call_dataset_visualize,
     callpagevisualizesidebar,
     html.Div([
@@ -380,7 +380,6 @@ records_between_users = html.Div([
 
 ###### get close contacts
 close_contacts = html.Div([
-    # homepageSidebar,
     navbar_call_dataset_visualize,
     callpagevisualizesidebar,
     html.Div([
@@ -418,7 +417,6 @@ close_contacts = html.Div([
 
 ##### get ignored call details of a selected user
 ignore_call_detail = html.Div([
-    # homepageSidebar,
     navbar_call_dataset_visualize,
     callpagevisualizesidebar,
     html.Div([
@@ -443,7 +441,6 @@ ignore_call_detail = html.Div([
 
 ##### get most active time of a user
 active_time_user = html.Div([
-    # homepageSidebar,
     navbar_call_dataset_visualize,
     callpagevisualizesidebar,
     html.Div([
@@ -468,7 +465,6 @@ active_time_user = html.Div([
 
 ##### visualize connections between all users
 visualize_connections = html.Div([
-    # homepageSidebar,
     navbar_call_dataset_visualize,
     callpagevisualizesidebar,
     html.Div([
@@ -518,24 +514,25 @@ def add_call_dataset(filename, filepath, n_clicks):
                 all_file_path.append(path_File)
                 call_name.append(filename)
                 option=[]
-                option.append(dbc.Row(dbc.Button("Show All Data", href='/Call_Dataset/{}/view_data'.format(filename), color="light", className="mr-1", block=True, 
+                option.append(dbc.Row(dbc.Button("Show All Data", href='/Call_Dataset/{}/view_data'.format(filename), color="light", className="mr-1", block=True, id='visu_show_call',
                                style={"margin-bottom": 10, "text-align": 'start'})))
-                option.append(dbc.Row(dbc.Button("Show All the users", href='/Call_Dataset/{}/all_users'.format(filename), color="light", className="mr-1", block=True,
+                option.append(dbc.Row(dbc.Button("Show All the users", href='/Call_Dataset/{}/all_users'.format(filename), color="light", className="mr-1", block=True, id='visu_call_users',
                                style={"margin-bottom": 10, "text-align": 'start'})))
-                option.append(dbc.Row(dbc.Button("Show connected users", href='/Call_Dataset/{}/connected_users'.format(filename), color="light", className="mr-1", block=True,
+                option.append(dbc.Row(dbc.Button("Show connected users", href='/Call_Dataset/{}/connected_users'.format(filename), color="light", className="mr-1", block=True, id='visu_call_connected',
                                style={"margin-bottom": 10, "text-align": 'start'})))
-                option.append(dbc.Row(dbc.Button("Call records between 2 selected users", href='/Call_Dataset/{}/records_between_users'.format(filename), color="light", className="mr-1", block=True,
+                option.append(dbc.Row(dbc.Button("Call records between 2 selected users", href='/Call_Dataset/{}/records_between_users'.format(filename), color="light", className="mr-1", block=True, id='visu_call_records',
                                style={"margin-bottom": 10, "text-align": 'start'})))
-                option.append(dbc.Row(dbc.Button("Close contacts of selected users", href='/Call_Dataset/{}/close_contacts'.format(filename), color="light", className="mr-1", block=True,
+                option.append(dbc.Row(dbc.Button("Close contacts of selected users", href='/Call_Dataset/{}/close_contacts'.format(filename), color="light", className="mr-1", block=True, id='visu_call_close',
                                style={"margin-bottom": 10, "text-align": 'start'})))
-                option.append(dbc.Row(dbc.Button("Ignored Call details of a given user", href='/Call_Dataset/{}/ignored_call'.format(filename), color="light", className="mr-1", block=True,
+                option.append(dbc.Row(dbc.Button("Ignored Call details of a given user", href='/Call_Dataset/{}/ignored_call'.format(filename), color="light", className="mr-1", block=True, id='visu_ignored_call',
                                style={"margin-bottom": 10, "text-align": 'start'})))
-                option.append(dbc.Row(dbc.Button("Active time of a given user", href='/Call_Dataset/{}/active_time'.format(filename), color="light", className="mr-1", block=True,
+                option.append(dbc.Row(dbc.Button("Active time of a given user", href='/Call_Dataset/{}/active_time'.format(filename), color="light", className="mr-1", block=True, id='visu_active_time',
                                style={"margin-bottom": 10, "text-align": 'start'})))
                 option.append(dbc.Row(dbc.Button(["Visualize connections between all users ",
                                 dbc.Badge("Heavy Function", color="danger", className="mr-1")],
                                color="light",
                                className="mr-1",
+                               id='visu_call_visu_connection',
                                block=True,
                                style={"margin-bottom": 10, "text-align": 'start'}, href='/Call_Dataset/{}/visualize_connection'.format(filename))))
                 call_option.append([filename, option])
@@ -682,7 +679,6 @@ def call_record_card_home(pathname):
             [   dash.dependencies.Input('url', 'pathname')
             ]) 
 def get_navbar_visu_call(pathname):
-    print('xxx')
     path_set = pathname.split('/')
     if len(path_set)==4 and path_set[-3]== 'Call_Dataset':
         if path_set[-1]=='view_data':
@@ -968,35 +964,41 @@ def show_active_time(n_clicks, user_4):
 def show_ignore_call(user_5, n_clicks):
     table = html.Div()
     if n_clicks is not None:
-        call_data = update_call_data[-1][-1]
-        call_users = update_call_data[-1][2]
-        if user_5 not in call_users:
-            table=html.Div([
-                html.H5(children='User does not exist', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
-        else:
-            ignore_call = call_data.get_ignored_call_details(user_5)
-            key = list(ignore_call[0].keys())
-            tab = []
-            column = []
-            for i in key:
-                column.append(
-                    html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
-            tab.append(html.Tr(children=column))
-            for j in ignore_call:
-                value = list(j.values())
-                row_content = []
-                for x in value:
-                    row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
-                tab.append(html.Tr(children=row_content, style={'height': '5px'}))
-            table = html.Div([
-                html.Table(children=tab,
-                        style={'border-collapse': 'collapse',
-                                'border': '1px solid black',
-                                'width': '100%'
-                                })
-            ])
-        return table
+        try:
+            call_data = update_call_data[-1][-1]
+            call_users = update_call_data[-1][2]
+            if user_5 not in call_users:
+                table=html.Div([
+                    html.H5(children='User does not exist', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
+            else:
+                ignore_call = call_data.get_ignored_call_details(user_5)
+                key = list(ignore_call[0].keys())
+                tab = []
+                column = []
+                for i in key:
+                    column.append(
+                        html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
+                tab.append(html.Tr(children=column))
+                for j in ignore_call:
+                    value = list(j.values())
+                    row_content = []
+                    for x in value:
+                        row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
+                    tab.append(html.Tr(children=row_content, style={'height': '5px'}))
+                table = html.Div([
+                    html.Table(children=tab,
+                            style={'border-collapse': 'collapse',
+                                    'border': '1px solid black',
+                                    'width': '100%'
+                                    })
+                ])
+            return table
 
+        except Exception as e:
+            print(e)
+            table=html.Div([
+                html.H5(children='No ignored calls', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
+            return table
 
 ###### Visualize connection betwwen all users
 @app.callback(Output('show_visualize_connection', 'children'),
