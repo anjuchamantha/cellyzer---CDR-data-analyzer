@@ -8,17 +8,16 @@
 
 .index_page_Dashboard {
     color: white;
-    padding-left: 20px;
-    font-size: 36px;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 .index_page_dataset_div {
     padding: 6px 8px 6px 20px;
     text-decoration: none;
-    font-size: 18px;
-    color: orange;
+    font-size: 22px;
+    color: white;
     display: block;
-    margin-left: 1.5rem;
 }
 
 .index_page_Dashboard_div {
@@ -28,18 +27,9 @@
     z-index: 1;
     top: 0;
     left: 0;
-    background-color:#111;
+    background-color:black;
     overflow-x: hidden;
     padding-top: 20px;
-}
-
-.horizontal-lines {
-    color: #4CAF50;
-    line-height: 1px;
-}
-
-.dashboard-button {
-    margin-left: 1rem;
 }
 
 .index_page_Img {
@@ -61,7 +51,8 @@
 .index_page_welcome_div {
     position: relative;
     max-width: 1300px;
-    margin: 0 auto;
+    margin: 0px auto;
+    color: #007bff;
 }
 
 .index_page_div {
@@ -85,9 +76,10 @@
 .index_dataset_Call_Dataset {
     padding: 6px 8px 6px 20px;
     text-decoration: none;
-    font-size: 18px;
+    font-size: 22px;
     color: white;
     display: block;
+    margin-left: 20px;
 }
 
 .index_dataset_Dashboard_div {
@@ -100,6 +92,7 @@
     background-color:#111;
     overflow-x: hidden;
     padding-top: 20px;
+    margin-top: 8px;
 }
 
 .index_dataset_add_call_data {
@@ -108,13 +101,13 @@
     padding-bottom: 10px;
     padding-left: 50px;
     color: white;
+    text-align: left;
 }
 
 .index_dataset_add_call_data_div {
     width: 100%;
     margin-top: 50px;
     padding-left: 30px;
-    text-align: center;
 }
 
 .index_datatset_calldata_button {
@@ -132,14 +125,36 @@
 }
 
 .index_dataset_upload_data {
-    margin-left: 100px;
-    margin-top: 50px;
+    margin-top: 30px;
 }
 
 .index_dataset_div {
-    margin-left: 222px;
-    padding: 0px 10px;   
+    margin-left: 250px;
+    padding: 10px 10px;
+    background-color: white;
+    height: 600px;
 }
+
+.call_dataset_input_div{
+    height: 500px;
+}
+
+.call_page_welcome_div {
+    position: relative;
+    max-width: 1300px;
+    margin: 20px 20px;
+    color: #007bff;
+    font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-weight: 300!important;
+}
+
+.call_dataset_div {
+    margin-left: 250px;
+    padding: 10px 10px;
+    background-color: white;
+    height: 600px;
+}
+
 
 .sample_call_data_cellyzer {
     text-align: center;
@@ -175,46 +190,53 @@
     margin-top: 8px;   
 }
 
+.sample_dataset_visualize {
+    width: 1065px;
+    margin-top: 50px;
+    padding-left: 0px;
+    margin-bottom: 40px;
+}
+
+.sample_call_data_visualize_option {
+    padding-left: 30px;
+    font-size: 22px;
+    display: block;
+    background: rgba(0, 0, 0, 0.664);
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
 .sample_call_dataset_viewdata {
-    background-color: #4CAF50;
-    height: 50px;
-    border: none;
-    color: white;
-    text-align: center;
-    text-decoration: none;
-    font-size: 16px;
     margin: 4px 6px;
     margin-bottom: 20px;
     cursor: pointer;
-    float: left;
+
 }
 
 .sample_call_dataset_close {
-    background-color: #4CAF50;
-    height: 50px;
-    border: none;
-    color: white;
-    text-align: center;
-    text-decoration: none;
-    font-size: 16px;
     margin: 4px 6px;
     margin-bottom: 20px;
     cursor: pointer;
-    float: right;
 }
 
 .sample_call_dataset_view_div {
-    padding-left: 30px;
+    padding-left: 40px;
 }
 
 .sample_call_dataset_show{
-    padding-left: 20px;
+    padding-left: 40px;
+    margin-top: 30px;
+}
+
+.sample_call_dataset_show_all_users{
+    padding-left: 30px;
     margin-top: 30px;
 }
 
 .sample_call_dataset_div {
     margin-left: 222px;
     padding: 0px 10px;   
+    padding-left: 28px; 
 }
 
 .index_cell_dataset_cellyzer {
@@ -248,6 +270,7 @@
     background-color:#111;
     overflow-x: hidden;
     padding-top: 20px;
+    margin-top: 8px;   
 }
 
 .index_cell_dataset_addcell {
@@ -279,8 +302,7 @@
 }
 
 .index_cell_dataset_upload_data {
-    margin-left: 100px;
-    margin-top: 50px;
+    margin-top: 30px;
 }
 
 .index_cell_dataset_div {
@@ -395,6 +417,7 @@
     background-color:#111;
     overflow-x: hidden;
     padding-top: 20px;
+    margin-top: 8px;   
 }
 
 .index_message_dataset_addmessage {
@@ -426,8 +449,7 @@
 }
 
 .index_message_dataset_upload_data {
-    margin-left: 100px;
-    margin-top: 50px;
+    margin-top: 30px;
 }
 
 .index_message_dataset_div {
@@ -509,4 +531,27 @@
 .sample_message_dataset_div {
     margin-left: 222px;
     padding: 0px 10px;   
+}
+
+.sample_call_visualize_all_user {
+    color: orange;
+    background: black;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 700px;
+    padding-left: 90px;
+}
+
+.index_page_dataset_div_all_user {
+    padding-left: 40px;
+    text-decoration: none;
+    font-size: 22px;
+    color: white;
+    display: block;
+}
+
+.index_dataset_cell_record_div {
+    width: 200px;
+    margin-top: 50px;
+    padding-left: 30px;
 }
