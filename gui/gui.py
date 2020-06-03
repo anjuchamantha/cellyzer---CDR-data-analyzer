@@ -949,7 +949,7 @@ def show_active_time(n_clicks, user_4):
                     html.H5(children='User does not exist', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])          
             else:
                 active_time = call_data.get_most_active_time(user_4)
-                cz.visualization.active_time_bar_chart(active_time)
+                cz.visualization.active_time_bar_chart(active_time, gui=True)
             return table
     
     except Exception as e:
@@ -1007,7 +1007,7 @@ def show_ignore_call(user_5, n_clicks):
 def show_visualize_connection(n_clicks):
     if n_clicks is not None:
         call_data = update_call_data[-1][-1]
-        visu_conn = call_data.visualize_connection_network()
+        visu_conn = call_data.visualize_connection_network(gui=True)
         tab = []
         column = []
         col1 = html.Th("User", style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'})
@@ -2139,7 +2139,7 @@ def show_visualize_message_connection(n_clicks):
 
     if n_clicks is not None:
         message_data = update_message_data[-1][-1]
-        visu_conn = message_data.visualize_connection_network()
+        visu_conn = message_data.visualize_connection_network(gui=True)
         tab = []
         column = []
         col1 = html.Th("User", style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'})
