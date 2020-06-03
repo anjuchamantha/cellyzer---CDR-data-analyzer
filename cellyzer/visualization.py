@@ -11,11 +11,13 @@ import folium
 from folium.plugins import MarkerCluster
 import webbrowser
 import os
+import base64
+from io import BytesIO
 
 plt.rcParams['figure.dpi'] = 200
 
 
-def network_graph(edge_list, directed):
+def network_graph(edge_list, directed, gui):
     if directed:
         g = nx.DiGraph()
     else:
@@ -34,12 +36,21 @@ def network_graph(edge_list, directed):
     # plt.figure(figsize=(50, 50), dpi=80, facecolor='w', edgecolor='k')
     mng = plt.get_current_fig_manager()
     mng.window.state('zoomed')
-    plt.savefig("connection_network.png")
 
-    plt.show()
+    if gui:
+        tmpfile = BytesIO()
+        plt.savefig(tmpfile, format='png')
+        encoded = base64.b64encode(tmpfile.getvalue()).decode('utf-8')
+        html = '<div>'+'<img src=\'data:image/png;base64,{}\'>'.format(encoded)+'</div>'
+        with open('connection_network.html', 'w') as f:
+            f.write(html)
+        webbrowser.open("connection_network.html")
+    else:
+        plt.savefig("connection_network.png")
+        plt.show()
 
 
-def active_time_bar_chart(time_dict):
+def active_time_bar_chart(time_dict, gui=False):
     hours = []
     activity = []
     for key, value in time_dict.items():
@@ -54,7 +65,18 @@ def active_time_bar_chart(time_dict):
     plt.title("Most active times during day")
     mng = plt.get_current_fig_manager()
     mng.window.state('zoomed')
-    plt.show()
+
+    if gui:
+        tmpfile = BytesIO()
+        plt.savefig(tmpfile, format='png')
+        encoded = base64.b64encode(tmpfile.getvalue()).decode('utf-8')
+        html = '<div>'+'<img src=\'data:image/png;base64,{}\'>'.format(encoded)+'</div>'
+        with open('active_time_bar_chart.html', 'w') as f:
+            f.write(html)
+        webbrowser.open("active_time_bar_chart.html")
+    else:
+        plt.savefig('active_time_bar_chart.png')
+        plt.show()
 
 
 def cell_population_visualization(cell_list, map_name="population_map", notebook=False):
