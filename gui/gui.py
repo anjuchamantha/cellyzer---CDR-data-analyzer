@@ -152,14 +152,13 @@ NavBar = html.Div(
         # sticky=True,
     ),
     style={
-        "padding-top": 20,
         "padding-bottom": 20,
         # "position": "fixed",
         "overflow": "hidden",
         "top": 0,
         "width": "100rem",
         "background-color": "white",
-        'margin-left': '40px'
+        'margin-left': '20px'
     }
 )
 
@@ -169,18 +168,26 @@ index_page = html.Div(children=[
     homepageSidebar,
     html.Div([
         html.Div([
-            html.Div([
-                html.H2("Call DataSets", style={"margin-bottom": 30}),
-                dbc.Row(id="call_record_home"),
-            ], style={'margin-bottom': '80px'}),
-            html.Div([
-                html.H2("Message DataSets", style={"margin-bottom": 30}),
-                dbc.Row(id="message_record_home"),
-            ], style={'margin-bottom': '80px'}),
-            html.Div([
-                html.H2("Cell/Antena DataSets", style={"margin-bottom": 30}),
-                dbc.Row(id="cell_record_home"),
-            ], style={'margin-bottom': '80px'}),
+            dbc.Row([
+                dbc.Col([
+                    html.Div([
+                        html.H2("Call DataSets", style={"margin-bottom": 30}),
+                        dbc.Row(id="call_record_home"),
+                    ], style={'margin-bottom': '80px'}),
+                ]),
+                dbc.Col([
+                    html.Div([
+                        html.H2("Message DataSets", style={"margin-bottom": 30}),
+                        dbc.Row(id="message_record_home"),
+                    ], style={'margin-bottom': '80px'}),
+                ]),
+                dbc.Col([
+                    html.Div([
+                        html.H2("Cell/Antena DataSets", style={"margin-bottom": 30}),
+                        dbc.Row(id="cell_record_home"),
+                    ], style={'margin-bottom': '80px'}),
+                ]),
+            ]),
         ], style={'margin-left': '50px', 'margin-top': '40px'})
     ], style={'margin': '20px', "margin-top": '40px'})
 ],
