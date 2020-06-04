@@ -69,7 +69,7 @@ def DataSetCard(name, records="-", link=None):
                 style={"text-align": "center"}
             ),
         ],
-        style={"width": 300, "margin-right": 20, "margin-bottom": 20, 'border-style': 'solid', 'border-color': 'black'}
+        style={"width": 300, "height": 300, "margin-right": 20, "margin-bottom": 20, 'border-style': 'solid', 'border-color': 'black'}
     )
 
 
@@ -247,7 +247,15 @@ call_dataset = html.Div([
                 ],
                 row=True,
             ),
-            html.H6('Do not enter space into file name', style={'color': 'red', 'font-size': 15})
+            html.H6('Do not enter space into file name', style={'color': 'red', 'font-size': 15}),
+            html.Div([
+                html.P('Supported File Types', style={"color": 'black'}),
+                html.Ul([
+                    html.Li('CSV'),
+                    html.Li('EXCEL'),
+                    html.Li('JSON')
+                ], style={"font-size": '18px'})
+            ], className="lead"),
         ],
             style={
                 'padding-left': '30px'
