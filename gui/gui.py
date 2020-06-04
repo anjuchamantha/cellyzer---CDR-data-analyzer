@@ -10,7 +10,7 @@ import dash_admin_components as dac
 import dash_bootstrap_components as dbc
 import dash_table
 import folium
-# import pymsgbox
+import pymsgbox
 import flask
 import os
 import sys
@@ -52,7 +52,7 @@ def SimpleTitleBar(name="<Sub Title>"):
 def DataSetCard(name, records="-", link=None):
     return dbc.Card(
         children=[
-            dbc.CardHeader(html.H5(name, style={"text-align": "center", 'background-color': 'rgba(197, 187, 187, 0.767)'})),
+            dbc.CardHeader(html.H5(name, style={"text-align": "center", }), style={'background-color': 'rgba(197, 187, 187, 0.367)'}),
             dbc.CardBody(
                 [
                     html.H5(records, style={"font-size": 50, "margin-bottom": 0}),
@@ -65,7 +65,7 @@ def DataSetCard(name, records="-", link=None):
                 style={"text-align": "center"}
             ),
         ],
-        style={"width": 300, "margin-right": 20, "margin-bottom": 20}
+        style={"width": 300, "margin-right": 20, "margin-bottom": 20, 'border-style':'solid', 'border-color':'black'}
     )
 
 def AddDataSetCard(d_type="call"):
@@ -191,7 +191,7 @@ callpagesidebar = dac.Sidebar(
     dac.SidebarMenu(
         [   
             dac.SidebarButton(id='add-cell-records', label='Home', icon='home', href='/'),
-            dac.SidebarButton(id='add-cell-records', label='Dataset', icon='box', href='/Dataset'),
+            dac.SidebarButton(id='add-cell-records-dataset', label='Dataset', icon='box', href='/Dataset'),
             html.Div(id="call-data", style={"margin-left": "40px"})
         ]
     ),
@@ -325,14 +325,9 @@ connected_users = html.Div([
             [
                 dbc.Label("Enter Specific User Number:", html_for="example-email"),
                 dbc.Input(type="text", id="search", placeholder="Enter number", style={'width':'500px'}),
-                dbc.FormText(
-                    "Input must be a 10 digit number",
-                    color="danger",
-                ),
             ]
         ),
         dbc.Button('Connected Users', outline=True, color='success', id='connected_users', className='sample_call_dataset_viewdata'),
-        # dbc.Alert("This is not user", id='alert', dismissable=True, is_open=False,)
         ],
         className='sample_call_dataset_view_div', style={"margin": 20, "margin-top": 100}
     ),
@@ -728,42 +723,45 @@ def call_visu_sidebar(pathname):
                 Input('close', 'n_clicks')
                ])
 def update_table(n_clicks, click2):
-    table = html.Div()
-    if click2 is not None:
-        return None
+    try:
+        table = html.Div()
+        if click2 is not None:
+            return None
 
-    if n_clicks is not None:
-        record_call = update_call_data[-1][3]
-        dict_list = []
-        for record in record_call:
-            dict_list.append(vars(record))
-        header = list(dict_list[0].keys())
-        tab = []
-        column = []
-        for i in header:
-            column.append(
-                html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
-        tab.append(html.Tr(children=column))
-        count = 0
-        for j in dict_list:
-            value = list(j.values())
-            count += 1
-            row_content = []
-            if count > 100:
-                break
-            row_content = []
-            for x in value:
-                row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
-            tab.append(html.Tr(children=row_content, style={'height': '5px'}))
-        table = html.Div([
-            html.Table(children=tab,
-                       style={'border-collapse': 'collapse',
-                              'border': '1px solid black',
-                              'width': '100%'
-                              })
-        ])
-        return table
+        if n_clicks is not None:
+            record_call = update_call_data[-1][3]
+            dict_list = []
+            for record in record_call:
+                dict_list.append(vars(record))
+            header = list(dict_list[0].keys())
+            tab = []
+            column = []
+            for i in header:
+                column.append(
+                    html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
+            tab.append(html.Tr(children=column))
+            count = 0
+            for j in dict_list:
+                value = list(j.values())
+                count += 1
+                row_content = []
+                if count > 100:
+                    break
+                row_content = []
+                for x in value:
+                    row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
+                tab.append(html.Tr(children=row_content, style={'height': '5px'}))
+            table = html.Div([
+                html.Table(children=tab,
+                        style={'border-collapse': 'collapse',
+                                'border': '1px solid black',
+                                'width': '100%'
+                                })
+            ])
+            return table
 
+    except Exception as e:
+        print(e)
 
 ############# set button value
 @app.callback(Output('close', 'n_clicks'),
@@ -781,46 +779,14 @@ def close_data(n_clicks):
 def show_all_users(n_clicks):
     table = html.Div()
     if n_clicks is not None:
-        all_users = update_call_data[-1][2]
-        tab = []
-        column = []
-        column.append(
-            html.Th('Users', style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
-        tab.append(html.Tr(children=column))
-        for user in all_users:
-            row_content = []
-            row_content.append(html.Td(user, style={'border': '1px solid black', 'padding-left': '10px'}))
-            tab.append(html.Tr(children=row_content, style={'height': '5px'}))
-        table = html.Div([
-            html.Table(children=tab,
-                       style={'border-collapse': 'collapse',
-                              'border': '1px solid black',
-                              'width': '200px'
-                              })
-        ])
-        return table
-
-
-######## show connected users of specific user
-@app.callback(Output('show_connected_users', 'children'),
-              [Input('connected_users', 'n_clicks'),
-               Input('search', 'value')
-               ])
-def show_connected_users(n_clicks, searchUser):
-    table = html.Div()
-    if n_clicks is not None:
-        call_data = update_call_data[-1][-1]
-        connected_users = call_data.get_connected_users(searchUser)   
-        if len(connected_users)==0:
-            table=html.Div([
-                html.H5(children='User does not exist', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
-        else:
+        try:
+            all_users = update_call_data[-1][2]
             tab = []
             column = []
-            column.append(html.Th('Connected Users',
-                                style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
+            column.append(
+                html.Th('Users', style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
             tab.append(html.Tr(children=column))
-            for user in connected_users:
+            for user in all_users:
                 row_content = []
                 row_content.append(html.Td(user, style={'border': '1px solid black', 'padding-left': '10px'}))
                 tab.append(html.Tr(children=row_content, style={'height': '5px'}))
@@ -831,9 +797,68 @@ def show_connected_users(n_clicks, searchUser):
                                 'width': '200px'
                                 })
             ])
-        return table
+            return table
+
+        except Exception as e:
+            print(e)
 
 
+connected_userList = []
+######## show connected users of specific user
+@app.callback(Output('show_connected_users', 'children'),
+              [Input('connected_users', 'n_clicks'),
+               Input('search', 'value')
+               ])
+def show_connected_users(n_clicks, searchUser):
+    table = html.Div()
+    if n_clicks is not None:
+        connected_userList.append(searchUser)
+        try:
+            call_data = update_call_data[-1][-1]
+            call_users = update_call_data[-1][2]
+            if searchUser is None:
+                table=html.Div([
+                    html.H5(children='Please enter number', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})]) 
+            elif searchUser not in call_users:
+                table=html.Div([
+                    html.H5(children='User does not exist', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})]) 
+            else:
+                connected_users = call_data.get_connected_users(searchUser)
+                if len(connected_users)==0:
+                    table=html.Div([
+                        html.H5(children='No connected users', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
+                else:
+                    tab = []
+                    column = []
+                    column.append(html.Th('Connected Users',
+                                        style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
+                    tab.append(html.Tr(children=column))
+                    for user in connected_users:
+                        row_content = []
+                        row_content.append(html.Td(user, style={'border': '1px solid black', 'padding-left': '10px'}))
+                        tab.append(html.Tr(children=row_content, style={'height': '5px'}))
+                    table = html.Div([
+                        html.Table(children=tab,
+                                style={'border-collapse': 'collapse',
+                                        'border': '1px solid black',
+                                        'width': '200px'
+                                        })
+                    ])
+            return table
+
+        except Exception as e:
+            print(e)
+
+###### set 0 n_clicks connected user button
+@app.callback(Output('connected_users', 'n_clicks'),
+              [Input('search', 'value')])
+def conneced_users_button(user):
+    if len(connected_userList)>=1 and connected_userList[-1]!=user:
+        return None
+
+
+record_user1 = []
+record_user2 = []
 ####### show records between 2 input users
 @app.callback(Output('show_records_users', 'children'),
               [Input('search_3', 'value'),
@@ -844,48 +869,70 @@ def between_users_records(user_1, user_2, click):
     table = html.Div()
 
     if click is not None:
-        call_data = update_call_data[-1][-1]
-        call_users = update_call_data[-1][2]
-        dict_list = []
-        if user_1 not in call_users:
-            table=html.Div([
-                html.H5(children='User 2 does not exist', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
-        elif user_2 not in call_users:
-            table=html.Div([
-                html.H5(children='User 1 does not exist', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})]) 
-        else:
-            for record in call_data.get_records(user_1, user_2):
-                dict_list.append(vars(record))
-            header = list(dict_list[0].keys())              
-            if len(dict_list)==0:
+        record_user1.append(user_1)
+        record_user2.append(user_2)
+        try:
+            call_data = update_call_data[-1][-1]
+            call_users = update_call_data[-1][2]
+            dict_list = []
+            if user_1 is None or user_2 is None:
                 table=html.Div([
-                    html.H5(children='No records between two users', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
-            else:                  
-                tab = []
-                column = []
-                for i in header:
-                    column.append(
-                        html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
-                tab.append(html.Tr(children=column))
-                count = 0
-                for j in dict_list:
-                    value = list(j.values())
-                    count += 1
-                    row_content = []
-                    if count > 100:
-                        break
-                    for x in value:
-                        row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
-                    tab.append(html.Tr(children=row_content, style={'height': '5px'}))
-                table = html.Div([
-                    html.Table(children=tab,
-                            style={'border-collapse': 'collapse',
-                                    'border': '1px solid black',
-                                    'width': '100%'
-                                    })
-                ])
-        return table
+                    html.H5(children='Please enter number', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})]) 
+            elif user_2 not in call_users:
+                table=html.Div([
+                    html.H5(children='User 1 does not exist', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})]) 
+            elif user_1 not in call_users:
+                table=html.Div([
+                    html.H5(children='User 2 does not exist', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
+            else:
+                for record in call_data.get_records(user_1, user_2):
+                    dict_list.append(vars(record))
+                # header = list(dict_list[0].keys())              
+                if len(dict_list)==0:
+                    table=html.Div([
+                        html.H5(children='No records between two users', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
+                else:
+                    header = list(dict_list[0].keys())                  
+                    tab = []
+                    column = []
+                    for i in header:
+                        column.append(
+                            html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
+                    tab.append(html.Tr(children=column))
+                    count = 0
+                    for j in dict_list:
+                        value = list(j.values())
+                        count += 1
+                        row_content = []
+                        if count > 100:
+                            break
+                        for x in value:
+                            row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
+                        tab.append(html.Tr(children=row_content, style={'height': '5px'}))
+                    table = html.Div([
+                        html.Table(children=tab,
+                                style={'border-collapse': 'collapse',
+                                        'border': '1px solid black',
+                                        'width': '100%'
+                                        })
+                    ])
+            return table
 
+        except Exception as e:
+            print(e)
+
+###### set 0 n_clicks record_users button
+@app.callback(Output('record_users', 'n_clicks'),
+              [Input('search_3', 'value'), Input('search_2', 'value')])
+def record_users_button(user1, user2):
+    if len(record_user1)>=1 and record_user1[-1] != user1:
+        return None
+    elif len(record_user2)>=1 and record_user2[-1] != user2:
+        return None
+
+
+close_contactList = []
+numberList = []
 ######## show close contacts
 @app.callback(Output('show_close_contact', 'children'),
               [Input('user_3', 'value'),
@@ -895,44 +942,62 @@ def between_users_records(user_1, user_2, click):
 def show_close_contatcs(user_3, contact, n_clicks):
     table = html.Div()
     if n_clicks is not None:
-        call_data = update_call_data[-1][-1]
-        call_users = update_call_data[-1][2]
-        connected_users = call_data.get_close_contacts(user_3, contact)
-        if user_3 not in call_users:
-            table=html.Div([
-                html.H5(children='User does not exist', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
-        else:
-            connected_users = call_data.get_close_contacts(user_3, contact)
-            if len(connected_users)==0:
+        try:
+            close_contactList.append(user_3)
+            numberList.append(contact)
+            call_data = update_call_data[-1][-1]
+            call_users = update_call_data[-1][2]
+            if user_3 is None:
                 table=html.Div([
-                    html.H5(children='No connected users', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
+                    html.H5(children='Please enter number', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})]) 
+            elif user_3 not in call_users:
+                table=html.Div([
+                    html.H5(children='User does not exist', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
             else:
-                tab = []
-                column = []
-                col1 = html.Th("Contact No.",
-                            style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'})
-                column.append(col1)
-                col2 = html.Th("No of interactions between users",
-                            style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'})
-                column.append(col2)
-                tab.append(html.Tr(children=column))
-                numbers = list(connected_users.keys())
-                NoContacts = list(connected_users.values())
-                for j in range(len(numbers)):
-                    row_content = []
-                    row_content.append(html.Td(numbers[j], style={'border': '1px solid black', 'padding-left': '10px'}))
-                    row_content.append(html.Td(str(NoContacts[j]), style={'border': '1px solid black', 'padding-left': '10px'}))
-                    tab.append(html.Tr(children=row_content, style={'height': '5px'}))
-                table = html.Div([
-                    html.Table(children=tab,
-                            style={'border-collapse': 'collapse',
-                                    'border': '1px solid black',
-                                    'width': '50%'
-                                    })
-                ])
-        return table
+                connected_users = call_data.get_close_contacts(user_3, contact)
+                if len(connected_users)==0:
+                    table=html.Div([
+                        html.H5(children='No connected users', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
+                else:
+                    tab = []
+                    column = []
+                    col1 = html.Th("Contact No.",
+                                style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'})
+                    column.append(col1)
+                    col2 = html.Th("No of interactions between users",
+                                style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'})
+                    column.append(col2)
+                    tab.append(html.Tr(children=column))
+                    numbers = list(connected_users.keys())
+                    NoContacts = list(connected_users.values())
+                    for j in range(len(numbers)):
+                        row_content = []
+                        row_content.append(html.Td(numbers[j], style={'border': '1px solid black', 'padding-left': '10px'}))
+                        row_content.append(html.Td(str(NoContacts[j]), style={'border': '1px solid black', 'padding-left': '10px'}))
+                        tab.append(html.Tr(children=row_content, style={'height': '5px'}))
+                    table = html.Div([
+                        html.Table(children=tab,
+                                style={'border-collapse': 'collapse',
+                                        'border': '1px solid black',
+                                        'width': '50%'
+                                        })
+                    ])
+            return table
+        
+        except Exception as e:
+            print(e)      
+
+###### set 0 n_clicks close_contacts button
+@app.callback(Output('close_contacts', 'n_clicks'),
+              [Input('user_3', 'value'), Input('contact', 'value')])
+def close_contacts_button(user, contact):
+    if len(close_contactList)>=1 and close_contactList[-1] != user:
+        return None
+    elif len(numberList)>=1 and numberList[-1] != contact:
+        return None
 
 
+active_timeList = []
 ######## show most active time
 @app.callback(Output('show_active_time', 'children'),
               [Input('active_time', 'n_clicks'),
@@ -942,20 +1007,32 @@ def show_active_time(n_clicks, user_4):
     table = html.Div()
     try:
         if n_clicks is not None:
+            active_timeList.append(user_4)
             call_data = update_call_data[-1][-1]
             call_users = update_call_data[-1][2]
-            if user_4 not in call_users:
+            if user_4 is None:
+                table=html.Div([
+                    html.H5(children='Please enter number', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})]) 
+            elif user_4 not in call_users:
                 table=html.Div([
                     html.H5(children='User does not exist', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])          
             else:
                 active_time = call_data.get_most_active_time(user_4)
-                cz.visualization.active_time_bar_chart(active_time, gui=True)
+                cz.visualization.active_time_bar_chart(active_time)
             return table
     
     except Exception as e:
         print(e)
-    
 
+###### set 0 n_clicks active_time button
+@app.callback(Output('active_time', 'n_clicks'),
+              [Input('user_4', 'value')])
+def active_time_button(user):
+    if len(active_timeList)>=1 and active_timeList[-1] != user:
+        return None 
+
+
+ignored_callList = []
 ######### Show ignored call
 @app.callback(Output('show_ignore_call', 'children'),
               [Input('user_5', 'value'),
@@ -964,71 +1041,88 @@ def show_active_time(n_clicks, user_4):
 def show_ignore_call(user_5, n_clicks):
     table = html.Div()
     if n_clicks is not None:
+        ignored_callList.append(user_5)
         try:
             call_data = update_call_data[-1][-1]
             call_users = update_call_data[-1][2]
-            if user_5 not in call_users:
+            if user_5 is None:
+                table=html.Div([
+                    html.H5(children='Please enter number', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})]) 
+            elif user_5 not in call_users:
                 table=html.Div([
                     html.H5(children='User does not exist', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
             else:
                 ignore_call = call_data.get_ignored_call_details(user_5)
-                key = list(ignore_call[0].keys())
-                tab = []
-                column = []
-                for i in key:
-                    column.append(
-                        html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
-                tab.append(html.Tr(children=column))
-                for j in ignore_call:
-                    value = list(j.values())
-                    row_content = []
-                    for x in value:
-                        row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
-                    tab.append(html.Tr(children=row_content, style={'height': '5px'}))
-                table = html.Div([
-                    html.Table(children=tab,
-                            style={'border-collapse': 'collapse',
-                                    'border': '1px solid black',
-                                    'width': '100%'
-                                    })
-                ])
+                if len(ignore_call) == 0:
+                    table=html.Div([
+                        html.H5(children='No records between two users', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
+                else:
+                    key = list(ignore_call[0].keys())
+                    tab = []
+                    column = []
+                    for i in key:
+                        column.append(
+                            html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
+                    tab.append(html.Tr(children=column))
+                    for j in ignore_call:
+                        value = list(j.values())
+                        row_content = []
+                        for x in value:
+                            row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
+                        tab.append(html.Tr(children=row_content, style={'height': '5px'}))
+                    table = html.Div([
+                        html.Table(children=tab,
+                                style={'border-collapse': 'collapse',
+                                        'border': '1px solid black',
+                                        'width': '100%'
+                                        })
+                    ])
             return table
 
         except Exception as e:
             print(e)
-            table=html.Div([
-                html.H5(children='No ignored calls', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
-            return table
+
+###### set 0 n_clicks ignore_call button
+@app.callback(Output('ignore_call', 'n_clicks'),
+              [Input('user_5', 'value')])
+def ignore_call_button(user):
+    if len(ignored_callList)>=1 and ignored_callList[-1] != user:
+        return None 
+
 
 ###### Visualize connection betwwen all users
 @app.callback(Output('show_visualize_connection', 'children'),
               [Input('visualize_connection', 'n_clicks')
                ])
 def show_visualize_connection(n_clicks):
-    if n_clicks is not None:
-        call_data = update_call_data[-1][-1]
-        visu_conn = call_data.visualize_connection_network(gui=True)
-        tab = []
-        column = []
-        col1 = html.Th("User", style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'})
-        column.append(col1)
-        col2 = html.Th("Connected User",
-                       style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'})
-        column.append(col2)
-        tab.append(html.Tr(children=column))
-        for connection in visu_conn[0]:
-            row_content = []
-            row_content.append(html.Td(connection[0], style={'border': '1px solid black', 'padding-left': '10px'}))
-            row_content.append(html.Td(connection[1], style={'border': '1px solid black', 'padding-left': '10px'}))
-            tab.append(html.Tr(children=row_content, style={'height': '5px'}))
-        table = html.Div([
-            html.Table(children=tab,
-                       style={'border-collapse': 'collapse',
-                              'border': '1px solid black',
-                              'width': '50%'
-                              })
-        ])
-        return table
+    try:
+        if n_clicks is not None:
+            call_data = update_call_data[-1][-1]
+            visu_conn = call_data.visualize_connection_network()
+            tab = []
+            column = []
+            col1 = html.Th("User", style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'})
+            column.append(col1)
+            col2 = html.Th("Connected User",
+                        style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'})
+            column.append(col2)
+            tab.append(html.Tr(children=column))
+            for connection in visu_conn[0]:
+                row_content = []
+                row_content.append(html.Td(connection[0], style={'border': '1px solid black', 'padding-left': '10px'}))
+                row_content.append(html.Td(connection[1], style={'border': '1px solid black', 'padding-left': '10px'}))
+                tab.append(html.Tr(children=row_content, style={'height': '5px'}))
+            table = html.Div([
+                html.Table(children=tab,
+                        style={'border-collapse': 'collapse',
+                                'border': '1px solid black',
+                                'width': '50%'
+                                })
+            ])
+            return table
+
+    except Exception as e:
+        print(e)
 
 
 ###################################################################################################
@@ -1040,7 +1134,7 @@ cellpagesidebar = dac.Sidebar(
     dac.SidebarMenu(
         [   
             dac.SidebarButton(id='add-cell-records', label='Home', icon='home', href='/'),
-            dac.SidebarButton(id='add-cell-records', label='Dataset', icon='box', href='/Dataset'),
+            dac.SidebarButton(id='add-cell-records-dataset', label='Dataset', icon='box', href='/Dataset'),
             html.Div(id="cell-data", style={"margin-left": "40px"})
         ]
     ),
@@ -1123,7 +1217,7 @@ cellpagevisualizesidebar = dac.Sidebar(
     dac.SidebarMenu(
         [   
             dac.SidebarButton(id='add-cell-records', label='Home', icon='home', href='/'),
-            dac.SidebarButton(id='add-cell-records', label='Dataset', icon='box', href='/Dataset'),
+            dac.SidebarButton(id='add-cell-records-dataset', label='Dataset', icon='box', href='/Dataset'),
             html.P('Cell Dataset', style={"margin-left": "40px", 'font-size':20, 'color':'white'}),
             html.Div(id="cell_data_visu_sidebar", style={"margin-left": "40px"})
         ]
@@ -1283,13 +1377,13 @@ def add_cell_dataset(call_file, filename, filepath, n_clicks):
                         added_cell_name.append(filename)
                         break
                 option=[]
-                option.append(dbc.Row(dbc.Button("Show All Data", href='/Cell_Dataset/{}/view_cell_data'.format(filename), color="light", className="mr-1", block=True, 
+                option.append(dbc.Row(dbc.Button("Show All Data", href='/Cell_Dataset/{}/view_cell_data'.format(filename), color="light", className="mr-1", block=True, id='visu_cell_data',
                                style={"margin-bottom": 10, "text-align": 'start'})))
-                option.append(dbc.Row(dbc.Button("Records Of a Specific Cell", href='/Cell_Dataset/{}/records_cell_id'.format(filename), color="light", className="mr-1", block=True,
+                option.append(dbc.Row(dbc.Button("Records Of a Specific Cell", href='/Cell_Dataset/{}/records_cell_id'.format(filename), color="light", className="mr-1", block=True, id='visu_cell_id',
                                style={"margin-bottom": 10, "text-align": 'start'})))
-                option.append(dbc.Row(dbc.Button("Population Around Cell", href='/Cell_Dataset/{}/population_around_cell'.format(filename), color="light", className="mr-1", block=True,
+                option.append(dbc.Row(dbc.Button("Population Around Cell", href='/Cell_Dataset/{}/population_around_cell'.format(filename), color="light", className="mr-1", block=True, id='visu_population',
                                style={"margin-bottom": 10, "text-align": 'start'})))
-                option.append(dbc.Row(dbc.Button("Trip Visualization", href='/Cell_Dataset/{}/trip_visualize'.format(filename), color="light", className="mr-1", block=True,
+                option.append(dbc.Row(dbc.Button("Trip Visualization", href='/Cell_Dataset/{}/trip_visualize'.format(filename), color="light", className="mr-1", block=True, id='visu_trip_visualization', 
                                style={"margin-bottom": 10, "text-align": 'start'})))
                 cell_option.append([filename, option])
                 output_cell=[]
@@ -1421,43 +1515,47 @@ def adding_cell_button(call_file, filename, filepath):
                 Input('close_cell', 'n_clicks')
                ])
 def view_cell_data(n_clicks, click2):
-    table = html.Div()
-    if click2 is not None:
-        return None
+    try:
+        table = html.Div()
+        if click2 is not None:
+            return None
 
-    if n_clicks is not None:
-        cell_records = update_cell_data[-1][3]
-        dict_list = []
-        for record in cell_records:
-            dict_list.append(vars(record))
-        header = list(dict_list[0].keys())
-        tab = []
-        column = []
-        for i in header:
-            column.append(
-                html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
-        tab.append(html.Tr(children=column))
-        count = 0
-        for j in dict_list:
-            value = list(j.values())
-            count += 1
-            row_content = []
-            if count > 100:
-                break
-            row_content = []
-            for x in value:
-                row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
-            tab.append(html.Tr(children=row_content, style={'height': '5px'}))
-        table = html.Div([
-            html.Table(children=tab,
-                       style={'border-collapse': 'collapse',
-                              'border': '1px solid black',
-                              'width': '100%'
-                              })
-        ])
-        return table
+        if n_clicks is not None:
+            cell_records = update_cell_data[-1][3]
+            dict_list = []
+            for record in cell_records:
+                dict_list.append(vars(record))
+            header = list(dict_list[0].keys())
+            tab = []
+            column = []
+            for i in header:
+                column.append(
+                    html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
+            tab.append(html.Tr(children=column))
+            count = 0
+            for j in dict_list:
+                value = list(j.values())
+                count += 1
+                row_content = []
+                if count > 100:
+                    break
+                row_content = []
+                for x in value:
+                    row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
+                tab.append(html.Tr(children=row_content, style={'height': '5px'}))
+            table = html.Div([
+                html.Table(children=tab,
+                        style={'border-collapse': 'collapse',
+                                'border': '1px solid black',
+                                'width': '100%'
+                                })
+            ])
+            return table
 
+    except Exception as e:
+        print(e)
 
+#### set 0 to n_clicks in close_cell
 @app.callback(Output('close_cell', 'n_clicks'),
               [Input('view_cell', 'n_clicks')
                ])
@@ -1500,12 +1598,17 @@ def get_cell_records(n_clicks, cell_id):
               [Input('population_button', 'n_clicks'),
                ])
 def get_population(n_clicks):
-    if n_clicks is not None:
-        antana_dataset = update_cell_data[-1][-1]
-        population = antana_dataset.get_population()
-        return cz.visualization.cell_population_visualization(population)
+    try:
+        if n_clicks is not None:
+            antana_dataset = update_cell_data[-1][-1]
+            population = antana_dataset.get_population()
+            return cz.visualization.cell_population_visualization(population)
+
+    except Exception as e:
+        print(e)
 
 
+trip_userList = []
 ######### get trip visualize
 @app.callback(Output('show_trip_visualize', 'children'),
               [Input('trip_user', 'value'),
@@ -1514,15 +1617,30 @@ def get_population(n_clicks):
 def trip_visualization(user, n_clicks):
     table = html.Div()
     if n_clicks is not None:
-        all_users= update_cell_data[-1][2]
-        if user not in all_users:
-            table=html.Div([
-                html.H5(children='User does not exist', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
-        else:
-            antana_dataset = update_cell_data[-1][-1]
-            trip_visualize = antana_dataset.get_trip_details(user)
-            cz.visualization.trip_visualization(trip_visualize)
-        return table
+        trip_userList.append(user)
+        try:
+            all_users= update_cell_data[-1][2]
+            if user is None:
+                table=html.Div([
+                    html.H5(children='Please enter number', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
+            elif user not in all_users:
+                table=html.Div([
+                    html.H5(children='User does not exist', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
+            else:
+                antana_dataset = update_cell_data[-1][-1]
+                trip_visualize = antana_dataset.get_trip_details(user)
+                cz.visualization.trip_visualization(trip_visualize)
+            return table
+
+        except Exception as e:
+            print(e)
+
+###### set 0 n_clicks trip_visualize_button button
+@app.callback(Output('trip_visualize_button', 'n_clicks'),
+              [Input('trip_user', 'value')])
+def trip_visualize_button_button(user):
+    if len(trip_userList)>=1 and trip_userList[-1] != user:
+        return None 
 
 
 ######## return cell file name to the next page
@@ -1611,7 +1729,7 @@ messagepagesidebar = dac.Sidebar(
     dac.SidebarMenu(
         [   
             dac.SidebarButton(id='add-cell-records', label='Home', icon='home', href='/'),
-            dac.SidebarButton(id='add-cell-records', label='Dataset', icon='box', href='/Dataset'),
+            dac.SidebarButton(id='add-cell-records-dataset', label='Dataset', icon='box', href='/Dataset'),
             html.Div(id="message-data", style={"margin-left": "40px"})
         ]
     ),
@@ -1677,7 +1795,7 @@ messagepagevisualizesidebar = dac.Sidebar(
     dac.SidebarMenu(
         [   
             dac.SidebarButton(id='add-cell-records', label='Home', icon='home', href='/'),
-            dac.SidebarButton(id='add-cell-records', label='Dataset', icon='box', href='/Dataset'),
+            dac.SidebarButton(id='add-cell-records-dataset', label='Dataset', icon='box', href='/Dataset'),
             html.P('Message Dataset', style={"margin-left": "40px", 'font-size':20, 'color':'white'}),
             html.Div(id="message_data_visu_sidebar", style={"margin-left": "40px"})
         ]
@@ -1748,10 +1866,6 @@ connected_message_users = html.Div([
             [
                 dbc.Label("Enter Specific User Number:", html_for="example-email"),
                 dbc.Input(type="text", id="user_message", placeholder="Enter number", style={'width':'500px'}),
-                dbc.FormText(
-                    "Input must be a 10 digit number",
-                    color="danger",
-                ),
             ]
         ),
         dbc.Button('Connected Users', outline=True, color='success', id='connected_message_users', className='sample_call_dataset_viewdata')],
@@ -1850,17 +1964,18 @@ def add_message_dataset(filename, filepath, n_clicks):
                 all_message_path.append(path_File)
                 added_message_name.append(filename)
                 option=[]
-                option.append(dbc.Row(dbc.Button("Show All Data", href='/Message_Dataset/{}/view_data'.format(filename), color="light", className="mr-1", block=True, 
+                option.append(dbc.Row(dbc.Button("Show All Data", href='/Message_Dataset/{}/view_data'.format(filename), color="light", className="mr-1", block=True, id='visu_message_data',
                                style={"margin-bottom": 10, "text-align": 'start'})))
-                option.append(dbc.Row(dbc.Button("Show All the users", href='/Message_Dataset/{}/all_users'.format(filename), color="light", className="mr-1", block=True,
+                option.append(dbc.Row(dbc.Button("Show All the users", href='/Message_Dataset/{}/all_users'.format(filename), color="light", className="mr-1", block=True, id='visu_message_users',
                                style={"margin-bottom": 10, "text-align": 'start'})))
-                option.append(dbc.Row(dbc.Button("Show connected users", href='/Message_Dataset/{}/connected_users'.format(filename), color="light", className="mr-1", block=True,
+                option.append(dbc.Row(dbc.Button("Show connected users", href='/Message_Dataset/{}/connected_users'.format(filename), color="light", className="mr-1", block=True, id='visu_message_connected',
                                style={"margin-bottom": 10, "text-align": 'start'})))
-                option.append(dbc.Row(dbc.Button("Message records between 2 selected users", href='/Message_Dataset/{}/records_between_users'.format(filename), color="light", className="mr-1", block=True,
+                option.append(dbc.Row(dbc.Button("Message records between 2 selected users", href='/Message_Dataset/{}/records_between_users'.format(filename), color="light", className="mr-1", block=True, id='visu_message_records_2',
                                style={"margin-bottom": 10, "text-align": 'start'})))
                 option.append(dbc.Row(dbc.Button(["Visualize connections between all users ",
                                 dbc.Badge("Heavy Function", color="danger", className="mr-1")],
                                color="light",
+                               id='visu_message_visualization',
                                className="mr-1",
                                block=True,
                                style={"margin-bottom": 10, "text-align": 'start'}, href='/Message_Dataset/{}/visualize_connection'.format(filename)))) 
@@ -1974,41 +2089,45 @@ def adding_message_button(filename, filepath):
               [Input('view_message', 'n_clicks'), Input('close_message', 'n_clicks')
                ])
 def view_message_data(n_clicks, click2):
-    table = html.Div()
-    if click2 is not None:
-        return None
+    try:
+        table = html.Div()
+        if click2 is not None:
+            return None
 
-    if n_clicks is not None:
-        message_record = update_message_data[-1][3]
-        dict_list = []
-        for record in message_record:
-            dict_list.append(vars(record))
-        header = list(dict_list[0].keys())
-        tab = []
-        column = []
-        for i in header:
-            column.append(
-                html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
-        tab.append(html.Tr(children=column))
-        count = 0
-        for j in dict_list:
-            value = list(j.values())
-            count += 1
-            row_content = []
-            if count > 100:
-                break
-            row_content = []
-            for x in value:
-                row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
-            tab.append(html.Tr(children=row_content, style={'height': '5px'}))
-        table = html.Div([
-            html.Table(children=tab,
-                       style={'border-collapse': 'collapse',
-                              'border': '1px solid black',
-                              'width': '100%'
-                              })
-        ])
-        return table
+        if n_clicks is not None:
+            message_record = update_message_data[-1][3]
+            dict_list = []
+            for record in message_record:
+                dict_list.append(vars(record))
+            header = list(dict_list[0].keys())
+            tab = []
+            column = []
+            for i in header:
+                column.append(
+                    html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
+            tab.append(html.Tr(children=column))
+            count = 0
+            for j in dict_list:
+                value = list(j.values())
+                count += 1
+                row_content = []
+                if count > 100:
+                    break
+                row_content = []
+                for x in value:
+                    row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
+                tab.append(html.Tr(children=row_content, style={'height': '5px'}))
+            table = html.Div([
+                html.Table(children=tab,
+                        style={'border-collapse': 'collapse',
+                                'border': '1px solid black',
+                                'width': '100%'
+                                })
+            ])
+            return table
+
+    except Exception as e:
+        print(e)
 
 
 ########## set button value
@@ -2027,47 +2146,14 @@ def close_message_data(n_clicks):
 def show_all_message_users(n_clicks):
     table = html.Div()
     if n_clicks is not None:
-        all_users = update_message_data[-1][2]
-        tab = []
-        column = []
-        column.append(
-            html.Th('Users', style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
-        tab.append(html.Tr(children=column))
-        for user in all_users:
-            row_content = []
-            row_content.append(html.Td(user, style={'border': '1px solid black', 'padding-left': '10px'}))
-            tab.append(html.Tr(children=row_content, style={'height': '5px'}))
-        table = html.Div([
-            html.Table(children=tab,
-                       style={'border-collapse': 'collapse',
-                              'border': '1px solid black',
-                              'width': '200px'
-                              })
-        ])
-        return table
-
-
-######## show connected users of specific user in message dataset
-@app.callback(Output('show_connected_message_users', 'children'),
-              [Input('connected_message_users', 'n_clicks'),
-               Input('user_message', 'value')
-               ])
-def show_connected_message_users(n_clicks, searchUser):
-    table = html.Div()
-    if n_clicks is not None:
-        message_data = update_message_data[-1][-1]
-        all_users = update_message_data[-1][2]
-        if searchUser not in all_users:
-            table=html.Div([
-                html.H5(children='User does not exist', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
-        else:
-            connected_users = message_data.get_connected_users(searchUser)
+        try:
+            all_users = update_message_data[-1][2]
             tab = []
             column = []
-            column.append(html.Th('Connected Users',
-                                style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
+            column.append(
+                html.Th('Users', style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
             tab.append(html.Tr(children=column))
-            for user in connected_users:
+            for user in all_users:
                 row_content = []
                 row_content.append(html.Td(user, style={'border': '1px solid black', 'padding-left': '10px'}))
                 tab.append(html.Tr(children=row_content, style={'height': '5px'}))
@@ -2078,9 +2164,68 @@ def show_connected_message_users(n_clicks, searchUser):
                                 'width': '200px'
                                 })
             ])
-        return table
+            return table
+        
+        except Exception as e:
+            print(e)
 
 
+connected_messageList = []
+######## show connected users of specific user in message dataset
+@app.callback(Output('show_connected_message_users', 'children'),
+              [Input('connected_message_users', 'n_clicks'),
+               Input('user_message', 'value')
+               ])
+def show_connected_message_users(n_clicks, searchUser):
+    table = html.Div()
+    if n_clicks is not None:
+        connected_messageList.append(searchUser)
+        try:
+            message_data = update_message_data[-1][-1]
+            all_users = update_message_data[-1][2]
+            if searchUser is None:
+                table=html.Div([
+                    html.H5(children='Please enter number', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})]) 
+            elif searchUser not in all_users:
+                table=html.Div([
+                    html.H5(children='User does not exist', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
+            else:
+                connected_users = message_data.get_connected_users(searchUser)
+                if len(connected_users)==0:
+                    table=html.Div([
+                        html.H5(children='No connected users', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
+                else:
+                    tab = []
+                    column = []
+                    column.append(html.Th('Connected Users',
+                                        style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
+                    tab.append(html.Tr(children=column))
+                    for user in connected_users:
+                        row_content = []
+                        row_content.append(html.Td(user, style={'border': '1px solid black', 'padding-left': '10px'}))
+                        tab.append(html.Tr(children=row_content, style={'height': '5px'}))
+                    table = html.Div([
+                        html.Table(children=tab,
+                                style={'border-collapse': 'collapse',
+                                        'border': '1px solid black',
+                                        'width': '200px'
+                                        })
+                    ])
+            return table
+
+        except Exception as e:
+            print(e)
+
+###### set 0 n_clicks connected_message_users button
+@app.callback(Output('connected_message_users', 'n_clicks'),
+              [Input('user_message', 'value')])
+def connected_message_users_button(user):
+    if len(connected_messageList)>=1 and connected_messageList[-1]!=user:
+        return None
+
+
+message_record1 = []
+message_record2 = []
 ####### show message records between 2 input users
 @app.callback(Output('show_records_message_users', 'children'),
               [Input('message_user3', 'value'),
@@ -2089,45 +2234,66 @@ def show_connected_message_users(n_clicks, searchUser):
                ])
 def between_message_users_records(user_1, user_2, click):
     table = html.Div()
-
     if click is not None:
-        message_data = update_message_data[-1][-1]
-        all_users = update_message_data[-1][2]
-        if user_1 not in all_users:
-            table=html.Div([
-                html.H5(children='User 2 does not exist', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
-        elif user_2 not in all_users:
-            table=html.Div([
-                html.H5(children='User 1 does not exist', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})]) 
-        else:
-            dict_list = []
-            for record in message_data.get_records(user_1, user_2):
-                dict_list.append(vars(record))
-            header = list(dict_list[0].keys())
-            tab = []
-            column = []
-            for i in header:
-                column.append(
-                    html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
-            tab.append(html.Tr(children=column))
-            count = 0
-            for j in dict_list:
-                value = list(j.values())
-                count += 1
-                row_content = []
-                if count > 100:
-                    break
-                for x in value:
-                    row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
-                tab.append(html.Tr(children=row_content, style={'height': '5px'}))
-            table = html.Div([
-                html.Table(children=tab,
-                        style={'border-collapse': 'collapse',
-                                'border': '1px solid black',
-                                'width': '100%'
-                                })
-            ])
-        return table
+        message_record1.append(user_1)
+        message_record2.append(user_2)
+        try:
+            message_data = update_message_data[-1][-1]
+            all_users = update_message_data[-1][2]
+            if user_1 is None or user_2 is None:
+                table=html.Div([
+                    html.H5(children='Please enter number', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])            
+            elif user_2 not in all_users:
+                table=html.Div([
+                    html.H5(children='User 1 does not exist', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})]) 
+            elif user_1 not in all_users:
+                table=html.Div([
+                    html.H5(children='User 2 does not exist', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
+            else:
+                dict_list = []
+                for record in message_data.get_records(user_1, user_2):
+                    dict_list.append(vars(record))
+                if len(dict_list)==0:
+                    table=html.Div([
+                        html.H5(children='No records between two users', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
+                else:
+                    header = list(dict_list[0].keys())
+                    tab = []
+                    column = []
+                    for i in header:
+                        column.append(
+                            html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
+                    tab.append(html.Tr(children=column))
+                    count = 0
+                    for j in dict_list:
+                        value = list(j.values())
+                        count += 1
+                        row_content = []
+                        if count > 100:
+                            break
+                        for x in value:
+                            row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
+                        tab.append(html.Tr(children=row_content, style={'height': '5px'}))
+                    table = html.Div([
+                        html.Table(children=tab,
+                                style={'border-collapse': 'collapse',
+                                        'border': '1px solid black',
+                                        'width': '100%'
+                                        })
+                    ])
+            return table
+
+        except Exception as e:
+            print(e)
+
+###### set 0 n_clicks record_message_users button
+@app.callback(Output('record_message_users', 'n_clicks'),
+              [Input('message_user3', 'value'), Input('message_user2', 'value')])
+def record_message_users_button(user1, user2):
+    if len(message_record1)>=1 and message_record1[-1] != user1:
+        return None
+    elif len(message_record2)>=1 and message_record2[-1] != user2:
+        return None
 
 
 ###### Visualize connection betwwen all users in message dataset
@@ -2135,32 +2301,36 @@ def between_message_users_records(user_1, user_2, click):
               [Input('visualize_message_connection', 'n_clicks')
                ])
 def show_visualize_message_connection(n_clicks):
-    table = html.Div()
+    try:
+        table = html.Div()
+        if n_clicks is not None:
+            message_data = update_message_data[-1][-1]
+            visu_conn = message_data.visualize_connection_network()
+            tab = []
+            column = []
+            col1 = html.Th("User", style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'})
+            column.append(col1)
+            col2 = html.Th("Connected User",
+                        style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'})
+            column.append(col2)
+            tab.append(html.Tr(children=column))
+            for connection in visu_conn[0]:
+                row_content = []
+                row_content.append(html.Td(connection[0], style={'border': '1px solid black', 'padding-left': '10px'}))
+                row_content.append(html.Td(connection[1], style={'border': '1px solid black', 'padding-left': '10px'}))
+                tab.append(html.Tr(children=row_content, style={'height': '5px'}))
+            table = html.Div([
+                html.Table(children=tab,
+                        style={'border-collapse': 'collapse',
+                                'border': '1px solid black',
+                                'width': '50%'
+                                })
+            ])
+            return table
 
-    if n_clicks is not None:
-        message_data = update_message_data[-1][-1]
-        visu_conn = message_data.visualize_connection_network(gui=True)
-        tab = []
-        column = []
-        col1 = html.Th("User", style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'})
-        column.append(col1)
-        col2 = html.Th("Connected User",
-                       style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'})
-        column.append(col2)
-        tab.append(html.Tr(children=column))
-        for connection in visu_conn[0]:
-            row_content = []
-            row_content.append(html.Td(connection[0], style={'border': '1px solid black', 'padding-left': '10px'}))
-            row_content.append(html.Td(connection[1], style={'border': '1px solid black', 'padding-left': '10px'}))
-            tab.append(html.Tr(children=row_content, style={'height': '5px'}))
-        table = html.Div([
-            html.Table(children=tab,
-                       style={'border-collapse': 'collapse',
-                              'border': '1px solid black',
-                              'width': '50%'
-                              })
-        ])
-        return table
+    except Exception as e:
+        print(e)
+
 
 ######## return message file name to the next page
 @app.callback( dash.dependencies.Output('file_name_message', 'children'),              
