@@ -2469,7 +2469,7 @@ def show_visualize_message_connection(n_clicks):
         table = html.Div()
         if n_clicks is not None:
             message_data = update_message_data[-1][-1]
-            visu_conn = message_data.visualize_connection_network()
+            visu_conn = message_data.visualize_connection_network(gui=True)
             tab = []
             column = []
             col1 = html.Th("User", style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'})
