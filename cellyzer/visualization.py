@@ -20,8 +20,8 @@ from io import BytesIO
 plt.rcParams['figure.dpi'] = 200
 
 
-def network_graph(edge_list, directed, gui):
-    plt.figure(2)
+def network_graph(edge_list, directed, gui, fig_id):
+    plt.figure(fig_id)
     if directed:
         g = nx.DiGraph()
     else:
@@ -54,8 +54,9 @@ def network_graph(edge_list, directed, gui):
         plt.show()
 
 
-def active_time_bar_chart(time_dict, gui=False):
-    plt.figure(1)
+def active_time_bar_chart(time_dict, gui=False, user='xxx', dataset_id='1'):
+    fig_id = user+dataset_id
+    plt.figure(fig_id)
     hours = []
     activity = []
     for key, value in time_dict.items():

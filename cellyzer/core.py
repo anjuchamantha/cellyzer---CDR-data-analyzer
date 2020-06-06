@@ -240,10 +240,11 @@ class CallMessageDataSet(DataSet):
         else:
             return connections
 
-    def visualize_connection_network(self, directed=True, users=[], gui=False):
+    def visualize_connection_network(self, directed=True, users=[], gui=False, fig_id='1'):
         """
         generates a directed graph of connected users
 
+        :param fig_id: str
         :param gui: boolean
         :param directed: boolean
         :param users: list
@@ -254,7 +255,7 @@ class CallMessageDataSet(DataSet):
         """
         connections = self.get_connections(users, allow_duplicates=True)
         weighted_edge_list = tools.get_weighted_edge_list(connections, directed)
-        visualization.network_graph(weighted_edge_list, directed, gui)
+        visualization.network_graph(weighted_edge_list, directed, gui, fig_id)
         # return connections
 
     def get_most_active_time(self, user):
