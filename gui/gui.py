@@ -122,21 +122,40 @@ home_page = html.Div([
         children=[
             dbc.Jumbotron(
                 [
-                    html.H1("Cellyzer", className="display-3"),
-                    html.P(
-                        "CELLYZER is a library to analyze "
-                        "Call Detail Records.",
-                        className="lead",
-                    ),
-                    html.Hr(className="my-2"),
-                    html.P(
-                        "View the documentation for more details. "
-                    ),
-                    html.P(dbc.Button("Visit Project Repository", color="primary"), className="lead"),
-                ], style={'padding-left': 100}
-            )
+                    html.Div([
+                        html.H1("Cellyzer", className="display-3"),
+                        html.P(
+                            "CELLYZER is a library to analyze "
+                            "Call Detail Records.",
+                            className="lead",
+                        ),
+                        html.Hr(className="my-2"),
+                        html.P(
+                            "View the documentation for more details. "
+                        ),
+                        html.P(dbc.Button("Visit Project Repository", color="primary"), className="lead"),
+                    ]),
+                ], style={'padding-left': 100, 'height':'300px', 'padding':'2rem 6rem'}
+            ),
+            html.Hr(),
+            html.P("Instructions", className="lead", style={'text-align':'center','font-size':'30px'}),
+            html.Hr(),
+            dbc.Row([
+                html.Div([
+                    dbc.CardHeader('Adding a dataset', style={'font-size':'24px','text-align':'center'}),
+                    dbc.Col([
+                        html.Img(src='assets/add-call.gif')
+                    ]),
+                ], style={'border-right':'1px solid #212529'}),
+                html.Div([
+                    dbc.CardHeader('Select a function', style={'font-size':'24px','text-align':'center'}),
+                    dbc.Col([
+                        html.Img(src='assets/functions.gif')
+                    ])
+                ]),
+            ])
         ],
-        style={"margin": 20, "margin-top": 120, 'margin-left': 100}
+        style={"margin": 20, "margin-top": 100, 'margin-left': 80}
     ),
 ], className='index_page_div')
 
@@ -246,14 +265,6 @@ call_dataset = html.Div([
                 row=True,
             ),
             html.H6('Do not enter space into file name', style={'color': 'red', 'font-size': 15}),
-            html.Div([
-                html.P('Supported File Types', style={"color": 'black'}),
-                html.Ul([
-                    html.Li('CSV'),
-                    html.Li('EXCEL'),
-                    html.Li('JSON')
-                ], style={"font-size": '18px'})
-            ], className="lead"),
         ],
             style={
                 'padding-left': '30px'

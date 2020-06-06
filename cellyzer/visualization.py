@@ -35,7 +35,7 @@ def network_graph(edge_list, directed, gui):
     nx.draw_networkx_edge_labels(g, pos, edge_labels=labels, with_labels=True, font_size=8, label_pos=0.3)
     # plt.figure(figsize=(50, 50), dpi=80, facecolor='w', edgecolor='k')
     mng = plt.get_current_fig_manager()
-    mng.window.state('zoomed')
+    #mng.window.state('zoomed')
 
     if gui:
         tmpfile = BytesIO()
