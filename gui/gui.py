@@ -10,7 +10,6 @@ import dash_admin_components as dac
 import dash_bootstrap_components as dbc
 import dash_table
 import folium
-import pymsgbox
 import flask
 import os
 import sys
@@ -69,7 +68,8 @@ def DataSetCard(name, records="-", link=None):
                 style={"text-align": "center"}
             ),
         ],
-        style={"width": 300, "height": 300, "margin-right": 20, "margin-bottom": 20, 'border-style': 'solid', 'border-color': 'black'}
+        style={"width": 300, "height": 300, "margin-right": 20, "margin-bottom": 20, 'border-style': 'solid',
+               'border-color': 'black'}
     )
 
 
@@ -135,20 +135,20 @@ home_page = html.Div([
                         ),
                         html.P(dbc.Button("Visit Project Repository", color="primary"), className="lead"),
                     ]),
-                ], style={'padding-left': 100, 'height':'300px', 'padding':'2rem 6rem'}
+                ], style={'padding-left': 100, 'height': '300px', 'padding': '2rem 6rem'}
             ),
             html.Hr(),
-            html.P("Instructions", className="lead", style={'text-align':'center','font-size':'30px'}),
+            html.P("Instructions", className="lead", style={'text-align': 'center', 'font-size': '30px'}),
             html.Hr(),
             dbc.Row([
                 html.Div([
-                    dbc.CardHeader('Adding a dataset', style={'font-size':'24px','text-align':'center'}),
+                    dbc.CardHeader('Adding a dataset', style={'font-size': '24px', 'text-align': 'center'}),
                     dbc.Col([
                         html.Img(src='assets/add-call.gif')
                     ]),
-                ], style={'border-right':'1px solid #212529'}),
+                ], style={'border-right': '1px solid #212529'}),
                 html.Div([
-                    dbc.CardHeader('Select a function', style={'font-size':'24px','text-align':'center'}),
+                    dbc.CardHeader('Select a function', style={'font-size': '24px', 'text-align': 'center'}),
                     dbc.Col([
                         html.Img(src='assets/functions.gif')
                     ])
@@ -188,22 +188,20 @@ index_page = html.Div(children=[
     html.Div([
         html.Div([
 
-                    html.Div([
-                        html.H2("Call DataSets", style={"margin-bottom": 30}),
-                        dbc.Row(id="call_record_home"),
-                    ], style={'margin-bottom': '80px'}),
+            html.Div([
+                html.H2("Call DataSets", style={"margin-bottom": 30}),
+                dbc.Row(id="call_record_home"),
+            ], style={'margin-bottom': '80px'}),
 
+            html.Div([
+                html.H2("Message DataSets", style={"margin-bottom": 30}),
+                dbc.Row(id="message_record_home"),
+            ], style={'margin-bottom': '80px'}),
 
-                    html.Div([
-                        html.H2("Message DataSets", style={"margin-bottom": 30}),
-                        dbc.Row(id="message_record_home"),
-                    ], style={'margin-bottom': '80px'}),
-
-
-                    html.Div([
-                        html.H2("Cell/Antena DataSets", style={"margin-bottom": 30}),
-                        dbc.Row(id="cell_record_home"),
-                    ], style={'margin-bottom': '80px'}),
+            html.Div([
+                html.H2("Cell/Antena DataSets", style={"margin-bottom": 30}),
+                dbc.Row(id="cell_record_home"),
+            ], style={'margin-bottom': '80px'}),
 
         ], style={'margin-left': '50px', 'margin-top': '40px'})
     ], style={'margin': '20px', "margin-top": '40px'})
@@ -1108,7 +1106,7 @@ def show_active_time(n_clicks, user_4):
                             style={'color': 'red', 'font-size': '20px', 'padding-left': '20px'})])
             else:
                 active_time = call_data.get_most_active_time(user_4)
-                cz.visualization.active_time_bar_chart(active_time)
+                cz.visualization.active_time_bar_chart(active_time, gui=True)
             return table
 
     except Exception as e:
@@ -1197,7 +1195,7 @@ def show_visualize_connection(n_clicks):
     try:
         if n_clicks is not None:
             call_data = update_call_data[-1][-1]
-            visu_conn = call_data.visualize_connection_network()
+            visu_conn = call_data.visualize_connection_network(gui=True)
             tab = []
             column = []
             col1 = html.Th("User", style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'})

@@ -5,6 +5,9 @@ Graphing - matplotlib, networkx
 """
 
 import networkx as nx
+import matplotlib
+
+matplotlib.use("agg")
 import matplotlib.pyplot as plt
 import numpy as np
 import folium
@@ -18,6 +21,7 @@ plt.rcParams['figure.dpi'] = 200
 
 
 def network_graph(edge_list, directed, gui):
+    plt.figure(2)
     if directed:
         g = nx.DiGraph()
     else:
@@ -34,14 +38,14 @@ def network_graph(edge_list, directed, gui):
                      style="solid", width=2)
     nx.draw_networkx_edge_labels(g, pos, edge_labels=labels, with_labels=True, font_size=8, label_pos=0.3)
     # plt.figure(figsize=(50, 50), dpi=80, facecolor='w', edgecolor='k')
-    mng = plt.get_current_fig_manager()
-    #mng.window.state('zoomed')
+    # mng = plt.get_current_fig_manager()
+    # mng.window.state('zoomed')
 
     if gui:
         tmpfile = BytesIO()
         plt.savefig(tmpfile, format='png')
         encoded = base64.b64encode(tmpfile.getvalue()).decode('utf-8')
-        html = '<div>'+'<img src=\'data:image/png;base64,{}\'>'.format(encoded)+'</div>'
+        html = '<div>' + '<img src=\'data:image/png;base64,{}\'>'.format(encoded) + '</div>'
         with open('connection_network.html', 'w') as f:
             f.write(html)
         webbrowser.open("connection_network.html")
@@ -51,6 +55,7 @@ def network_graph(edge_list, directed, gui):
 
 
 def active_time_bar_chart(time_dict, gui=False):
+    plt.figure(1)
     hours = []
     activity = []
     for key, value in time_dict.items():
@@ -63,14 +68,14 @@ def active_time_bar_chart(time_dict, gui=False):
     plt.ylabel("Activity")
     plt.xlabel("Hours")
     plt.title("Most active times during day")
-    mng = plt.get_current_fig_manager()
-    mng.window.state('zoomed')
+    # mng = plt.get_current_fig_manager()
+    # mng.window.state('zoomed')
 
     if gui:
         tmpfile = BytesIO()
         plt.savefig(tmpfile, format='png')
         encoded = base64.b64encode(tmpfile.getvalue()).decode('utf-8')
-        html = '<div>'+'<img src=\'data:image/png;base64,{}\'>'.format(encoded)+'</div>'
+        html = '<div>' + '<img src=\'data:image/png;base64,{}\'>'.format(encoded) + '</div>'
         with open('active_time_bar_chart.html', 'w') as f:
             f.write(html)
         webbrowser.open("active_time_bar_chart.html")
