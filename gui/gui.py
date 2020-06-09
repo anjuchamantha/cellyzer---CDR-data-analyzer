@@ -146,12 +146,14 @@ home_page = html.Div([
                     dbc.Col([
                         html.Img(src='assets/add-call.gif')
                     ]),
+                    html.P('Note : Adding a cell records a call dataset', style={'padding-left': '10px','padding-top':'10px'})
                 ], style={'border-right': '1px solid #212529'}),
                 html.Div([
                     dbc.CardHeader('Select a function', style={'font-size': '24px', 'text-align': 'center'}),
                     dbc.Col([
                         html.Img(src='assets/functions.gif')
-                    ])
+                    ]),
+                    html.P('Note : User can select customized functions', style={'padding-left': '10px','padding-top':'10px'})
                 ]),
             ])
         ],
