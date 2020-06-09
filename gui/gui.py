@@ -325,8 +325,8 @@ view_all_call_data = html.Div([
     navbar_call_dataset_visualize,
     callpagevisualizesidebar,
     html.Div([
-        dbc.Button('VIEW DATA', outline=True, id='view', color='success', className='sample_call_dataset_viewdata'),
-        dbc.Button('CLOSED DATA', outline=True, id='close', color='danger', className='sample_call_dataset_close')],
+        dbc.Button('VIEW DATA', id='view', color='success', className='sample_call_dataset_viewdata'),
+        dbc.Button('CLOSED DATA', id='close', color='danger', className='sample_call_dataset_close')],
         className='sample_call_dataset_view_div', style={"margin": 20, "margin-top": 100}),
     html.Div(id='show_data', className='sample_call_dataset_show'),
 ],
@@ -337,7 +337,7 @@ get_all_users = html.Div([
     navbar_call_dataset_visualize,
     callpagevisualizesidebar,
     html.Div([
-        dbc.Button('Get All Users', outline=True, color='success', id='get_users',
+        dbc.Button('Get All Users', color='success', id='get_users',
                    className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div', style={"margin": 20, "margin-top": 100}
     ),
@@ -348,17 +348,22 @@ get_all_users = html.Div([
 ####### page for show connected users of specific user
 connected_users = html.Div([
     navbar_call_dataset_visualize,
-    callpagevisualizesidebar,
+    callpagevisualizesidebar,    
     html.Div([
         dbc.FormGroup(
             [
-                dbc.Label("Enter Specific User Number:", html_for="example-email"),
-                dbc.Input(type="text", id="search", placeholder="Enter number", style={'width': '500px'}),
+                dbc.Button("Select User", color="primary", className="sample_call_dataset_viewdata", id='but_select_user'),
+                dbc.Col(
+                        dcc.Dropdown(
+                            id="search",
+                            placeholder="Select a User",
+                            style = {'width':500}
+                        ),
+                    ),
             ]
         ),
-        dbc.Button('Connected Users', outline=True, color='success', id='connected_users',
-                   className='sample_call_dataset_viewdata'),
-    ],
+        dbc.Button('Get Connected Users',  color='success', id='connected_users', className='sample_call_dataset_viewdata'),
+        ],
         className='sample_call_dataset_view_div', style={"margin": 20, "margin-top": 100}
     ),
     html.Div(id='show_connected_users', className='sample_call_dataset_show_all_users'),
@@ -372,32 +377,34 @@ records_between_users = html.Div([
     html.Div([
         html.H4('Enter Two Numbers:'),
         html.Br(),
+        dbc.Button("Select Users", color="primary", className="sample_call_dataset_viewdata", id='select_user_records_2_user'),
         dbc.FormGroup(
             [
-                dbc.Label("First Number", html_for="example-email-row", width=2),
+                dbc.Label("Select 1 user", html_for="example-email-row", width=2, style={'font-size':18}),
                 dbc.Col(
-                    dbc.Input(
-                        type="text", id="search_2", placeholder="Enter first number", style={'width': '500px'}
+                        dcc.Dropdown(
+                            id="search_2",
+                            placeholder="Select a User",
+                            style = {'width':500}
+                        ),
                     ),
-                    width=10,
-                ),
             ],
             row=True,
         ),
         dbc.FormGroup(
             [
-                dbc.Label("Second Number", html_for="example-email-row", width=2),
+                dbc.Label("Select 2 user", html_for="example-email-row", width=2, style={'font-size':18}),
                 dbc.Col(
-                    dbc.Input(
-                        type="text", id="search_3", placeholder="Enter second number", style={'width': '500px'}
-                    ),
-                    width=10,
+                    dcc.Dropdown(
+                            id="search_3",
+                            placeholder="Select a User",
+                            style = {'width':500}
+                        ),
                 ),
             ],
-            row=True,
+            row =True,
         ),
-        dbc.Button('Get Records', id='record_users', color='success', outline=True,
-                   className='sample_call_dataset_viewdata')],
+        dbc.Button('Get Records', id='record_users', color='success', className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div', style={"margin": 20, "margin-top": 100}
     ),
     html.Div(id='show_records_users', className='sample_call_dataset_show_all_users'),
@@ -412,15 +419,15 @@ close_contacts = html.Div([
         html.Br(),
         dbc.FormGroup(
             [
-                dbc.Label("Enter Number", html_for="example-email-row", width=2),
+                dbc.Button("Select User", color="primary", className="sample_call_dataset_viewdata", id='select_user_close_contact'),
                 dbc.Col(
-                    dbc.Input(
-                        type="text", id="user_3", placeholder="Enter number", style={'width': '500px'}
+                        dcc.Dropdown(
+                            id="user_3",
+                            placeholder="Select a User",
+                            style = {'width':500}
+                        ),
                     ),
-                    width=10,
-                ),
             ],
-            row=True,
         ),
         dbc.FormGroup(
             [
@@ -432,10 +439,8 @@ close_contacts = html.Div([
                     width=10,
                 ),
             ],
-            row=True,
         ),
-        dbc.Button('Close Contacts', id='close_contacts', color='success', outline=True,
-                   className='sample_call_dataset_viewdata')],
+        dbc.Button('Close Contacts', id='close_contacts', color='success', className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div', style={"margin": 20, "margin-top": 100}
     ),
     html.Div(id='show_close_contact', className='sample_call_dataset_show_all_users'),
@@ -449,18 +454,17 @@ ignore_call_detail = html.Div([
     html.Div([
         dbc.FormGroup(
             [
-                dbc.Label("Enter Number", html_for="example-email-row", width=2),
+                dbc.Button("Select User", color="primary", className="sample_call_dataset_viewdata", id='select_user_ignore_call'),
                 dbc.Col(
-                    dbc.Input(
-                        type="text", id="user_5", placeholder="Enter number", style={'width': '500px'}
+                        dcc.Dropdown(
+                            id="user_5",
+                            placeholder="Select a User",
+                            style = {'width':500}
+                        ),
                     ),
-                    width=10,
-                ),
             ],
-            row=True,
         ),
-        dbc.Button('Ignored Call', id='ignore_call', color='success', outline=True,
-                   className='sample_call_dataset_viewdata')],
+        dbc.Button('Get Ignored Call', id='ignore_call',  color='success', className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div', style={"margin": 20, "margin-top": 100}
     ),
     html.Div(id='show_ignore_call', className='sample_call_dataset_show_all_users'),
@@ -474,18 +478,17 @@ active_time_user = html.Div([
     html.Div([
         dbc.FormGroup(
             [
-                dbc.Label("Enter User", html_for="example-email-row", width=2),
+                dbc.Button("Select User", color="primary", className="sample_call_dataset_viewdata", id='select_user_active_time'),
                 dbc.Col(
-                    dbc.Input(
-                        type="text", id="user_4", placeholder="Enter number", style={'width': '500px'}
+                        dcc.Dropdown(
+                            id="user_4",
+                            placeholder="Select a User",
+                            style = {'width':500}
+                        ),
                     ),
-                    width=10,
-                ),
             ],
-            row=True,
         ),
-        dbc.Button('Active Time', id='active_time', color='success', outline=True,
-                   className='sample_call_dataset_viewdata')],
+        dbc.Button('Show Active Time Graph', id='active_time', color='success', className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div', style={"margin": 20, "margin-top": 100}
     ),
     html.Div(id='show_active_time', className='sample_call_dataset_show_all_users'),
@@ -497,7 +500,7 @@ visualize_connections = html.Div([
     navbar_call_dataset_visualize,
     callpagevisualizesidebar,
     html.Div([
-        dbc.Button('Visualize Connection', id='visualize_connection', color='danger', outline=True,
+        dbc.Button('Visualize Connection', id='visualize_connection', color='danger',
                    className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div', style={"margin": 20, "margin-top": 100}
     ),
@@ -672,6 +675,7 @@ def call_direct_datset(filename, filepath):
             return None
         else:
             href = '/Dataset'
+            print('ok')
             return href
 
     except Exception as e:
@@ -927,7 +931,6 @@ def conneced_users_button(user):
 record_user1 = []
 record_user2 = []
 
-
 ####### show records between 2 input users
 @app.callback(Output('show_records_users', 'children'),
               [Input('search_3', 'value'),
@@ -958,8 +961,7 @@ def between_users_records(user_1, user_2, click):
                             style={'color': 'red', 'font-size': '20px', 'padding-left': '20px'})])
             else:
                 for record in call_data.get_records(user_1, user_2):
-                    dict_list.append(vars(record))
-                # header = list(dict_list[0].keys())              
+                    dict_list.append(vars(record))            
                 if len(dict_list) == 0:
                     table = html.Div([
                         html.H5(children='No records between two users',
@@ -1009,7 +1011,6 @@ def record_users_button(user1, user2):
 close_contactList = []
 numberList = []
 
-
 ######## show close contacts
 @app.callback(Output('show_close_contact', 'children'),
               [Input('user_3', 'value'),
@@ -1025,53 +1026,52 @@ def show_close_contatcs(user_3, contact, n_clicks):
             call_data = update_call_data[-1][-1]
             call_users = update_call_data[-1][2]
             if user_3 is None:
-                table = html.Div([
-                    html.H5(children='Please enter number',
-                            style={'color': 'red', 'font-size': '20px', 'padding-left': '20px'})])
+                table=html.Div([
+                    html.H5(children='Please enter user', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})]) 
+            elif contact is None:
+                table=html.Div([
+                    html.H5(children='Please enter number for no. contact', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})]) 
+            elif contact <= 0:
+                table=html.Div([
+                    html.H5(children='Please enter number  more than zero', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})]) 
             elif user_3 not in call_users:
-                table = html.Div([
-                    html.H5(children='User does not exist',
-                            style={'color': 'red', 'font-size': '20px', 'padding-left': '20px'})])
+                table=html.Div([
+                    html.H5(children='User does not exist', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
             else:
                 connected_users = call_data.get_close_contacts(user_3, contact)
-                if len(connected_users) == 0:
-                    table = html.Div([
-                        html.H5(children='No connected users',
-                                style={'color': 'red', 'font-size': '20px', 'padding-left': '20px'})])
+                if len(connected_users)==0:
+                    table=html.Div([
+                        html.H5(children='No connected users', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})])
                 else:
                     tab = []
                     column = []
                     col1 = html.Th("Contact No.",
-                                   style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'})
+                                style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'})
                     column.append(col1)
                     col2 = html.Th("No of interactions between users",
-                                   style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'})
+                                style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'})
                     column.append(col2)
                     tab.append(html.Tr(children=column))
                     numbers = list(connected_users.keys())
                     NoContacts = list(connected_users.values())
                     for j in range(len(numbers)):
                         row_content = []
-                        row_content.append(
-                            html.Td(numbers[j], style={'border': '1px solid black', 'padding-left': '10px'}))
-                        row_content.append(
-                            html.Td(str(NoContacts[j]), style={'border': '1px solid black', 'padding-left': '10px'}))
+                        row_content.append(html.Td(numbers[j], style={'border': '1px solid black', 'padding-left': '10px'}))
+                        row_content.append(html.Td(str(NoContacts[j]), style={'border': '1px solid black', 'padding-left': '10px'}))
                         tab.append(html.Tr(children=row_content, style={'height': '5px'}))
                     table = html.Div([
                         html.Table(children=tab,
-                                   style={'border-collapse': 'collapse',
-                                          'border': '1px solid black',
-                                          'width': '50%'
-                                          })
+                                style={'border-collapse': 'collapse',
+                                        'border': '1px solid black',
+                                        'width': '50%'
+                                        })
                     ])
             return table
-
+        
         except Exception as e:
-            print(e)
+            print(e) 
 
-        ###### set 0 n_clicks close_contacts button
-
-
+###### set 0 n_clicks close_contacts button
 @app.callback(Output('close_contacts', 'n_clicks'),
               [Input('user_3', 'value'), Input('contact', 'value')])
 def close_contacts_button(user, contact):
@@ -1083,7 +1083,6 @@ def close_contacts_button(user, contact):
 
 active_timeList = []
 
-
 ######## show most active time
 @app.callback(Output('show_active_time', 'children'),
               [Input('active_time', 'n_clicks'),
@@ -1094,6 +1093,7 @@ def show_active_time(n_clicks, user_4):
     try:
         if n_clicks is not None:
             active_timeList.append(user_4)
+            filename = update_call_data[-1][0]
             call_data = update_call_data[-1][-1]
             call_users = update_call_data[-1][2]
             if user_4 is None:
@@ -1106,7 +1106,7 @@ def show_active_time(n_clicks, user_4):
                             style={'color': 'red', 'font-size': '20px', 'padding-left': '20px'})])
             else:
                 active_time = call_data.get_most_active_time(user_4)
-                cz.visualization.active_time_bar_chart(active_time, gui=True)
+                cz.visualization.active_time_bar_chart(active_time, gui=True, dataset_id=filename)
             return table
 
     except Exception as e:
@@ -1122,7 +1122,6 @@ def active_time_button(user):
 
 
 ignored_callList = []
-
 
 ######### Show ignored call
 @app.callback(Output('show_ignore_call', 'children'),
@@ -1148,7 +1147,7 @@ def show_ignore_call(user_5, n_clicks):
                 ignore_call = call_data.get_ignored_call_details(user_5)
                 if len(ignore_call) == 0:
                     table = html.Div([
-                        html.H5(children='No records between two users',
+                        html.H5(children='No ignored calls',
                                 style={'color': 'red', 'font-size': '20px', 'padding-left': '20px'})])
                 else:
                     key = list(ignore_call[0].keys())
@@ -1185,9 +1184,8 @@ def ignore_call_button(user):
     if len(ignored_callList) >= 1 and ignored_callList[-1] != user:
         return None
 
-    ###### Visualize connection betwwen all users
-
-
+  
+###### Visualize connection between all users
 @app.callback(Output('show_visualize_connection', 'children'),
               [Input('visualize_connection', 'n_clicks')
                ])
@@ -1195,7 +1193,8 @@ def show_visualize_connection(n_clicks):
     try:
         if n_clicks is not None:
             call_data = update_call_data[-1][-1]
-            visu_conn = call_data.visualize_connection_network(gui=True)
+            filename = update_call_data[-1][0]
+            visu_conn = call_data.visualize_connection_network(gui=True, fig_id=filename)
             tab = []
             column = []
             col1 = html.Th("User", style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'})
@@ -1221,6 +1220,61 @@ def show_visualize_connection(n_clicks):
     except Exception as e:
         print(e)
 
+
+def get_call_users():
+    call_users = update_call_data[-1][2]
+    add_call=[]
+    for user in call_users:
+        add_call.append({'label':user, 'value': user})
+    return add_call
+
+######## select call user for get connected users using dropdown
+@app.callback(Output('search', 'options'),
+            [   Input('but_select_user', 'n_clicks')
+            ])
+def select_call_users(n_clicks):
+    if n_clicks is not None:
+        return get_call_users()
+
+######## select call user for get connected users using dropdown
+@app.callback(Output('user_5', 'options'),
+            [   Input('select_user_ignore_call', 'n_clicks')
+            ])
+def select_call_users_ignored_call(n_clicks):
+    if n_clicks is not None:
+        return get_call_users()
+
+######## select call user for get active time  using dropdown
+@app.callback(Output('user_4', 'options'),
+            [   Input('select_user_active_time', 'n_clicks')
+            ])
+def select_call_users_active_time(n_clicks):
+    if n_clicks is not None:
+        return get_call_users()
+
+######## select call user for get close contacts using dropdown
+@app.callback(Output('user_3', 'options'),
+            [   Input('select_user_close_contact', 'n_clicks')
+            ])
+def select_call_users_close_contact(n_clicks):
+    if n_clicks is not None:
+        return get_call_users()
+
+######## select 1 call user for get call records between 2 users using dropdown
+@app.callback(Output('search_2', 'options'),
+            [   Input('select_user_records_2_user', 'n_clicks')
+            ])
+def select_1_call_user_records(n_clicks):
+    if n_clicks is not None:
+        return get_call_users()
+
+######## select 2 call user for get call records between 2 users using dropdown
+@app.callback(Output('search_3', 'options'),
+            [   Input('select_user_records_2_user', 'n_clicks')
+            ])
+def select_2_call_user_records(n_clicks):
+    if n_clicks is not None:
+        return get_call_users()
 
 ###################################################################################################
 ###################################################################################################
@@ -1357,9 +1411,9 @@ view_all_cell_data = html.Div([
     navbar_cell_dataset_visualize,
     cellpagevisualizesidebar,
     html.Div([
-        dbc.Button('VIEW DATA', id='view_cell', outline=True, color='success',
+        dbc.Button('VIEW DATA', id='view_cell', color='success',
                    className='sample_call_dataset_viewdata'),
-        dbc.Button('CLOSED DATA', id='close_cell', outline=True, color='danger',
+        dbc.Button('CLOSED DATA', id='close_cell', color='danger',
                    className='sample_call_dataset_close')],
         className='sample_call_dataset_view_div', style={"margin": 20, "margin-top": 100}),
     html.Div(id='show_cell_data', className='sample_call_dataset_show'),
@@ -1396,7 +1450,7 @@ population_around_cell = html.Div([
     navbar_cell_dataset_visualize,
     cellpagevisualizesidebar,
     html.Div([
-        dbc.Button('Get Population', id='population_button', outline=True, color='danger',
+        dbc.Button('Get Population', id='population_button', color='danger',
                    className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div', style={"margin": 20, "margin-top": 100}
     ),
@@ -1408,21 +1462,20 @@ population_around_cell = html.Div([
 trip_visualize = html.Div([
     navbar_cell_dataset_visualize,
     cellpagevisualizesidebar,
-
     html.Div([
         dbc.FormGroup(
             [
-                dbc.Label("Enter user number:", html_for="example-email-row", width=2),
+                dbc.Button("Select User", color="primary", className="sample_call_dataset_viewdata", id='select_user_trip_visu'),
                 dbc.Col(
-                    dbc.Input(
-                        type="text", id="trip_user", placeholder="Enter number", style={'width': '500px'}
+                        dcc.Dropdown(
+                            id="trip_user",
+                            placeholder="Select a User",
+                            style = {'width':500}
+                        ),
                     ),
-                    width=10,
-                ),
             ],
-            row=True,
         ),
-        dbc.Button('Trip Visualize', id='trip_visualize_button', outline=True, color='danger',
+        dbc.Button('Trip Visualize', id='trip_visualize_button', color='danger',
                    className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div', style={"margin": 20, "margin-top": 100}
     ),
@@ -1725,7 +1778,6 @@ def get_population(n_clicks):
 
 trip_userList = []
 
-
 ######### get trip visualize
 @app.callback(Output('show_trip_visualize', 'children'),
               [Input('trip_user', 'value'),
@@ -1762,9 +1814,8 @@ def trip_visualize_button_button(user):
     if len(trip_userList) >= 1 and trip_userList[-1] != user:
         return None
 
-    ######## return cell file name to the next page
 
-
+######## return cell file name to the next page
 @app.callback(dash.dependencies.Output('file_name_cell', 'children'),
               [dash.dependencies.Input('url', 'pathname')
                ])
@@ -1780,9 +1831,8 @@ def file_name_cell(pathname):
             name = "Cell Dataset :<%s>" % file_cell[2]
             return SimpleTitleBar(name)
 
-        ######## get cell option
 
-
+######## get cell option
 @app.callback(dash.dependencies.Output('cell_option', 'children'),
               [dash.dependencies.Input('url', 'pathname')
                ])
@@ -1842,13 +1892,27 @@ def cell_visu_sidebar(pathname):
         name_cell = html.Div(children=output_cell)
         return name_cell
 
+def get_cell_users():
+    all_users = update_cell_data[-1][2]
+    add_call=[]
+    for user in all_users:
+        add_call.append({'label':user, 'value': user})
+    return add_call
 
-# over cell callback
+######## select user for get trip visualization using dropdown
+@app.callback(Output('trip_user', 'options'),
+            [   Input('select_user_trip_visu', 'n_clicks')
+            ])
+def select_user_trip_visu(n_clicks):
+    if n_clicks is not None:
+        return get_cell_users()
+
+### over cell callback
 
 ################################################################################################
 ################################################################################################
 
-## Page for message dataset
+#### Page for message dataset
 
 messagepagesidebar = dac.Sidebar(
     dac.SidebarMenu(
@@ -1964,9 +2028,9 @@ view_all_message_data = html.Div([
     navbar_message_dataset_visualize,
     messagepagevisualizesidebar,
     html.Div([
-        dbc.Button('VIEW DATA', outline=True, id='view_message', color='success',
+        dbc.Button('VIEW DATA', id='view_message', color='success',
                    className='sample_call_dataset_viewdata'),
-        dbc.Button('CLOSED DATA', outline=True, id='close_message', color='danger',
+        dbc.Button('CLOSED DATA', id='close_message', color='danger',
                    className='sample_call_dataset_close')],
         className='sample_call_dataset_view_div', style={"margin": 20, "margin-top": 100}),
     html.Div(id='show_message_data', className='sample_call_dataset_show'),
@@ -1978,7 +2042,7 @@ get_all_message_users = html.Div([
     navbar_message_dataset_visualize,
     messagepagevisualizesidebar,
     html.Div([
-        dbc.Button('Get All Users', outline=True, color='success', id='get_message_users',
+        dbc.Button('Get All Users', color='success', id='get_message_users',
                    className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div', style={"margin": 20, "margin-top": 100}
     ),
@@ -1993,11 +2057,17 @@ connected_message_users = html.Div([
     html.Div([
         dbc.FormGroup(
             [
-                dbc.Label("Enter Specific User Number:", html_for="example-email"),
-                dbc.Input(type="text", id="user_message", placeholder="Enter number", style={'width': '500px'}),
+                dbc.Button("Select User", color="primary", className="sample_call_dataset_viewdata", id='select_msg_user_connected'),
+                dbc.Col(
+                        dcc.Dropdown(
+                            id="user_message",
+                            placeholder="Select a User",
+                            style = {'width':500}
+                        ),
+                    ),
             ]
         ),
-        dbc.Button('Connected Users', outline=True, color='success', id='connected_message_users',
+        dbc.Button('Get Connected Users', color='success', id='connected_message_users',
                    className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div', style={"margin": 20, "margin-top": 100}
     ),
@@ -2012,31 +2082,34 @@ message_records_between_users = html.Div([
     html.Div([
         html.H4('Enter Two Numbers:'),
         html.Br(),
+         dbc.Button("Select User", color="primary", className="sample_call_dataset_viewdata", id='select_msg_user_2_records'),
         dbc.FormGroup(
             [
-                dbc.Label("First Number", html_for="example-email-row", width=2),
+                dbc.Label("Select 1 user", html_for="example-email-row", width=2, style={'font-size':18}),
                 dbc.Col(
-                    dbc.Input(
-                        type="text", id="message_user2", placeholder="Enter first number", style={'width': '500px'}
+                        dcc.Dropdown(
+                            id="message_user2",
+                            placeholder="Select a User",
+                            style = {'width':500}
+                        ),
                     ),
-                    width=10,
-                ),
             ],
             row=True,
         ),
         dbc.FormGroup(
             [
-                dbc.Label("Second Number", html_for="example-email-row", width=2),
+                dbc.Label("Select 1 user", html_for="example-email-row", width=2, style={'font-size':18}),
                 dbc.Col(
-                    dbc.Input(
-                        type="text", id="message_user3", placeholder="Enter second number", style={'width': '500px'}
+                        dcc.Dropdown(
+                            id="message_user3",
+                            placeholder="Select a User",
+                            style = {'width':500}
+                        ),
                     ),
-                    width=10,
-                ),
             ],
             row=True,
         ),
-        dbc.Button('Get Records', id='record_message_users', color='success', outline=True,
+        dbc.Button('Get Records', id='record_message_users', color='success',
                    className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div', style={"margin": 20, "margin-top": 100}
     ),
@@ -2049,7 +2122,7 @@ visualize_message_connections = html.Div([
     navbar_message_dataset_visualize,
     messagepagevisualizesidebar,
     html.Div([
-        dbc.Button('Visualize Connection', id='visualize_message_connection', color='danger', outline=True,
+        dbc.Button('Visualize Connection', id='visualize_message_connection', color='danger', 
                    className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div', style={"margin": 20, "margin-top": 100}
     ),
@@ -2469,7 +2542,8 @@ def show_visualize_message_connection(n_clicks):
         table = html.Div()
         if n_clicks is not None:
             message_data = update_message_data[-1][-1]
-            visu_conn = message_data.visualize_connection_network()
+            filename = update_message_data[-1][0]
+            visu_conn = message_data.visualize_connection_network(gui=True, fig_id=filename)
             tab = []
             column = []
             col1 = html.Th("User", style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'})
@@ -2575,9 +2649,40 @@ def message_visu_sidebar(pathname):
         name_message = html.Div(children=output_message)
         return name_message
 
-    # over message dataset
+def get_msg_call_users():
+    msg_users = update_message_data[-1][2]
+    add_msg=[]
+    for user in msg_users:
+        add_msg.append({'label':user, 'value': user})
+    return add_msg
 
+######## select message user for get connected users using dropdown
+@app.callback(Output('user_message', 'options'),
+            [   Input('select_msg_user_connected', 'n_clicks')
+            ])
+def select_msg_users_connected(n_clicks):
+    if n_clicks is not None:
+        return get_msg_call_users()
 
+######## select message user 1 for get msg records between 2 users using dropdown
+@app.callback(Output('message_user3', 'options'),
+            [   Input('select_msg_user_2_records', 'n_clicks')
+            ])
+def select_1_msg_user_2_record(n_clicks):
+    if n_clicks is not None:
+        return get_msg_call_users()
+
+######## select message user 2 for get msg records between 2 users using dropdown
+@app.callback(Output('message_user2', 'options'),
+            [   Input('select_msg_user_2_records', 'n_clicks')
+            ])
+def select_2_msg_user_2_record(n_clicks):
+    if n_clicks is not None:
+        return get_msg_call_users()
+
+#### over message dataset
+
+##################################################################################
 ##################################################################################
 
 @app.callback(dash.dependencies.Output('page-content', 'children'),
