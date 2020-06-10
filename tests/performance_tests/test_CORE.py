@@ -1,5 +1,6 @@
 import cProfile
 import cellyzer.io as io
+import cellyzer.core as core
 
 # setup
 user1 = "8d27cf2694"
@@ -14,25 +15,13 @@ callDataSet = io.read_call(call_file_path)
 msg_file_path = "../../demo/demo_datasets/long_data/messages_.csv"
 msgDataSet = io.read_msg(msg_file_path)
 
-cell_file_path = "../../demo/demo_datasets/test_data/antennas.csv"
+cell_file_path = "../../demo/demo_datasets/long_data/antennas.csv"
 cellDataSet = io.read_cell(cell_file_path, call_dataset_obj=callDataSet)
 
+user1_obj = core.User(callDataSet=callDataSet, cellDataSet=cellDataSet, contact_no=user1)
+user2_obj = core.User(callDataSet=callDataSet, cellDataSet=cellDataSet, contact_no=user2)
+user3_obj = core.User(callDataSet=callDataSet, cellDataSet=cellDataSet, contact_no=user3)
 
-# 8d27cf2694
-# 373a4fb419
-# 329233d117
-# 6cfc4bd054
-# e98994c239
-# 0041628436
-
-# d235863694
-# e59cd92671
-# 07f0750117
-# 4b1c2de436
-# 9bf7b67897
-# 25efbc7582
-# 9ac45dd266
-# 18423b0678
 
 # ############################# callMessage Data set functions
 def test_get_records():
@@ -99,8 +88,44 @@ def test_get_trip_details():
 
 
 # ##################################  User functions
+def test_get_contact_no():
+    user1_obj.get_contact_no()
 
-#################################################################
+
+def test_compute_home():
+    user1_obj.compute_home()
+
+
+def test_compute_work_location():
+    user1_obj.compute_work_location()
+
+
+def test_check_timestamp_for_home():
+    user1_records = callDataSet.get_records(user1)
+    user1_obj.check_timestamp_for_home(user1_records[0])
+
+
+def test_get_home_location():
+    user1_obj.get_home_location()
+
+
+def test_get_work_location():
+    user1_obj.get_work_location()
+
+
+def test_get_home_location_related_cell_id():
+    user1_obj.get_home_location_related_cell_id()
+
+
+def test_get_work_location_related_cell_id():
+    user1_obj.get_work_location_related_cell_id()
+
+
+def test_user_get_ignored_call_details():
+    user1_obj.get_ignored_call_details()
+
+
+# ################################################################  cProfile run
 cProfile.run('test_get_records()')
 cProfile.run('test_get_all_users()')
 cProfile.run('test_get_connected_users()')
@@ -119,3 +144,13 @@ cProfile.run('test_get_population()')
 cProfile.run('test_get_unique_users_around_cell()')
 cProfile.run('test_check_user_location_matches_cell()')
 cProfile.run('test_get_trip_details()')
+
+cProfile.run('test_get_contact_no()')
+cProfile.run('test_compute_home()')
+cProfile.run('test_compute_work_location()')
+cProfile.run('test_check_timestamp_for_home()')
+cProfile.run('test_get_home_location()')
+cProfile.run('test_get_work_location()')
+cProfile.run('test_get_home_location_related_cell_id()')
+cProfile.run('test_get_work_location_related_cell_id()')
+cProfile.run('test_get_ignored_call_details()')
