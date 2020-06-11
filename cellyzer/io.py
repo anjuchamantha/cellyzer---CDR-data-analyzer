@@ -135,7 +135,7 @@ def read_csv(filepath):
         pass
 
 
-def read_call(file_path, file_type='csv', hash=True):
+def read_call(file_path="", file_type='csv', hash=True, decode_read="", ):
     print("[x]  Reading Call Data")
 
     """
@@ -151,6 +151,9 @@ def read_call(file_path, file_type='csv', hash=True):
 
 
     """
+    if not (decode_read == ""):
+        print(decode_read)
+        return
 
     try:
         if file_type.lower() == 'csv':
@@ -166,9 +169,8 @@ def read_call(file_path, file_type='csv', hash=True):
                     for f in fieldnames:
                         call[f] = val[f]
                     call_list.append(call)
-
-                # for c in call_list:
-                #  print(c)
+                for c in call_list:
+                    print(c)
                 return create_call_obj(call_list, fieldnames, hash)
         elif file_type.lower() == 'xls' or file_type.lower() == 'xlsx':
             return read_xls(file_path)
@@ -243,7 +245,6 @@ def read_cell(file_path, call_csv_path=None, call_dataset_obj=None, file_type='c
         if file_type.lower() == 'csv':
             with open(file_path, 'r') as csv_file:
                 reader = csv.DictReader(csv_file)
-
                 fieldnames = reader.fieldnames
                 cell_list = []
                 for val in reader:
