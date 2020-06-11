@@ -43,7 +43,7 @@ def parse_contents(contents, filename, date):
     content_type, content_string = contents.split(',')
 
     decoded = base64.b64decode(content_string)
-    call_data = cz.read_call(decode_read=io.StringIO(decoded.decode('utf-8')))
+    call_data = cz.read_msg(decode_read=io.StringIO(decoded.decode('utf-8')))
     try:
         if 'csv' in filename:
             # Assume that the user uploaded a CSV file

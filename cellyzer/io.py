@@ -7,6 +7,7 @@ altering datasets (removing columns etc.)
 """
 
 import csv
+import io
 import xlrd
 import json
 import logging as log
@@ -135,7 +136,7 @@ def read_csv(filepath):
         pass
 
 
-def read_call(file_path="", file_type='csv', hash=True, decode_read="", ):
+def read_call(file_path="", file_type='csv', hash=True, decode_read="", splitted_line=None):
     print("[x]  Reading Call Data")
 
     """
@@ -152,8 +153,21 @@ def read_call(file_path="", file_type='csv', hash=True, decode_read="", ):
 
     """
     if not (decode_read == ""):
-        print(decode_read)
-        return
+        data_list = decode_read.getvalue().split('\r')
+        fieldnames = data_list[0].split(',')
+        call_list = []
+        for line in data_list[1:len(data_list)-1]:
+            splitted_line = line.split(',')
+            call = dict()
+            i = 0
+            for f in fieldnames:
+                if splitted_line[i] is not None:
+                    call[f] = splitted_line[i]
+                else:
+                    call[f] = ''
+                i += 1
+            call_list.append(call)
+        return create_call_obj(call_list, fieldnames, hash)
 
     try:
         if file_type.lower() == 'csv':
@@ -165,6 +179,7 @@ def read_call(file_path="", file_type='csv', hash=True, decode_read="", ):
                 fieldnames = reader.fieldnames
                 call_list = []
                 for val in reader:
+                    print(val)
                     call = dict()
                     for f in fieldnames:
                         call[f] = val[f]
@@ -183,7 +198,7 @@ def read_call(file_path="", file_type='csv', hash=True, decode_read="", ):
         pass
 
 
-def read_msg(file_path, file_type='csv', hash=True):
+def read_msg(file_path='', file_type='csv', hash=True, decode_read="", splitted_line=None):
     print("[x]  Reading Message Data...")
 
     """
@@ -199,6 +214,23 @@ def read_msg(file_path, file_type='csv', hash=True):
 
 
     """
+    if not (decode_read == ""):
+        data_list = decode_read.getvalue().split('\r')
+        fieldnames = data_list[0].split(',')
+        msg_list = []
+        for line in data_list[1:len(data_list)-1]:
+            splitted_line = line.split(',')
+            msg = dict()
+            i = 0
+            for f in fieldnames:
+                if splitted_line[i] is not None:
+                    msg[f] = splitted_line[i]
+                else:
+                    msg[f] = ''
+                i += 1
+            msg_list.append(msg)
+        print(msg_list)
+        return create_msg_obj(msg_list, fieldnames, hash)
 
     try:
         if file_type.lower() == 'csv':
@@ -225,7 +257,7 @@ def read_msg(file_path, file_type='csv', hash=True):
         pass
 
 
-def read_cell(file_path, call_csv_path=None, call_dataset_obj=None, file_type='csv'):
+def read_cell(file_path='', call_csv_path=None, call_dataset_obj=None, file_type='csv', decode_read="", splitted_line=None):
     # print("[x]  Reading Cell Data")
 
     """
@@ -241,6 +273,29 @@ def read_cell(file_path, call_csv_path=None, call_dataset_obj=None, file_type='c
 
 
     """
+    if not (decode_read == ""):
+        data_list = decode_read.getvalue().split('\r')
+        fieldnames = data_list[0].split(',')
+        call_list = []
+        if call_csv_path is not None:
+            call_data_set = read_call(call_csv_path)
+        if call_dataset_obj is not None:
+            call_data_set = call_dataset_obj
+        else:
+            call_data_set = None
+        for line in data_list[1:len(data_list)-1]:
+            splitted_line = line.split(',')
+            call = dict()
+            i = 0
+            for f in fieldnames:
+                if splitted_line[i] is not None:
+                    call[f] = splitted_line[i]
+                else:
+                    call[f] = ''
+                i += 1
+            call_list.append(call)
+        return create_cell_obj(call_list, fieldnames, call_data_set)
+
     try:
         if file_type.lower() == 'csv':
             with open(file_path, 'r') as csv_file:
