@@ -133,7 +133,7 @@ home_page = html.Div([
                         html.P(
                             "View the documentation for more details. "
                         ),
-                        html.P(dbc.Button("Visit Project Repository", color="primary"), className="lead"),
+                        html.P(dbc.Button("Visit Project Repository", color="primary", href='https://github.com/anjuchamantha/cellyzer---CDR-data-analyzer', target='_blank'), className="lead"),
                     ]),
                 ], style={'padding-left': 100, 'height': '300px', 'padding': '2rem 6rem'}
             ),
