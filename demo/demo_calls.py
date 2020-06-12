@@ -6,6 +6,8 @@ import cellyzer as cz
 
 call_file_path = "demo_datasets/long_data/calls_.csv"
 callDataSet = cz.read_call(call_file_path)
+
+callDataSet.print_connection_matrix()
 # cz.utils.print_dataset(callDataSet, name="Call Dataset")
 #
 # all_users_of_calls = callDataSet.get_all_users()
