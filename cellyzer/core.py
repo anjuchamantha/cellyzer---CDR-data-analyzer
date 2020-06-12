@@ -110,6 +110,12 @@ class DataSet:
     def get_fieldnames(self):
         return self._fieldnames
 
+    def to_dict(self):
+        records_list = []
+        for record in self.get_records():
+            records_list.append(vars(record))
+        return records_list
+
 
 class CallMessageDataSet(DataSet):
 

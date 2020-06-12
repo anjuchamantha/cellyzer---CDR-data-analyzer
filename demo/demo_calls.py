@@ -36,7 +36,7 @@ search_user_call_3 = '329233d117'
 #
 active_time = callDataSet.get_most_active_time(search_user_call_1)
 print(">> most active times during day of %s - %s" % (search_user_call_1, active_time))
-cz.visualization.active_time_bar_chart(active_time, gui=True)
+cz.visualization.active_time_bar_chart(active_time)
 #
 # ignored_call_details = callDataSet.get_ignored_call_details(search_user_call_3)
 # print(">> Ignored calls details : ")

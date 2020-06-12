@@ -156,7 +156,7 @@ def read_call(file_path="", file_type='csv', hash=True, decode_read="", splitted
         data_list = decode_read.getvalue().split('\r\n')
         fieldnames = data_list[0].split(',')
         call_list = []
-        for line in data_list[1:len(data_list)-1]:
+        for line in data_list[1:len(data_list) - 1]:
             splitted_line = line.split(',')
             call = dict()
             i = 0
@@ -167,7 +167,6 @@ def read_call(file_path="", file_type='csv', hash=True, decode_read="", splitted
                     call[f] = ''
                 i += 1
             call_list.append(call)
-        print(call_list)
         return create_call_obj(call_list, fieldnames, hash)
 
     try:
@@ -180,13 +179,12 @@ def read_call(file_path="", file_type='csv', hash=True, decode_read="", splitted
                 fieldnames = reader.fieldnames
                 call_list = []
                 for val in reader:
-                    print(val)
                     call = dict()
                     for f in fieldnames:
                         call[f] = val[f]
                     call_list.append(call)
-                for c in call_list:
-                    print(c)
+                # for c in call_list:
+                #     print(c)
                 return create_call_obj(call_list, fieldnames, hash)
         elif file_type.lower() == 'xls' or file_type.lower() == 'xlsx':
             return read_xls(file_path)
@@ -219,7 +217,7 @@ def read_msg(file_path='', file_type='csv', hash=True, decode_read="", splitted_
         data_list = decode_read.getvalue().split('\r\n')
         fieldnames = data_list[0].split(',')
         msg_list = []
-        for line in data_list[1:len(data_list)-1]:
+        for line in data_list[1:len(data_list) - 1]:
             splitted_line = line.split(',')
             msg = dict()
             i = 0
@@ -230,7 +228,7 @@ def read_msg(file_path='', file_type='csv', hash=True, decode_read="", splitted_
                     msg[f] = ''
                 i += 1
             msg_list.append(msg)
-        print(msg_list)
+        # print(msg_list)
         return create_msg_obj(msg_list, fieldnames, hash)
 
     try:
@@ -258,7 +256,8 @@ def read_msg(file_path='', file_type='csv', hash=True, decode_read="", splitted_
         pass
 
 
-def read_cell(file_path='', call_csv_path=None, call_dataset_obj=None, file_type='csv', decode_read="", splitted_line=None):
+def read_cell(file_path='', call_csv_path=None, call_dataset_obj=None, file_type='csv', decode_read="",
+              splitted_line=None):
     # print("[x]  Reading Cell Data")
 
     """
@@ -277,26 +276,26 @@ def read_cell(file_path='', call_csv_path=None, call_dataset_obj=None, file_type
     if not (decode_read == ""):
         data_list = decode_read.getvalue().split('\r\n')
         fieldnames = data_list[0].split(',')
-        call_list = []
+        cell_list = []
         if call_csv_path is not None:
             call_data_set = read_call(call_csv_path)
         if call_dataset_obj is not None:
             call_data_set = call_dataset_obj
         else:
             call_data_set = None
-        for line in data_list[1:len(data_list)-1]:
+        for line in data_list[1:len(data_list) - 1]:
             splitted_line = line.split(',')
-            call = dict()
+            cell = dict()
             i = 0
             for f in fieldnames:
                 if splitted_line[i] is not None:
-                    call[f] = splitted_line[i]
+                    cell[f] = splitted_line[i]
                 else:
-                    call[f] = ''
+                    cell[f] = ''
                 i += 1
-            call_list.append(call)
-        print(call_list)
-        return create_cell_obj(call_list, fieldnames, call_data_set)
+            cell_list.append(cell)
+        # print(call_list)
+        return create_cell_obj(cell_list, fieldnames, call_data_set)
 
     try:
         if file_type.lower() == 'csv':
@@ -444,9 +443,9 @@ def create_call_obj(calls, fieldnames, hash):
             call_record_obj = CallRecord(
                 user, other_user, direction, duration, timestamp, cell_id, cost, index=i)
             call_records.append(call_record_obj)
-
-        filtered_call_records, bad_records = parse_records(call_records, fieldnames)
-        call_dataset_obj = CallDataSet(filtered_call_records, fieldnames)
+        fieldnames_ = ['user', 'other_user', 'direction', 'duration', 'timestamp', 'call_id', 'cost']
+        filtered_call_records, bad_records = parse_records(call_records, fieldnames_)
+        call_dataset_obj = CallDataSet(filtered_call_records, fieldnames_)
 
         print("[x]  Objects creation successful\n")
         return call_dataset_obj
