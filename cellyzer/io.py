@@ -153,7 +153,7 @@ def read_call(file_path="", file_type='csv', hash=True, decode_read="", splitted
 
     """
     if not (decode_read == ""):
-        data_list = decode_read.getvalue().split('\r')
+        data_list = decode_read.getvalue().split('\r\n')
         fieldnames = data_list[0].split(',')
         call_list = []
         for line in data_list[1:len(data_list)-1]:
@@ -167,6 +167,7 @@ def read_call(file_path="", file_type='csv', hash=True, decode_read="", splitted
                     call[f] = ''
                 i += 1
             call_list.append(call)
+        print(call_list)
         return create_call_obj(call_list, fieldnames, hash)
 
     try:
@@ -215,7 +216,7 @@ def read_msg(file_path='', file_type='csv', hash=True, decode_read="", splitted_
 
     """
     if not (decode_read == ""):
-        data_list = decode_read.getvalue().split('\r')
+        data_list = decode_read.getvalue().split('\r\n')
         fieldnames = data_list[0].split(',')
         msg_list = []
         for line in data_list[1:len(data_list)-1]:
@@ -274,7 +275,7 @@ def read_cell(file_path='', call_csv_path=None, call_dataset_obj=None, file_type
 
     """
     if not (decode_read == ""):
-        data_list = decode_read.getvalue().split('\r')
+        data_list = decode_read.getvalue().split('\r\n')
         fieldnames = data_list[0].split(',')
         call_list = []
         if call_csv_path is not None:
@@ -294,6 +295,7 @@ def read_cell(file_path='', call_csv_path=None, call_dataset_obj=None, file_type
                     call[f] = ''
                 i += 1
             call_list.append(call)
+        print(call_list)
         return create_cell_obj(call_list, fieldnames, call_data_set)
 
     try:
@@ -507,6 +509,7 @@ def create_cell_obj(cells, fieldnames, call_data_set):
             cell_records.append(cell_record_obj)
         filtered_cell_records, bad_records = parse_records(cell_records, fieldnames)
         cell_dataset_obj = CellDataSet(filtered_cell_records, fieldnames, call_data_set)
+        print("[x]  Objects creation successful\n")
         return cell_dataset_obj
 
 
