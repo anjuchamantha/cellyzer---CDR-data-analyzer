@@ -13,11 +13,7 @@ import folium
 import flask
 import os
 import sys
-
-# import ctypes
-
 sys.path.insert(0, '../')
-
 import cellyzer as cz
 
 app = dash.Dash(__name__, external_stylesheets=[{dbc.themes.BOOTSTRAP}])
@@ -240,11 +236,13 @@ call_dataset = html.Div([
         html.Div([
             dbc.FormGroup(
                 [
-                    dbc.Label("Call DataSet File path", html_for="example-email-row", width=2, ),
+                    dbc.Label("Select Call DataSet File", html_for="example-email-row", width=2, ),
                     dbc.Col(
-                        dbc.Input(
-                            type="text", id="filepath", placeholder="Ex:   D:\datasets\calls.csv",
-                            style={'width': '800px'}
+                        dcc.Upload(
+                            id='filepath',
+                            children=html.Div([
+                                  dbc.Button("Select Call File ", color="primary")  
+                                ]),
                         ),
                         width=10,
                     ),
@@ -502,6 +500,19 @@ visualize_connections = html.Div([
     navbar_call_dataset_visualize,
     callpagevisualizesidebar,
     html.Div([
+        dbc.FormGroup(
+            [
+                dbc.Button("Select User", color="primary", className="sample_call_dataset_viewdata", id='select_user_visu_conn'),
+                dbc.Col(
+                        dcc.Dropdown(
+                            id="user_visu_conn",
+                            placeholder="Select a User",
+                            multi=True,
+                            style = {'width':500}
+                        ),
+                    ),
+            ],
+        ),
         dbc.Button('Visualize Connection', id='visualize_connection', color='danger',
                    className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div', style={"margin": 20, "margin-top": 100}
@@ -512,8 +523,8 @@ visualize_connections = html.Div([
 
 # over call dataset
 
-all_file_path = []
-FilePath = []
+all_file_content = []
+call_content = []
 call_data_list = []
 update_call_data = []
 call_option = []
@@ -521,17 +532,26 @@ call_name = []
 call_files_name = []
 
 
+def parse_contents(contents):
+    content_type, content_string = contents.split(',')
+
+    decoded = base64.b64decode(content_string)
+    try:
+        dataset_obj = cz.read_call(decode_read=io.StringIO(decoded.decode('utf-8')))
+        return dataset_obj
+    except Exception as e:
+        print(e)
+
 ###### add call data
 @app.callback(Output('call-data', 'children'),
-              [Input('upload-data_call', 'value'), Input('filepath', 'value'), Input('adding_call', 'n_clicks')],
+              [Input('upload-data_call', 'value'), Input('filepath', 'contents'), Input('adding_call', 'n_clicks')],
               )
-def add_call_dataset(filename, filepath, n_clicks):
+def add_call_dataset(filename, content, n_clicks):
     if n_clicks is not None:
         try:
-            FilePath.append(filepath)
+            call_content.append(content)
             call_files_name.append(filename)
-            path_File = filepath
-            if path_File in all_file_path or filename in call_name or ' ' in filename:
+            if content in all_file_content or filename in call_name or ' ' in filename or len(filename)==0:
                 output_call = []
                 for x in call_data_list:
                     a = x[0]
@@ -540,14 +560,11 @@ def add_call_dataset(filename, filepath, n_clicks):
                 name = html.Div(children=output_call)
                 return name
             else:
-                file_part = filepath.split('\\')
-                file_call = file_part[-1].split('.')
-                file_type = file_call[-1]
-                call_data = cz.read_call(path_File, file_type)
+                call_data = parse_contents(content)
                 record = call_data.get_records()
                 all_users = call_data.get_all_users()
-                call_data_list.append([filename, path_File, all_users, record, call_data])
-                all_file_path.append(path_File)
+                call_data_list.append([filename, content, all_users, record, call_data])
+                all_file_content.append(content)
                 call_name.append(filename)
                 option = []
                 option.append(dbc.Row(
@@ -617,19 +634,19 @@ def add_call_dataset(filename, filepath, n_clicks):
 
 ########### alert for call data
 @app.callback([Output('alert', 'is_open'), Output('alert', 'children')],
-              [Input('upload-data_call', 'value'), Input('filepath', 'value'), Input('adding_call', 'n_clicks')],
+              [Input('upload-data_call', 'value'), Input('filepath', 'contents'), Input('adding_call', 'n_clicks')],
               [State('alert', 'is_open')]
               )
-def add_call_dataset_alert(filename, filepath, n_clicks, is_open):
+def add_call_dataset_alert(filename, contents, n_clicks, is_open):
     if n_clicks is not None:
         try:
-            if filepath is None:
-                word = 'Please enter filepath'
+            if contents is None:
+                word = 'Please select call dataset'
                 return True, word
-            elif filename is None:
+            elif filename is None or len(filename)==0:
                 word = 'Please enter filename'
                 return True, word
-            elif filepath in all_file_path:
+            elif contents in all_file_content:
                 word = 'This file already exist'
                 return True, word
             elif filename in call_name:
@@ -639,11 +656,7 @@ def add_call_dataset_alert(filename, filepath, n_clicks, is_open):
                 word = 'Do not enter space into filename'
                 return True, word
             else:
-                path_File = filepath
-                file_part = filepath.split('\\')
-                file_call = file_part[-1].split('.')
-                file_type = file_call[-1]
-                call_data = cz.read_call(path_File, file_type)
+                call_data = parse_contents(contents)
                 all_users = call_data.get_all_users()
 
                 return False, None
@@ -651,9 +664,9 @@ def add_call_dataset_alert(filename, filepath, n_clicks, is_open):
         except Exception as e:
             print(e)
             if str(e) == "'NoneType' object has no attribute 'get_all_users'":
-                word = "File path is incorrect"
-            else:
                 word = "Dataset is not call dataset"
+            else:
+                word = "Error in file"
             return True, word
 
     else:
@@ -662,18 +675,14 @@ def add_call_dataset_alert(filename, filepath, n_clicks, is_open):
 
 ######## direct for the datset page after adding call dataset
 @app.callback(Output('adding_call', 'href'),
-              [Input('upload-data_call', 'value'), Input('filepath', 'value')]
+              [Input('upload-data_call', 'value'), Input('filepath', 'contents')]
               )
-def call_direct_datset(filename, filepath):
+def call_direct_datset(filename, contents):
     try:
-        path_File = filepath
-        file_part = filepath.split('\\')
-        file_call = file_part[-1].split('.')
-        file_type = file_call[-1]
-        call_data = cz.read_call(path_File, file_type)
+        call_data = parse_contents(contents)
         all_users = call_data.get_all_users()
-        if (filename in call_name) or (path_File in all_file_path) or (filepath is None) or (filename is None) or (
-                ' ' in filename):
+        if (filename in call_name) or (contents in all_file_content) or (contents is None) or (filename is None) or (
+                ' ' in filename) or len(filename)==0:
             return None
         else:
             href = '/Dataset'
@@ -687,9 +696,9 @@ def call_direct_datset(filename, filepath):
 
 ########## set n_clicks to 0
 @app.callback(Output('adding_call', 'n_clicks'),
-              [Input('upload-data_call', 'value'), Input('filepath', 'value')])
-def adding_call_button(filename, filepath):
-    if len(FilePath) >= 1 and FilePath[-1] != filepath:
+              [Input('upload-data_call', 'value'), Input('filepath', 'contents')])
+def adding_call_button(filename, content):
+    if len(call_content) >= 1 and call_content[-1] != content:
         return None
     elif len(call_files_name) >= 1 and call_files_name[-1] != filename:
         return None
@@ -1186,41 +1195,39 @@ def ignore_call_button(user):
     if len(ignored_callList) >= 1 and ignored_callList[-1] != user:
         return None
 
-  
+
+visu_conn_CallList = []
 ###### Visualize connection between all users
 @app.callback(Output('show_visualize_connection', 'children'),
-              [Input('visualize_connection', 'n_clicks')
+              [Input('visualize_connection', 'n_clicks'), Input('user_visu_conn', 'value'),
                ])
-def show_visualize_connection(n_clicks):
+def show_visualize_connection(n_clicks, user):
+    table = html.Div()
     try:
         if n_clicks is not None:
+            visu_conn_CallList.append(user)
             call_data = update_call_data[-1][-1]
             filename = update_call_data[-1][0]
-            visu_conn = call_data.visualize_connection_network(gui=True, fig_id=filename)
-            tab = []
-            column = []
-            col1 = html.Th("User", style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'})
-            column.append(col1)
-            col2 = html.Th("Connected User",
-                           style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'})
-            column.append(col2)
-            tab.append(html.Tr(children=column))
-            for connection in visu_conn[0]:
-                row_content = []
-                row_content.append(html.Td(connection[0], style={'border': '1px solid black', 'padding-left': '10px'}))
-                row_content.append(html.Td(connection[1], style={'border': '1px solid black', 'padding-left': '10px'}))
-                tab.append(html.Tr(children=row_content, style={'height': '5px'}))
-            table = html.Div([
-                html.Table(children=tab,
-                           style={'border-collapse': 'collapse',
-                                  'border': '1px solid black',
-                                  'width': '50%'
-                                  })
-            ])
+            name_id=''
+            if user is None or len(user)==0:
+                name_id=filename
+                visu_conn = call_data.visualize_connection_network(gui=True, fig_id=name_id)
+            else:
+                for x in user:
+                    name_id = name_id + str(x)
+                visu_conn = call_data.visualize_connection_network(users=user, gui=True, fig_id=name_id)
+
             return table
 
     except Exception as e:
         print(e)
+
+###### set 0 n_clicks ignore_call button
+@app.callback(Output('visualize_connection', 'n_clicks'),
+              [Input('user_visu_conn', 'value')])
+def visu_connection_button(user):
+    if len(visu_conn_CallList) >= 1 and visu_conn_CallList[-1] != user:
+        return None
 
 
 def get_call_users():
@@ -1278,6 +1285,14 @@ def select_2_call_user_records(n_clicks):
     if n_clicks is not None:
         return get_call_users()
 
+######## select call user for get visualize connection using dropdown
+@app.callback(Output('user_visu_conn', 'options'),
+            [   Input('select_user_visu_conn', 'n_clicks')
+            ])
+def select_call_users_visu_conn(n_clicks):
+    if n_clicks is not None:
+        return get_call_users()
+
 ###################################################################################################
 ###################################################################################################
 
@@ -1307,11 +1322,13 @@ cell_dataset = html.Div([
         html.Div([
             dbc.FormGroup(
                 [
-                    dbc.Label("Cell DataSet File path", html_for="example-email-row", width=2, ),
+                    dbc.Label("Select Cell DataSet File", html_for="example-email-row", width=2, ),
                     dbc.Col(
-                        dbc.Input(
-                            type="text", id="filepath_cell", placeholder="Ex:   D:\datasets\cells.csv",
-                            style={'width': '800px'}
+                        dcc.Upload(
+                            id='filepath_cell',
+                            children=html.Div([
+                                  dbc.Button("Select Cell File ", color="primary")  
+                                ]),
                         ),
                         width=10,
                     ),
@@ -1487,11 +1504,21 @@ trip_visualize = html.Div([
 
 ########### over cell pages
 
+def parse_contents_cell(contents, call_data):
+    content_type, content_string = contents.split(',')
+
+    decoded = base64.b64decode(content_string)
+    try:
+        dataset_obj = cz.read_cell(call_dataset_obj=call_data, decode_read=io.StringIO(decoded.decode('utf-8')))
+        return dataset_obj
+    except Exception as e:
+        print(e)
+
 cell_data_list = []
 update_cell_data = []
 cell_option = []
-File_Path_cell = []
-all_file_path_cell = []
+content_cell = []
+all_cell_content = []
 adding_call = []
 cell_file_name = []
 added_cell_name = []
@@ -1499,17 +1526,16 @@ added_cell_name = []
 
 ####### add cell data
 @app.callback(Output('cell-data', 'children'),
-              [Input('select_call', 'value'), Input('upload-data_cell', 'value'), Input('filepath_cell', 'value'),
+              [Input('select_call', 'value'), Input('upload-data_cell', 'value'), Input('filepath_cell', 'contents'),
                Input('show_cell_dash', 'n_clicks')],
               )
-def add_cell_dataset(call_file, filename, filepath, n_clicks):
+def add_cell_dataset(call_file, filename, contents, n_clicks):
     if n_clicks is not None:
         try:
-            File_Path_cell.append(filepath)
+            content_cell.append(contents)
             adding_call.append(call_file)
             cell_file_name.append(filename)
-            path_File = filepath
-            if path_File in all_file_path_cell or filename in added_cell_name or ' ' in filename:
+            if contents in all_cell_content or filename in added_cell_name or ' ' in filename or len(filename)==0:
                 output_cell = []
                 for x in cell_data_list:
                     a = x[0]
@@ -1518,19 +1544,16 @@ def add_cell_dataset(call_file, filename, filepath, n_clicks):
                 name_cell = html.Div(children=output_cell)
                 return name_cell
             else:
-                file_part = filepath.split('\\')
-                file_cell = file_part[-1].split('.')
-                file_type = file_cell[-1]
                 for call in call_data_list:
                     f_name = call[0]
                     if call_file == f_name:
-                        cell_data = cz.read_cell(path_File, call[1], call[-1], file_type)
+                        cell_data = parse_contents_cell(contents, call[-1])
                         dict_list = []
                         cell_record = cell_data.get_records()
                         for record in cell_record:
                             dict_list.append(vars(record))
-                        cell_data_list.append([filename, path_File, call[2], cell_record, cell_data])
-                        all_file_path_cell.append(path_File)
+                        cell_data_list.append([filename, contents, call[2], cell_record, cell_data])
+                        all_cell_content.append(contents)
                         added_cell_name.append(filename)
                         break
                 option = []
@@ -1581,23 +1604,23 @@ def add_cell_dataset(call_file, filename, filepath, n_clicks):
 
 ############## error alert for cell data
 @app.callback([Output('alert_cell', 'is_open'), Output('alert_cell', 'children')],
-              [Input('select_call', 'value'), Input('upload-data_cell', 'value'), Input('filepath_cell', 'value'),
+              [Input('select_call', 'value'), Input('upload-data_cell', 'value'), Input('filepath_cell', 'contents'),
                Input('show_cell_dash', 'n_clicks')],
               [State('alert_cell', 'is_open')]
               )
-def add_cell_dataset_alert(call_file, filename, filepath, n_clicks, is_open):
+def add_cell_dataset_alert(call_file, filename, contents, n_clicks, is_open):
     if n_clicks is not None:
         try:
-            if filepath is None:
-                word = 'Please enter filepath'
+            if contents is None:
+                word = 'Please add cell dataset'
                 return True, word
-            elif filename is None:
+            elif filename is None or len(filename)==0:
                 word = 'Please enter filename'
                 return True, word
             elif call_file is None:
                 word = 'Please add call dataset'
                 return True, word
-            elif filepath in all_file_path_cell:
+            elif contents in all_cell_content:
                 word = 'This file already exist'
                 return True, word
             elif filename in added_cell_name:
@@ -1607,14 +1630,10 @@ def add_cell_dataset_alert(call_file, filename, filepath, n_clicks, is_open):
                 word = 'Do not enter space into filename'
                 return True, word
             else:
-                path_File = filepath
-                file_part = filepath.split('\\')
-                file_cell = file_part[-1].split('.')
-                file_type = file_cell[-1]
                 for call in call_data_list:
                     f_name = call[0]
                     if call_file == f_name:
-                        cell_data = cz.read_cell(path_File, call[1], call[-1], file_type)
+                        cell_data = parse_contents_cell(contents, call[-1])
                         dict_list = []
                         for record in cell_data.get_records():
                             dict_list.append(vars(record))
@@ -1624,11 +1643,11 @@ def add_cell_dataset_alert(call_file, filename, filepath, n_clicks, is_open):
         except Exception as e:
             print(str(e))
             if str(e) == "'NoneType' object has no attribute 'get_records'":
-                word = "File path is incorrect"
+                word = "Dataset is not cell dataset"
             elif str(e) == "local variable 'cell_data' referenced before assignment":
                 word = "Incorrect call dataset"
             else:
-                word = "Dataset is not cell dataset"
+                word = "Error in file"
             return True, word
 
     else:
@@ -1637,24 +1656,20 @@ def add_cell_dataset_alert(call_file, filename, filepath, n_clicks, is_open):
 
 ######## direct for the datset page after adding cell dataset
 @app.callback(Output('show_cell_dash', 'href'),
-              [Input('select_call', 'value'), Input('upload-data_cell', 'value'), Input('filepath_cell', 'value')]
+              [Input('select_call', 'value'), Input('upload-data_cell', 'value'), Input('filepath_cell', 'contents')]
               )
-def cell_direct_datset(call_file, filename, filepath):
+def cell_direct_datset(call_file, filename, contents):
     try:
-        path_File = filepath
-        file_part = filepath.split('\\')
-        file_cell = file_part[-1].split('.')
-        file_type = file_cell[-1]
         for call in call_data_list:
             f_name = call[0]
             if call_file == f_name:
-                cell_data = cz.read_cell(path_File, call[1], call[-1], file_type)
+                cell_data = parse_contents_cell(contents, call[-1])
                 dict_list = []
                 for record in cell_data.get_records():
                     dict_list.append(vars(record))
                 break
-        if (filename in added_cell_name) or (path_File in all_file_path_cell) or (filepath is None) or (
-                filename is None) or (call_file is None) or (' ' in filename):
+        if (filename in added_cell_name) or (contents in all_cell_content) or (contents is None) or (
+                filename is None) or (call_file is None) or (' ' in filename) or len(filename)==0:
             return None
         else:
             href = '/Dataset'
@@ -1667,14 +1682,26 @@ def cell_direct_datset(call_file, filename, filepath):
 
 ########### set button n_clicks to zero
 @app.callback(Output('show_cell_dash', 'n_clicks'),
-              [Input('select_call', 'value'), Input('upload-data_cell', 'value'), Input('filepath_cell', 'value')])
-def adding_cell_button(call_file, filename, filepath):
-    if len(File_Path_cell) >= 1 and File_Path_cell[-1] != filepath:
+              [Input('select_call', 'value'), Input('upload-data_cell', 'value'), Input('filepath_cell', 'contents')])
+def adding_cell_button(call_file, filename, contents):
+    if len(content_cell) >= 1 and content_cell[-1] != contents:
         return None
     elif len(cell_file_name) >= 1 and cell_file_name[-1] != filename:
         return None
     elif len(adding_call) >= 1 and adding_call[-1] != call_file:
         return None
+
+
+######## select call dataset using dropdown
+@app.callback(Output('select_call', 'options'),
+              [Input('filepath_cell', 'contents')
+               ])
+def get_call_for_cell(contents):
+    if contents is not None and len(call_data_list) >= 1:
+        add_call = []
+        for name in call_name:
+            add_call.append({'label': name, 'value': name})
+        return add_call
 
 
 ########### show cell data
@@ -1731,18 +1758,6 @@ def view_cell_data(n_clicks, click2):
 def close_cell_data(n_clicks):
     if n_clicks is not None:
         return None
-
-
-######## select call dataset using dropdown
-@app.callback(Output('select_call', 'options'),
-              [Input('filepath_cell', 'value')
-               ])
-def get_call_for_cell(filepath):
-    if filepath is not None and len(call_data_list) >= 1:
-        add_call = []
-        for name in call_name:
-            add_call.append({'label': name, 'value': name})
-        return add_call
 
 
 ###### get cell_id records
@@ -1940,11 +1955,13 @@ message_dataset = html.Div([
         html.Div([
             dbc.FormGroup(
                 [
-                    dbc.Label("Message DataSet File path", html_for="example-email-row", width=2, ),
+                    dbc.Label("Select Message DataSet File", html_for="example-email-row", width=2, ),
                     dbc.Col(
-                        dbc.Input(
-                            type="text", id="filepath_message", placeholder="Ex:   D:\datasets\messages.csv",
-                            style={'width': '800px'}
+                        dcc.Upload(
+                            id='filepath_message',
+                            children=html.Div([
+                                  dbc.Button("Select Message File ", color="primary")  
+                                ]),
                         ),
                         width=10,
                     ),
@@ -2124,6 +2141,19 @@ visualize_message_connections = html.Div([
     navbar_message_dataset_visualize,
     messagepagevisualizesidebar,
     html.Div([
+        dbc.FormGroup(
+            [
+                dbc.Button("Select User", color="primary", className="sample_call_dataset_viewdata", id='select_msg_user_visu_conn'),
+                dbc.Col(
+                        dcc.Dropdown(
+                            id="msg_user_visu_conn",
+                            placeholder="Select a User",
+                            multi=True,
+                            style = {'width':500}
+                        ),
+                    ),
+            ]
+        ),
         dbc.Button('Visualize Connection', id='visualize_message_connection', color='danger', 
                    className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div', style={"margin": 20, "margin-top": 100}
@@ -2134,27 +2164,36 @@ visualize_message_connections = html.Div([
 
 ##############
 
+def parse_contents_message(contents):
+    content_type, content_string = contents.split(',')
+
+    decoded = base64.b64decode(content_string)
+    try:
+        dataset_obj = cz.read_msg(decode_read=io.StringIO(decoded.decode('utf-8')))
+        return dataset_obj
+    except Exception as e:
+        print(e)
+
 message_data_list = []
 update_message_data = []
 message_option = []
-FilePath_message = []
-all_message_path = []
+content_message = []
+all_message_content = []
 file_name_message = []
 added_message_name = []
 
 
 ######## add message dataset
 @app.callback(Output('message-data', 'children'),
-              [Input('upload-data_message', 'value'), Input('filepath_message', 'value'),
+              [Input('upload-data_message', 'value'), Input('filepath_message', 'contents'),
                Input('adding_message', 'n_clicks')],
               )
-def add_message_dataset(filename, filepath, n_clicks):
+def add_message_dataset(filename, contents, n_clicks):
     if n_clicks is not None:
         try:
-            FilePath_message.append(filepath)
+            content_message.append(contents)
             file_name_message.append(filename)
-            path_File = filepath
-            if path_File in all_message_path or filename in added_message_name or ' ' in filename:
+            if contents in all_message_content or filename in added_message_name or ' ' in filename or len(filename)==0:
                 output_message = []
                 for x in message_data_list:
                     a = x[0]
@@ -2163,14 +2202,11 @@ def add_message_dataset(filename, filepath, n_clicks):
                 name_message = html.Div(children=output_message)
                 return name_message
             else:
-                file_part = filepath.split('\\')
-                file_message = file_part[-1].split('.')
-                file_type = file_message[-1]
-                message_data = cz.read_msg(path_File, file_type)
+                message_data = parse_contents_message(contents)
                 all_users = message_data.get_all_users()
                 message_record = message_data.get_records()
-                message_data_list.append([filename, path_File, all_users, message_record, message_data])
-                all_message_path.append(path_File)
+                message_data_list.append([filename, contents, all_users, message_record, message_data])
+                all_message_content.append(contents)
                 added_message_name.append(filename)
                 option = []
                 option.append(dbc.Row(
@@ -2225,24 +2261,23 @@ def add_message_dataset(filename, filepath, n_clicks):
         name_message = html.Div(children=output_message)
         return name_message
 
-    ######### show message alert
 
-
+######### show message alert
 @app.callback([Output('alert_message', 'is_open'), Output('alert_message', 'children')],
-              [Input('upload-data_message', 'value'), Input('filepath_message', 'value'),
+              [Input('upload-data_message', 'value'), Input('filepath_message', 'contents'),
                Input('adding_message', 'n_clicks')],
               [State('alert_message', 'is_open')]
               )
-def add_message_dataset_alert(filename, filepath, n_clicks, is_open):
+def add_message_dataset_alert(filename, contents, n_clicks, is_open):
     if n_clicks is not None:
         try:
-            if filepath is None:
-                word = 'Please enter filepath'
+            if contents is None:
+                word = 'Please select message dataset'
                 return True, word
-            elif filename is None:
+            elif filename is None or len(filename)==0:
                 word = 'Please enter filename'
                 return True, word
-            elif filepath in all_message_path:
+            elif contents in all_message_content:
                 word = 'This file already exist'
                 return True, word
             elif filename in added_message_name:
@@ -2252,22 +2287,16 @@ def add_message_dataset_alert(filename, filepath, n_clicks, is_open):
                 word = 'Do not enter space into filename'
                 return True, word
             else:
-                path_File = filepath
-                file_part = filepath.split('\\')
-                file_message = file_part[-1].split('.')
-                file_type = file_message[-1]
-                cz.read_msg(path_File, file_type)
-                message_data = cz.read_msg(path_File, file_type)
+                message_data = parse_contents_message(contents)
                 all_users = message_data.get_all_users()
-
                 return False, None
 
         except Exception as e:
             print(str(e))
             if str(e) == "'NoneType' object has no attribute 'get_all_users'":
-                word = "File path is incorrect"
-            else:
                 word = "Dataset is not message dataset"
+            else:
+                word = "Error in file"
             return True, word
     else:
         return False, None
@@ -2275,19 +2304,14 @@ def add_message_dataset_alert(filename, filepath, n_clicks, is_open):
 
 ######## direct for the datset page after adding message dataset
 @app.callback(Output('adding_message', 'href'),
-              [Input('upload-data_message', 'value'), Input('filepath_message', 'value')]
+              [Input('upload-data_message', 'value'), Input('filepath_message', 'contents')]
               )
-def message_direct_datset(filename, filepath):
+def message_direct_datset(filename, contents):
     try:
-        path_File = filepath
-        file_part = filepath.split('\\')
-        file_message = file_part[-1].split('.')
-        file_type = file_message[-1]
-        cz.read_msg(path_File, file_type)
-        message_data = cz.read_msg(path_File, file_type)
+        message_data = parse_contents_message(contents)
         all_users = message_data.get_all_users()
-        if (filename in added_message_name) or (path_File in all_message_path) or (filepath is None) or (
-                filename is None) or (' ' in filename):
+        if (filename in added_message_name) or (contents in all_message_content) or (contents is None) or (
+                filename is None) or (' ' in filename) or len(filename)==0:
             return None
         else:
             href = '/Dataset'
@@ -2300,9 +2324,9 @@ def message_direct_datset(filename, filepath):
 
 ######### set button n_clicks to zero
 @app.callback(Output('adding_message', 'n_clicks'),
-              [Input('upload-data_message', 'value'), Input('filepath_message', 'value')])
-def adding_message_button(filename, filepath):
-    if len(FilePath_message) >= 1 and FilePath_message[-1] != filepath:
+              [Input('upload-data_message', 'value'), Input('filepath_message', 'contents')])
+def adding_message_button(filename, contents):
+    if len(content_message) >= 1 and content_message[-1] != contents:
         return None
     elif len(file_name_message) >= 1 and file_name_message[-1] != filename:
         return None
@@ -2535,42 +2559,38 @@ def record_message_users_button(user1, user2):
         return None
 
 
-###### Visualize connection betwwen all users in message dataset
+msguser_visuconn = []
+###### Visualize connection between users in message dataset
 @app.callback(Output('show_visualize_message_connection', 'children'),
-              [Input('visualize_message_connection', 'n_clicks')
+              [Input('visualize_message_connection', 'n_clicks'), Input('msg_user_visu_conn', 'value')
                ])
-def show_visualize_message_connection(n_clicks):
+def show_visualize_message_connection(n_clicks, user):
     try:
         table = html.Div()
         if n_clicks is not None:
+            msguser_visuconn.append(user)
             message_data = update_message_data[-1][-1]
             filename = update_message_data[-1][0]
-            visu_conn = message_data.visualize_connection_network(gui=True, fig_id=filename)
-            tab = []
-            column = []
-            col1 = html.Th("User", style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'})
-            column.append(col1)
-            col2 = html.Th("Connected User",
-                           style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'})
-            column.append(col2)
-            tab.append(html.Tr(children=column))
-            for connection in visu_conn[0]:
-                row_content = []
-                row_content.append(html.Td(connection[0], style={'border': '1px solid black', 'padding-left': '10px'}))
-                row_content.append(html.Td(connection[1], style={'border': '1px solid black', 'padding-left': '10px'}))
-                tab.append(html.Tr(children=row_content, style={'height': '5px'}))
-            table = html.Div([
-                html.Table(children=tab,
-                           style={'border-collapse': 'collapse',
-                                  'border': '1px solid black',
-                                  'width': '50%'
-                                  })
-            ])
+            name_id=''
+            if user is None or len(user)==0:
+                name_id=filename
+                visu_conn = message_data.visualize_connection_network(gui=True, fig_id=name_id)
+            else:
+                for x in user:
+                    name_id = name_id + str(x)
+                visu_conn = message_data.visualize_connection_network(users=user, gui=True, fig_id=name_id)
+
             return table
 
     except Exception as e:
         print(e)
 
+###### set 0 n_clicks visu_connection_message button
+@app.callback(Output('visualize_message_connection', 'n_clicks'),
+              [Input('msg_user_visu_conn', 'value')])
+def visualize_message_connection_button(user):
+    if len(msguser_visuconn) >= 1 and msguser_visuconn[-1] != user:
+        return None
 
 ######## return message file name to the next page
 @app.callback(dash.dependencies.Output('file_name_message', 'children'),
@@ -2616,9 +2636,8 @@ def message_record_card_home(pathname):
     else:
         return AddDataSetCard('message')
 
-    ########### get message visualize option for navigation bar
 
-
+########### get message visualize option for navigation bar
 @app.callback(dash.dependencies.Output('navbar_message_visu', 'children'),
               [dash.dependencies.Input('url', 'pathname')
                ])
@@ -2679,6 +2698,14 @@ def select_1_msg_user_2_record(n_clicks):
             [   Input('select_msg_user_2_records', 'n_clicks')
             ])
 def select_2_msg_user_2_record(n_clicks):
+    if n_clicks is not None:
+        return get_msg_call_users()
+
+######## select message user for get visualize connection using dropdown
+@app.callback(Output('msg_user_visu_conn', 'options'),
+            [   Input('select_msg_user_visu_conn', 'n_clicks')
+            ])
+def select_msg_users_visu_conn(n_clicks):
     if n_clicks is not None:
         return get_msg_call_users()
 
