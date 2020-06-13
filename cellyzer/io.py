@@ -187,9 +187,9 @@ def read_call(file_path="", file_type='csv', hash=True, decode_read="", splitted
                 #     print(c)
                 return create_call_obj(call_list, fieldnames, hash)
         elif file_type.lower() == 'xls' or file_type.lower() == 'xlsx':
-            return read_xls(file_path)
+            return read_xls(file_path, hash)
         elif file_type.lower() == 'json':
-            return read_json(file_path)
+            return read_json(file_path, hash)
         else:
             print('Invalid Format')
     except IOError:
@@ -246,9 +246,9 @@ def read_msg(file_path='', file_type='csv', hash=True, decode_read="", splitted_
 
                 return create_msg_obj(messages_list, fieldnames, hash)
         elif file_type.lower() == 'xls' or file_type.lower() == 'xlsx':
-            return read_xls(file_path)
+            return read_xls(file_path, hash)
         elif file_type.lower() == 'json':
-            return read_json(file_path)
+            return read_json(file_path, hash)
         else:
             print('Invalid Format')
     except IOError:
@@ -332,7 +332,7 @@ def read_cell(file_path='', call_csv_path=None, call_dataset_obj=None, file_type
         pass
 
 
-def read_xls(filepath, call_data_set=None):
+def read_xls(filepath, call_data_set=None, hash=True):
     print("[x]  Reading Data From Excel File")
 
     """
@@ -349,15 +349,15 @@ def read_xls(filepath, call_data_set=None):
     if 'latitude' in fieldnames and len(fieldnames) == 3:
         return create_cell_obj(sample, fieldnames, call_data_set)
     elif 'duration' in fieldnames and len(fieldnames) == 7:
-        return create_call_obj(sample, fieldnames)
+        return create_call_obj(sample, fieldnames, hash)
     elif 'length' in fieldnames and len(fieldnames) == 5:
-        return create_msg_obj(sample, fieldnames)
+        return create_msg_obj(sample, fieldnames, hash)
     else:
         log.warning('Invalid Input')
         log.getLogger().setLevel(_level)
 
 
-def read_json(filepath):
+def read_json(filepath, hash=True):
     print("[x]  Reading Data From JSON File")
 
     """
@@ -379,13 +379,13 @@ def read_json(filepath):
                         for records in data[key]:
                             record_list.append(records)
                         print(record_list)
-                        return create_call_obj(record_list, fieldnames)
+                        return create_call_obj(record_list, fieldnames, hash)
                     elif key.lower() == 'messagerecords':
                         fieldnames = data[key][0].keys()
                         for records in data[key]:
                             record_list.append(records)
                         print(record_list)
-                        return create_msg_obj(record_list, fieldnames)
+                        return create_msg_obj(record_list, fieldnames, hash)
                     elif key.lower() == 'cellrecords':
                         fieldnames = data[key][0].keys()
                         for records in data[key]:

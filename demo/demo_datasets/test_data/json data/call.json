@@ -1,0 +1,445 @@
+{
+   "callrecords":[
+      {
+         "user":7610039694,
+         "other":7434677419,
+         "direction":"Incoming",
+         "duration":211,
+         "timestamp":"Wed Sep 15 19:17:44 +0100 2010",
+         "antenna_id":2,
+         "cost":8
+      },
+      {
+         "user":7641036117,
+         "other":1666472054,
+         "direction":"Outgoing",
+         "duration":31,
+         "timestamp":"Mon Feb 11 07:18:23 +0000 1980",
+         "antenna_id":10,
+         "cost":2
+      },
+      {
+         "user":7641036117,
+         "other":7371326239,
+         "direction":"Incoming",
+         "duration":45,
+         "timestamp":"Mon Feb 11 07:45:42 +0000 1980",
+         "antenna_id":2,
+         "cost":2
+      },
+      {
+         "user":7641036117,
+         "other":7681546436,
+         "direction":"Outgoing",
+         "duration":10,
+         "timestamp":"Mon Feb 11 08:04:42 +0000 1980",
+         "antenna_id":3,
+         "cost":2
+      },
+      {
+         "user":7641036117,
+         "other":7681546436,
+         "direction":"Outgoing",
+         "duration":0,
+         "timestamp":"Mon Feb 11 08:05:31 +0000 1980",
+         "antenna_id":4,
+         "cost":0
+      },
+      {
+         "user":7641036117,
+         "other":7681546436,
+         "direction":"Incoming",
+         "duration":0,
+         "timestamp":"Mon Feb 11 08:06:18 +0000 1980",
+         "antenna_id":5,
+         "cost":0
+      },
+      {
+         "user":7641036117,
+         "other":7981267897,
+         "direction":"Outgoing",
+         "duration":0,
+         "timestamp":"Mon Feb 11 08:06:31 +0000 1980",
+         "antenna_id":6,
+         "cost":0
+      },
+      {
+         "user":7641036117,
+         "other":7588304495,
+         "direction":"Incoming",
+         "duration":124,
+         "timestamp":"Thu Sep 09 19:35:37 +0100 2010",
+         "antenna_id":7,
+         "cost":6
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Outgoing",
+         "duration":474,
+         "timestamp":"Thu Sep 09 18:43:44 +0100 2010",
+         "antenna_id":5,
+         "cost":16
+      },
+      {
+         "user":7981267897,
+         "other":7743039441,
+         "direction":"Missed",
+         "duration":0,
+         "timestamp":"Thu Sep 09 19:51:30 +0100 2010",
+         "antenna_id":3,
+         "cost":0
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Outgoing",
+         "duration":0,
+         "timestamp":"Thu Sep 09 20:57:55 +0100 2010",
+         "antenna_id":1,
+         "cost":0
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Outgoing",
+         "duration":605,
+         "timestamp":"Fri Sep 10 20:17:00 +0100 2010",
+         "antenna_id":1,
+         "cost":22
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Outgoing",
+         "duration":1,
+         "timestamp":"Sat Sep 11 16:44:56 +0100 2010",
+         "antenna_id":1,
+         "cost":2
+      },
+      {
+         "user":7981267897,
+         "other":7743039441,
+         "direction":"Outgoing",
+         "duration":59,
+         "timestamp":"Sat Sep 11 17:00:59 +0100 2010",
+         "antenna_id":2,
+         "cost":2
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Outgoing",
+         "duration":1201,
+         "timestamp":"Mon Sep 13 14:53:26 +0100 2010",
+         "antenna_id":3,
+         "cost":42
+      },
+      {
+         "user":7981267897,
+         "other":7641036117,
+         "direction":"Outgoing",
+         "duration":2,
+         "timestamp":"Tue Sep 14 07:19:17 +0100 2010",
+         "antenna_id":1,
+         "cost":2
+      },
+      {
+         "user":7163185791,
+         "other":1850897526,
+         "direction":"Outgoing",
+         "duration":0,
+         "timestamp":"Thu Sep 09 21:05:12 +0100 2010",
+         "antenna_id":10,
+         "cost":0
+      },
+      {
+         "user":7163185791,
+         "other":7066875066,
+         "direction":"Outgoing",
+         "duration":0,
+         "timestamp":"Fri Sep 10 18:14:22 +0100 2010",
+         "antenna_id":2,
+         "cost":0
+      },
+      {
+         "user":7163185791,
+         "other":7066875066,
+         "direction":"Outgoing",
+         "duration":0,
+         "timestamp":"Fri Sep 10 18:14:46 +0100 2010",
+         "antenna_id":2,
+         "cost":0
+      },
+      {
+         "user":7163185791,
+         "other":7691640598,
+         "direction":"Outgoing",
+         "duration":0,
+         "timestamp":"Fri Sep 10 18:16:16 +0100 2010",
+         "antenna_id":2,
+         "cost":0
+      },
+      {
+         "user":7163185791,
+         "other":7691640598,
+         "direction":"Outgoing",
+         "duration":0,
+         "timestamp":"Fri Sep 10 18:17:32 +0100 2010",
+         "antenna_id":2,
+         "cost":0
+      },
+      {
+         "user":7163185791,
+         "other":8704500768,
+         "direction":"Missed",
+         "duration":0,
+         "timestamp":"Tue Sep 14 13:18:18 +0100 2010",
+         "antenna_id":2,
+         "cost":0
+      },
+      {
+         "user":7163185791,
+         "other":7187432175,
+         "direction":"Outgoing",
+         "duration":39,
+         "timestamp":"Tue Sep 14 15:23:43 +0100 2010",
+         "antenna_id":2,
+         "cost":2
+      },
+      {
+         "user":7163185791,
+         "other":7187432175,
+         "direction":"Outgoing",
+         "duration":3,
+         "timestamp":"Tue Sep 14 15:27:12 +0100 2010",
+         "antenna_id":2,
+         "cost":2
+      },
+      {
+         "user":7163185791,
+         "other":7230262224,
+         "direction":"Incoming",
+         "duration":47,
+         "timestamp":"Tue Sep 14 15:28:16 +0100 2010",
+         "antenna_id":2,
+         "cost":2
+      },
+      {
+         "user":7163185791,
+         "other":7187432175,
+         "direction":"Outgoing",
+         "duration":8,
+         "timestamp":"Tue Sep 14 15:55:01 +0100 2010",
+         "antenna_id":2,
+         "cost":2
+      },
+      {
+         "user":7163185791,
+         "other":8704500768,
+         "direction":"Missed",
+         "duration":0,
+         "timestamp":"Wed Sep 15 11:52:36 +0100 2010",
+         "antenna_id":2,
+         "cost":0
+      },
+      {
+         "user":7163185791,
+         "other":8704500768,
+         "direction":"Missed",
+         "duration":0,
+         "timestamp":"Wed Sep 15 12:34:27 +0100 2010",
+         "antenna_id":2,
+         "cost":0
+      },
+      {
+         "user":7163185791,
+         "other":7187432175,
+         "direction":"Outgoing",
+         "duration":8,
+         "timestamp":"Wed Sep 15 15:54:26 +0100 2010",
+         "antenna_id":2,
+         "cost":2
+      },
+      {
+         "user":7110730864,
+         "other":7209670163,
+         "direction":"Outgoing",
+         "duration":0,
+         "timestamp":"Thu Sep 09 18:16:47 +0100 2010",
+         "antenna_id":1,
+         "cost":0
+      },
+      {
+         "user":7110730864,
+         "other":7209670163,
+         "direction":"Missed",
+         "duration":0,
+         "timestamp":"Thu Sep 09 18:37:05 +0100 2010",
+         "antenna_id":2,
+         "cost":0
+      },
+      {
+         "user":7110730864,
+         "other":7209670163,
+         "direction":"Missed",
+         "duration":0,
+         "timestamp":"Thu Sep 09 19:03:05 +0100 2010",
+         "antenna_id":2,
+         "cost":0
+      },
+      {
+         "user":7110730864,
+         "other":4.88e+31,
+         "direction":"Outgoing",
+         "duration":0,
+         "timestamp":"Thu Sep 09 20:02:16 +0100 2010",
+         "antenna_id":2,
+         "cost":0
+      },
+      {
+         "user":7110730864,
+         "other":7209670163,
+         "direction":"Missed",
+         "duration":0,
+         "timestamp":"Thu Sep 09 20:57:51 +0100 2010",
+         "antenna_id":3,
+         "cost":0
+      },
+      {
+         "user":7110730864,
+         "other":4.88e+31,
+         "direction":"Outgoing",
+         "duration":0,
+         "timestamp":"Thu Sep 09 22:07:39 +0100 2010",
+         "antenna_id":3,
+         "cost":0
+      },
+      {
+         "user":7110730864,
+         "other":4.88e+31,
+         "direction":"Outgoing",
+         "duration":0,
+         "timestamp":"Thu Sep 09 22:08:08 +0100 2010",
+         "antenna_id":3,
+         "cost":0
+      },
+      {
+         "user":7110730864,
+         "other":7209670163,
+         "direction":"Outgoing",
+         "duration":215,
+         "timestamp":"Thu Sep 09 22:12:01 +0100 2010",
+         "antenna_id":2,
+         "cost":8
+      },
+      {
+         "user":7110730864,
+         "other":452,
+         "direction":"Outgoing",
+         "duration":41,
+         "timestamp":"Thu Sep 09 22:38:09 +0100 2010",
+         "antenna_id":2,
+         "cost":2
+      },
+      {
+         "user":7110730864,
+         "other":563,
+         "direction":"Outgoing",
+         "duration":0,
+         "timestamp":"Thu Sep 09 23:02:56 +0100 2010",
+         "antenna_id":2,
+         "cost":0
+      },
+      {
+         "user":7110730864,
+         "other":7501874156,
+         "direction":"Outgoing",
+         "duration":0,
+         "timestamp":"Thu Sep 09 23:18:13 +0100 2010",
+         "antenna_id":2,
+         "cost":0
+      },
+      {
+         "user":7110730864,
+         "other":7784425582,
+         "direction":"Outgoing",
+         "duration":0,
+         "timestamp":"Thu Sep 09 23:21:05 +0100 2010",
+         "antenna_id":2,
+         "cost":0
+      },
+      {
+         "user":7110730864,
+         "other":452,
+         "direction":"Outgoing",
+         "duration":4,
+         "timestamp":"Thu Sep 09 23:28:24 +0100 2010",
+         "antenna_id":2,
+         "cost":2
+      },
+      {
+         "user":7110730864,
+         "other":452,
+         "direction":"Outgoing",
+         "duration":52,
+         "timestamp":"Fri Sep 10 06:01:27 +0100 2010",
+         "antenna_id":1,
+         "cost":2
+      },
+      {
+         "user":7110730864,
+         "other":7209670163,
+         "direction":"Outgoing",
+         "duration":0,
+         "timestamp":"Fri Sep 10 06:04:43 +0100 2010",
+         "antenna_id":2,
+         "cost":0
+      },
+      {
+         "user":7110730864,
+         "other":452,
+         "direction":"Outgoing",
+         "duration":39,
+         "timestamp":"Fri Sep 10 07:45:52 +0100 2010",
+         "antenna_id":4,
+         "cost":2
+      },
+      {
+         "user":7110730864,
+         "other":7681546436,
+         "direction":"Missed",
+         "duration":0,
+         "timestamp":"Fri Sep 10 07:53:09 +0100 2010",
+         "antenna_id":2,
+         "cost":0
+      },
+      {
+         "user":7110730864,
+         "other":7681546436,
+         "direction":"Outgoing",
+         "duration":0,
+         "timestamp":"Fri Sep 10 07:54:02 +0100 2010",
+         "antenna_id":1,
+         "cost":0
+      },
+      {
+         "user":7110730864,
+         "other":7914559382,
+         "direction":"Outgoing",
+         "duration":0,
+         "timestamp":"Fri Sep 10 11:15:49 +0100 2010",
+         "antenna_id":10,
+         "cost":0
+      },
+      {
+         "user":7110730864,
+         "other":1258345846,
+         "direction":"Missed",
+         "duration":0,
+         "timestamp":"Fri Sep 10 19:35:57 +0100 2010",
+         "antenna_id":1,
+         "cost":0
+      }
+   ]
+}

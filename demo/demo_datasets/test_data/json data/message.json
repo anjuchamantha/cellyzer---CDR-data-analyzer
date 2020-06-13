@@ -1,0 +1,347 @@
+{
+   "messagerecords":[
+      {
+         "user":7610039694,
+         "other":7684763671,
+         "direction":"Incoming",
+         "length":28,
+         "timestamp":"Wed Sep 15 19:01:54 +0100 2010"
+      },
+      {
+         "user":7641036117,
+         "other":7681546436,
+         "direction":"Incoming",
+         "length":7,
+         "timestamp":"Mon Feb 11 07:08:49 +0000 1980"
+      },
+      {
+         "user":7641036117,
+         "other":7681546436,
+         "direction":"Outgoing",
+         "length":6,
+         "timestamp":"Mon Feb 11 07:14:05 +0000 1980"
+      },
+      {
+         "user":7641036117,
+         "other":7981267897,
+         "direction":"Outgoing",
+         "length":41,
+         "timestamp":"Thu Sep 09 21:43:44 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Outgoing",
+         "length":75,
+         "timestamp":"Mon Jan 07 22:58:28 +0000 1980"
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Incoming",
+         "length":33,
+         "timestamp":"Thu Sep 09 18:53:25 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Outgoing",
+         "length":90,
+         "timestamp":"Thu Sep 09 18:59:35 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Incoming",
+         "length":30,
+         "timestamp":"Thu Sep 09 19:06:06 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Outgoing",
+         "length":112,
+         "timestamp":"Thu Sep 09 19:22:28 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Incoming",
+         "length":89,
+         "timestamp":"Thu Sep 09 19:24:50 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Outgoing",
+         "length":28,
+         "timestamp":"Thu Sep 09 19:26:17 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Incoming",
+         "length":19,
+         "timestamp":"Thu Sep 09 19:34:16 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Incoming",
+         "length":2,
+         "timestamp":"Thu Sep 09 19:35:07 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Outgoing",
+         "length":43,
+         "timestamp":"Thu Sep 09 19:35:45 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7681546436,
+         "direction":"Incoming",
+         "length":19,
+         "timestamp":"Thu Sep 09 21:31:23 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7681546436,
+         "direction":"Outgoing",
+         "length":20,
+         "timestamp":"Thu Sep 09 21:32:11 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7681546436,
+         "direction":"Incoming",
+         "length":34,
+         "timestamp":"Thu Sep 09 21:33:45 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7681546436,
+         "direction":"Outgoing",
+         "length":2,
+         "timestamp":"Thu Sep 09 21:34:14 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7641036117,
+         "direction":"Incoming",
+         "length":41,
+         "timestamp":"Thu Sep 09 21:42:55 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Outgoing",
+         "length":23,
+         "timestamp":"Fri Sep 10 06:36:57 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Incoming",
+         "length":13,
+         "timestamp":"Fri Sep 10 06:38:38 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Outgoing",
+         "length":11,
+         "timestamp":"Fri Sep 10 06:39:10 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Incoming",
+         "length":15,
+         "timestamp":"Fri Sep 10 06:40:56 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7033434266,
+         "direction":"Incoming",
+         "length":150,
+         "timestamp":"Fri Sep 10 12:23:21 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7817341678,
+         "direction":"Incoming",
+         "length":45,
+         "timestamp":"Fri Sep 10 16:07:38 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7541477895,
+         "direction":"Incoming",
+         "length":70,
+         "timestamp":"Fri Sep 10 16:33:49 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7541477895,
+         "direction":"Outgoing",
+         "length":58,
+         "timestamp":"Fri Sep 10 16:36:07 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7541477895,
+         "direction":"Incoming",
+         "length":9,
+         "timestamp":"Fri Sep 10 16:36:41 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Outgoing",
+         "length":14,
+         "timestamp":"Fri Sep 10 16:40:16 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7641036117,
+         "direction":"Incoming",
+         "length":20,
+         "timestamp":"Fri Sep 10 16:47:21 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7641036117,
+         "direction":"Outgoing",
+         "length":4,
+         "timestamp":"Fri Sep 10 16:47:45 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Incoming",
+         "length":100,
+         "timestamp":"Fri Sep 10 16:47:59 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Outgoing",
+         "length":49,
+         "timestamp":"Fri Sep 10 16:49:06 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Incoming",
+         "length":159,
+         "timestamp":"Fri Sep 10 16:52:51 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Outgoing",
+         "length":86,
+         "timestamp":"Fri Sep 10 16:55:14 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Incoming",
+         "length":57,
+         "timestamp":"Fri Sep 10 16:56:42 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Outgoing",
+         "length":59,
+         "timestamp":"Fri Sep 10 16:59:18 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Incoming",
+         "length":52,
+         "timestamp":"Fri Sep 10 17:00:37 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Outgoing",
+         "length":99,
+         "timestamp":"Fri Sep 10 17:02:45 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Incoming",
+         "length":82,
+         "timestamp":"Fri Sep 10 17:08:34 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Outgoing",
+         "length":71,
+         "timestamp":"Fri Sep 10 17:10:43 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Incoming",
+         "length":31,
+         "timestamp":"Fri Sep 10 17:29:15 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Outgoing",
+         "length":126,
+         "timestamp":"Fri Sep 10 17:31:56 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Incoming",
+         "length":36,
+         "timestamp":"Fri Sep 10 17:38:26 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Outgoing",
+         "length":159,
+         "timestamp":"Fri Sep 10 17:41:33 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Incoming",
+         "length":40,
+         "timestamp":"Fri Sep 10 17:43:14 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Outgoing",
+         "length":74,
+         "timestamp":"Fri Sep 10 17:47:08 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Incoming",
+         "length":29,
+         "timestamp":"Fri Sep 10 17:48:28 +0100 2010"
+      },
+      {
+         "user":7981267897,
+         "other":7784425582,
+         "direction":"Outgoing",
+         "length":149,
+         "timestamp":"Fri Sep 10 17:54:40 +0100 2010"
+      }
+   ]
+}
