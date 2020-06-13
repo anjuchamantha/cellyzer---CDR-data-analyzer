@@ -268,7 +268,7 @@ call_dataset = html.Div([
                 'padding-left': '30px'
             }),
         html.Div([
-            dbc.Button("Add DataSet", color="primary", className="mr-1 float-right", id='adding_call')
+            dbc.Button('Add Dataset', color="primary", className="mr-1 float-right", id='adding_call')
         ], style={"margin-top": '40px'}),
         dbc.Alert(id='alert', dismissable=True, is_open=False,
                   style={'width': '500px', 'background-color': 'red', 'font-size': '18px'})
@@ -530,7 +530,7 @@ update_call_data = []
 call_option = []
 call_name = []
 call_files_name = []
-
+tempory_call_data = []
 
 def parse_contents(contents):
     content_type, content_string = contents.split(',')
@@ -560,13 +560,15 @@ def add_call_dataset(filename, content, n_clicks):
                 name = html.Div(children=output_call)
                 return name
             else:
-                call_data = parse_contents(content)
-                record = call_data.get_records()
-                all_users = call_data.get_all_users()
+                if len(tempory_call_data)>=1 and tempory_call_data[-1][1]==content:
+                    call_data = tempory_call_data[-1][2]
+                    all_users = tempory_call_data[-1][-1]
+                    record = call_data.get_records()
                 call_data_list.append([filename, content, all_users, record, call_data])
                 all_file_content.append(content)
                 call_name.append(filename)
                 option = []
+                tempory_call_data.clear()
                 option.append(dbc.Row(
                     dbc.Button("Show All Data", href='/Call_Dataset/{}/view_data'.format(filename), color="light",
                                className="mr-1", block=True, id='visu_show_call',
@@ -658,7 +660,7 @@ def add_call_dataset_alert(filename, contents, n_clicks, is_open):
             else:
                 call_data = parse_contents(contents)
                 all_users = call_data.get_all_users()
-
+                
                 return False, None
 
         except Exception as e:
@@ -679,12 +681,13 @@ def add_call_dataset_alert(filename, contents, n_clicks, is_open):
               )
 def call_direct_datset(filename, contents):
     try:
-        call_data = parse_contents(contents)
-        all_users = call_data.get_all_users()
         if (filename in call_name) or (contents in all_file_content) or (contents is None) or (filename is None) or (
                 ' ' in filename) or len(filename)==0:
             return None
         else:
+            call_data = parse_contents(contents)
+            all_users = call_data.get_all_users()
+            tempory_call_data.append([filename, contents, call_data, all_users])
             href = '/Dataset'
             print('ok')
             return href
@@ -814,13 +817,13 @@ def update_table(n_clicks, click2):
                 column.append(
                     html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
             tab.append(html.Tr(children=column))
-            count = 0
+            # count = 0
             for j in dict_list:
                 value = list(j.values())
-                count += 1
-                row_content = []
-                if count > 100:
-                    break
+                # count += 1
+                # row_content = []
+                # if count > 100:
+                #     break
                 row_content = []
                 for x in value:
                     row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
@@ -1116,7 +1119,7 @@ def show_active_time(n_clicks, user_4):
                     html.H5(children='User does not exist',
                             style={'color': 'red', 'font-size': '20px', 'padding-left': '20px'})])
             else:
-                active_time = call_data.get_most_active_time(user_4)
+                active_time = call_data.get_most_active_time(str(user_4))
                 cz.visualization.active_time_bar_chart(active_time, gui=True, dataset_id=filename)
             return table
 
@@ -1522,7 +1525,7 @@ all_cell_content = []
 adding_call = []
 cell_file_name = []
 added_cell_name = []
-
+tempory_cell = []
 
 ####### add cell data
 @app.callback(Output('cell-data', 'children'),
@@ -1544,18 +1547,14 @@ def add_cell_dataset(call_file, filename, contents, n_clicks):
                 name_cell = html.Div(children=output_cell)
                 return name_cell
             else:
-                for call in call_data_list:
-                    f_name = call[0]
-                    if call_file == f_name:
-                        cell_data = parse_contents_cell(contents, call[-1])
-                        dict_list = []
-                        cell_record = cell_data.get_records()
-                        for record in cell_record:
-                            dict_list.append(vars(record))
-                        cell_data_list.append([filename, contents, call[2], cell_record, cell_data])
-                        all_cell_content.append(contents)
-                        added_cell_name.append(filename)
-                        break
+                if len(tempory_cell)>=1 and tempory_cell[-1][1] == contents:
+                    cell_data= tempory_cell[-1][2]
+                    cell_record = cell_data.get_records()
+                    all_users = tempory_cell[-1][-1]
+                    cell_data_list.append([filename, contents, all_users, cell_record, cell_data])
+                    all_cell_content.append(contents)
+                    added_cell_name.append(filename)
+                tempory_cell.clear()
                 option = []
                 option.append(dbc.Row(
                     dbc.Button("Show All Data", href='/Cell_Dataset/{}/view_cell_data'.format(filename), color="light",
@@ -1660,18 +1659,19 @@ def add_cell_dataset_alert(call_file, filename, contents, n_clicks, is_open):
               )
 def cell_direct_datset(call_file, filename, contents):
     try:
-        for call in call_data_list:
-            f_name = call[0]
-            if call_file == f_name:
-                cell_data = parse_contents_cell(contents, call[-1])
-                dict_list = []
-                for record in cell_data.get_records():
-                    dict_list.append(vars(record))
-                break
         if (filename in added_cell_name) or (contents in all_cell_content) or (contents is None) or (
                 filename is None) or (call_file is None) or (' ' in filename) or len(filename)==0:
             return None
         else:
+            for call in call_data_list:
+                f_name = call[0]
+                if call_file == f_name:
+                    cell_data = parse_contents_cell(contents, call[-1])
+                    dict_list = []
+                    for record in cell_data.get_records():
+                        dict_list.append(vars(record))
+                    break
+            tempory_cell.append([filename, contents, cell_data, call_file, call[2]])
             href = '/Dataset'
             return href
 
@@ -1727,13 +1727,13 @@ def view_cell_data(n_clicks, click2):
                 column.append(
                     html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
             tab.append(html.Tr(children=column))
-            count = 0
+            # count = 0
             for j in dict_list:
                 value = list(j.values())
-                count += 1
-                row_content = []
-                if count > 100:
-                    break
+                # count += 1
+                # row_content = []
+                # if count > 100:
+                #     break
                 row_content = []
                 for x in value:
                     row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
@@ -2181,7 +2181,7 @@ content_message = []
 all_message_content = []
 file_name_message = []
 added_message_name = []
-
+tempory_message_data = []
 
 ######## add message dataset
 @app.callback(Output('message-data', 'children'),
@@ -2202,12 +2202,14 @@ def add_message_dataset(filename, contents, n_clicks):
                 name_message = html.Div(children=output_message)
                 return name_message
             else:
-                message_data = parse_contents_message(contents)
-                all_users = message_data.get_all_users()
-                message_record = message_data.get_records()
+                if len(tempory_message_data)>=1 and tempory_message_data[-1][1]== contents:
+                    message_data= tempory_message_data[-1][2]
+                    all_users = tempory_message_data[-1][-1]
+                    message_record = message_data.get_records()
                 message_data_list.append([filename, contents, all_users, message_record, message_data])
                 all_message_content.append(contents)
                 added_message_name.append(filename)
+                tempory_message_data.clear()
                 option = []
                 option.append(dbc.Row(
                     dbc.Button("Show All Data", href='/Message_Dataset/{}/view_data'.format(filename), color="light",
@@ -2308,12 +2310,13 @@ def add_message_dataset_alert(filename, contents, n_clicks, is_open):
               )
 def message_direct_datset(filename, contents):
     try:
-        message_data = parse_contents_message(contents)
-        all_users = message_data.get_all_users()
         if (filename in added_message_name) or (contents in all_message_content) or (contents is None) or (
                 filename is None) or (' ' in filename) or len(filename)==0:
             return None
         else:
+            message_data = parse_contents_message(contents)
+            all_users = message_data.get_all_users()
+            tempory_message_data.append([filename, contents, message_data, all_users])
             href = '/Dataset'
             return href
 
@@ -2354,13 +2357,13 @@ def view_message_data(n_clicks, click2):
                 column.append(
                     html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
             tab.append(html.Tr(children=column))
-            count = 0
+            # count = 0
             for j in dict_list:
                 value = list(j.values())
-                count += 1
-                row_content = []
-                if count > 100:
-                    break
+                # count += 1
+                # row_content = []
+                # if count > 100:
+                #     break
                 row_content = []
                 for x in value:
                     row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
