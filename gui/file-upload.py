@@ -42,6 +42,8 @@ def parse_contents(contents, filename, date):
     content_type, content_string = contents.split(',')
 
     decoded = base64.b64decode(content_string)
+    print(decoded)
+    print(io.StringIO(decoded.decode('utf-8')))
     try:
         dataset_obj = cz.read_call(decode_read=io.StringIO(decoded.decode('utf-8')))
     except Exception as e:
