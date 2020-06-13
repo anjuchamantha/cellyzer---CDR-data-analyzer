@@ -26,7 +26,7 @@ app.config.suppress_callback_exceptions = True
 
 
 app.layout = html.Div([
-    dcc.Location(id='url', refresh=False),
+    dcc.Location(id='url', refresh=True),
     html.Div(id='page-content'),
 ])
 
@@ -353,6 +353,7 @@ connected_users = html.Div([
         dbc.FormGroup(
             [
                 dbc.Button("Select User", color="primary", className="sample_call_dataset_viewdata", id='but_select_user'),
+                html.P('Click the "Select User" button before selecting users', style={'color':'red', 'font-size':16}),
                 dbc.Col(
                         dcc.Dropdown(
                             id="search",
@@ -378,9 +379,10 @@ records_between_users = html.Div([
         html.H4('Enter Two Numbers:'),
         html.Br(),
         dbc.Button("Select Users", color="primary", className="sample_call_dataset_viewdata", id='select_user_records_2_user'),
+        html.P('Click the "Select Users" button before selecting users', style={'color':'red', 'font-size':16}),
         dbc.FormGroup(
             [
-                dbc.Label("Select 1 user", html_for="example-email-row", width=2, style={'font-size':18}),
+                dbc.Label("Select user 1", html_for="example-email-row", width=2, style={'font-size':20, 'font-style': 'normal'}),
                 dbc.Col(
                         dcc.Dropdown(
                             id="search_2",
@@ -393,7 +395,7 @@ records_between_users = html.Div([
         ),
         dbc.FormGroup(
             [
-                dbc.Label("Select 2 user", html_for="example-email-row", width=2, style={'font-size':18}),
+                dbc.Label("Select user 2", html_for="example-email-row", width=2, style={'font-size':20, 'font-style': 'normal'}),
                 dbc.Col(
                     dcc.Dropdown(
                             id="search_3",
@@ -420,6 +422,7 @@ close_contacts = html.Div([
         dbc.FormGroup(
             [
                 dbc.Button("Select User", color="primary", className="sample_call_dataset_viewdata", id='select_user_close_contact'),
+                html.P('Click the "Select User" button before selecting users', style={'color':'red', 'font-size':16}),
                 dbc.Col(
                         dcc.Dropdown(
                             id="user_3",
@@ -455,6 +458,7 @@ ignore_call_detail = html.Div([
         dbc.FormGroup(
             [
                 dbc.Button("Select User", color="primary", className="sample_call_dataset_viewdata", id='select_user_ignore_call'),
+                html.P('Click the "Select User" button before selecting users', style={'color':'red', 'font-size':16}),
                 dbc.Col(
                         dcc.Dropdown(
                             id="user_5",
@@ -479,6 +483,7 @@ active_time_user = html.Div([
         dbc.FormGroup(
             [
                 dbc.Button("Select User", color="primary", className="sample_call_dataset_viewdata", id='select_user_active_time'),
+                html.P('Click the "Select User" button before selecting users', style={'color':'red', 'font-size':16}),
                 dbc.Col(
                         dcc.Dropdown(
                             id="user_4",
@@ -503,6 +508,7 @@ visualize_connections = html.Div([
         dbc.FormGroup(
             [
                 dbc.Button("Select User", color="primary", className="sample_call_dataset_viewdata", id='select_user_visu_conn'),
+                html.P('Click the "Select User" button before selecting users', style={'color':'red', 'font-size':16}),
                 dbc.Col(
                         dcc.Dropdown(
                             id="user_visu_conn",
@@ -1488,6 +1494,7 @@ trip_visualize = html.Div([
         dbc.FormGroup(
             [
                 dbc.Button("Select User", color="primary", className="sample_call_dataset_viewdata", id='select_user_trip_visu'),
+                html.P('Click the "Select User" button before selecting users', style={'color':'red', 'font-size':16}),
                 dbc.Col(
                         dcc.Dropdown(
                             id="trip_user",
@@ -2077,6 +2084,7 @@ connected_message_users = html.Div([
         dbc.FormGroup(
             [
                 dbc.Button("Select User", color="primary", className="sample_call_dataset_viewdata", id='select_msg_user_connected'),
+                html.P('Click the "Select User" button before selecting users', style={'color':'red', 'font-size':16}),
                 dbc.Col(
                         dcc.Dropdown(
                             id="user_message",
@@ -2101,10 +2109,11 @@ message_records_between_users = html.Div([
     html.Div([
         html.H4('Enter Two Numbers:'),
         html.Br(),
-         dbc.Button("Select User", color="primary", className="sample_call_dataset_viewdata", id='select_msg_user_2_records'),
+        dbc.Button("Select Users", color="primary", className="sample_call_dataset_viewdata", id='select_msg_user_2_records'),
+        html.P('Click the "Select Users" button before selecting users', style={'color':'red', 'font-size':16}),
         dbc.FormGroup(
             [
-                dbc.Label("Select 1 user", html_for="example-email-row", width=2, style={'font-size':18}),
+                dbc.Label("Select user 1", html_for="example-email-row", width=2, style={'font-size':20, 'font-style': 'normal'}),
                 dbc.Col(
                         dcc.Dropdown(
                             id="message_user2",
@@ -2117,7 +2126,7 @@ message_records_between_users = html.Div([
         ),
         dbc.FormGroup(
             [
-                dbc.Label("Select 1 user", html_for="example-email-row", width=2, style={'font-size':18}),
+                dbc.Label("Select user 2", html_for="example-email-row", width=2, style={'font-size':20, 'font-style': 'normal'}),
                 dbc.Col(
                         dcc.Dropdown(
                             id="message_user3",
@@ -2144,6 +2153,7 @@ visualize_message_connections = html.Div([
         dbc.FormGroup(
             [
                 dbc.Button("Select User", color="primary", className="sample_call_dataset_viewdata", id='select_msg_user_visu_conn'),
+                html.P('Click the "Select User" button before selecting users', style={'color':'red', 'font-size':16}),
                 dbc.Col(
                         dcc.Dropdown(
                             id="msg_user_visu_conn",
