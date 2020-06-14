@@ -9,7 +9,7 @@ def readme():
 
 setup(
     name="cellyzer",
-    version="1.0.1",
+    version="1.1.0",
     description="A CDR(Call Data Records) data analyzing library",
     long_description=readme(),
     long_description_content_type="text/markdown",
@@ -20,7 +20,6 @@ setup(
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Intended Audience :: Science/Research",
-        "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.7",
     ],
     packages=["cellyzer"],
@@ -32,6 +31,7 @@ setup(
         "datetime == 4.3",
         "networkx == 2.4",
         "matplotlib == 3.2.1",
-        "folium == 0.10.1", 'IPython'
+        "folium == 0.10.1",
+        "IPython"
     ],
 )

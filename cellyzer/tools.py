@@ -3,10 +3,10 @@ import tabulate
 import logging
 import sys
 import webbrowser
-import ipywidgets as widgets
-import dash_bootstrap_components as dbc
-import dash_html_components as html
 
+from .Matrix import matrix
+
+# print(matrix.matrix_css)
 
 class _AnsiColorizer(object):
     _colors = dict(black=30, red=31, green=32, yellow=33,
@@ -136,8 +136,8 @@ def print_matrix_new(matrix, headers):
         print("Matrix Length : ", len(matrix))
         header_fixed_script = '<table id="header-fixed"></table>'
         jquery_script = '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>'
-        js_script = '<script src="../../Matrix/js_script.js"></script>'
-        html_head = '<head> \n <link href="../../Matrix/connection_matrix.css" rel="stylesheet" type="text/css"></link> \n {} \n {}' \
+        js_script = '<script src="../Matrix/js_script.js"></script>'
+        html_head = '<head> \n <link href="../Matrix/connection_matrix.css" rel="stylesheet" type="text/css"></link> \n {} \n {}' \
                     '</head>'.format(jquery_script, js_script)
         html_tag = "<html> \n {} \n <body> \n <h1>Connection Matrix</h1> \n ".format(html_head)
         table_header = create_header(headers)
