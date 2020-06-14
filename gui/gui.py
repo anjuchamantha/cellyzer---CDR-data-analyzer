@@ -1827,7 +1827,12 @@ def trip_visualization(user, n_clicks):
             else:
                 antana_dataset = update_cell_data[-1][-1]
                 trip_visualize = antana_dataset.get_trip_details(user)
-                cz.visualization.trip_visualization(trip_visualize)
+                if len(trip_visualize) == 0:
+                    table = html.Div([
+                        html.H5(children='No trip visualize records',
+                                style={'color': 'red', 'font-size': '20px', 'padding-left': '20px'})])
+                else:
+                    cz.visualization.trip_visualization(trip_visualize)
             return table
 
         except Exception as e:
