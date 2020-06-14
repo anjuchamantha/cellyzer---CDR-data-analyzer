@@ -4,9 +4,8 @@ import logging
 import sys
 import webbrowser
 
-from .Matrix import matrix
+from .Matrix import matrix as matrixFile
 
-# print(matrix.matrix_css)
 
 class _AnsiColorizer(object):
     _colors = dict(black=30, red=31, green=32, yellow=33,
@@ -134,12 +133,7 @@ def print_matrix(matrix, headers):
 def print_matrix_new(matrix, headers):
     if len(matrix) > 0:
         print("Matrix Length : ", len(matrix))
-        header_fixed_script = '<table id="header-fixed"></table>'
-        jquery_script = '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>'
-        js_script = '<script src="../Matrix/js_script.js"></script>'
-        html_head = '<head> \n <link href="../Matrix/connection_matrix.css" rel="stylesheet" type="text/css"></link> \n {} \n {}' \
-                    '</head>'.format(jquery_script, js_script)
-        html_tag = "<html> \n {} \n <body> \n <h1>Connection Matrix</h1> \n ".format(html_head)
+        html_tag = matrixFile.matrix_html_head
         table_header = create_header(headers)
         table_body = create_rows(matrix)
         html_tag += '<table> \n {} \n {} \n </table>  \n </body> \n</html>'.format(table_header, table_body)

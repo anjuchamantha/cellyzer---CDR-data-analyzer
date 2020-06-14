@@ -4,8 +4,9 @@ This is for manual testing the library
 
 import cellyzer as cz
 
-call_file_path = "demo_datasets/test_data/excel data/calls.xlsx"
-callDataSet = cz.read_call(call_file_path, 'xls')
+call_file_path = "demo_datasets/long_data/calls_.csv"
+callDataSet = cz.read_call(call_file_path)
+callDataSet.print_connection_matrix()
 # cz.utils.print_dataset(callDataSet, name="Call Dataset")
 #
 # all_users_of_calls = callDataSet.get_all_users()
@@ -34,9 +35,9 @@ search_user_call_3 = '329233d117'
 # print(">> close contacts of %s :" % search_user_call_1)
 # cz.utils.print_close_contacts(close_contacts)
 #
-active_time = callDataSet.get_most_active_time(search_user_call_1)
-print(">> most active times during day of %s - %s" % (search_user_call_1, active_time))
-cz.visualization.active_time_bar_chart(active_time)
+#active_time = callDataSet.get_most_active_time(search_user_call_1)
+#print(">> most active times during day of %s - %s" % (search_user_call_1, active_time))
+#cz.visualization.active_time_bar_chart(active_time)
 #
 # ignored_call_details = callDataSet.get_ignored_call_details(search_user_call_3)
 # print(">> Ignored calls details : ")
