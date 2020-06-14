@@ -891,9 +891,9 @@ def show_connected_users(n_clicks, searchUser):
         try:
             call_data = update_call_data[-1][-1]
             call_users = update_call_data[-1][2]
-            if searchUser is None:
+            if searchUser is None or len(searchUser)==0:
                 table = html.Div([
-                    html.H5(children='Please enter number',
+                    html.H5(children='Please select user',
                             style={'color': 'red', 'font-size': '20px', 'padding-left': '20px'})])
             elif searchUser not in call_users:
                 table = html.Div([
@@ -956,9 +956,9 @@ def between_users_records(user_1, user_2, click):
             call_data = update_call_data[-1][-1]
             call_users = update_call_data[-1][2]
             dict_list = []
-            if user_1 is None or user_2 is None:
+            if user_1 is None or user_2 is None or len(user_1)==0 or len(user_2)==0:
                 table = html.Div([
-                    html.H5(children='Please enter number',
+                    html.H5(children='Please select users',
                             style={'color': 'red', 'font-size': '20px', 'padding-left': '20px'})])
             elif user_2 not in call_users:
                 table = html.Div([
@@ -1034,9 +1034,9 @@ def show_close_contatcs(user_3, contact, n_clicks):
             numberList.append(contact)
             call_data = update_call_data[-1][-1]
             call_users = update_call_data[-1][2]
-            if user_3 is None:
+            if user_3 is None or len(user_3)==0:
                 table=html.Div([
-                    html.H5(children='Please enter user', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})]) 
+                    html.H5(children='Please select user', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})]) 
             elif contact is None:
                 table=html.Div([
                     html.H5(children='Please enter number for no. contact', style={'color':'red', 'font-size': '20px', 'padding-left': '20px'})]) 
@@ -1105,9 +1105,9 @@ def show_active_time(n_clicks, user_4):
             filename = update_call_data[-1][0]
             call_data = update_call_data[-1][-1]
             call_users = update_call_data[-1][2]
-            if user_4 is None:
+            if user_4 is None or len(user_4)==0:
                 table = html.Div([
-                    html.H5(children='Please enter number',
+                    html.H5(children='Please select user',
                             style={'color': 'red', 'font-size': '20px', 'padding-left': '20px'})])
             elif user_4 not in call_users:
                 table = html.Div([
@@ -1115,7 +1115,7 @@ def show_active_time(n_clicks, user_4):
                             style={'color': 'red', 'font-size': '20px', 'padding-left': '20px'})])
             else:
                 active_time = call_data.get_most_active_time(str(user_4))
-                cz.visualization.active_time_bar_chart(active_time, gui=True, dataset_id=filename)
+                cz.visualization.active_time_bar_chart(active_time, gui=True, dataset_id=str(user_4))
             return table
 
     except Exception as e:
@@ -1144,9 +1144,9 @@ def show_ignore_call(user_5, n_clicks):
         try:
             call_data = update_call_data[-1][-1]
             call_users = update_call_data[-1][2]
-            if user_5 is None:
+            if user_5 is None or len(user_5)==0:
                 table = html.Div([
-                    html.H5(children='Please enter number',
+                    html.H5(children='Please select user',
                             style={'color': 'red', 'font-size': '20px', 'padding-left': '20px'})])
             elif user_5 not in call_users:
                 table = html.Div([
@@ -1798,9 +1798,9 @@ def trip_visualization(user, n_clicks):
         trip_userList.append(user)
         try:
             all_users = update_cell_data[-1][2]
-            if user is None:
+            if user is None or len(user)==0:
                 table = html.Div([
-                    html.H5(children='Please enter number',
+                    html.H5(children='Please select user',
                             style={'color': 'red', 'font-size': '20px', 'padding-left': '20px'})])
             elif user not in all_users:
                 table = html.Div([
@@ -2421,9 +2421,9 @@ def show_connected_message_users(n_clicks, searchUser):
         try:
             message_data = update_message_data[-1][-1]
             all_users = update_message_data[-1][2]
-            if searchUser is None:
+            if searchUser is None or len(searchUser)==0:
                 table = html.Div([
-                    html.H5(children='Please enter number',
+                    html.H5(children='Please select user',
                             style={'color': 'red', 'font-size': '20px', 'padding-left': '20px'})])
             elif searchUser not in all_users:
                 table = html.Div([
@@ -2485,9 +2485,9 @@ def between_message_users_records(user_1, user_2, click):
         try:
             message_data = update_message_data[-1][-1]
             all_users = update_message_data[-1][2]
-            if user_1 is None or user_2 is None:
+            if user_1 is None or user_2 is None or len(user_1)==0 or len(user_2)==0:
                 table = html.Div([
-                    html.H5(children='Please enter number',
+                    html.H5(children='Please select users',
                             style={'color': 'red', 'font-size': '20px', 'padding-left': '20px'})])
             elif user_2 not in all_users:
                 table = html.Div([
