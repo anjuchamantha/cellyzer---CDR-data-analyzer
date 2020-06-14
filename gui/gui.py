@@ -217,7 +217,7 @@ callpagesidebar = dac.Sidebar(
         [
             dac.SidebarButton(id='add-cell-records', label='Home', icon='home', href='/'),
             dac.SidebarButton(id='add-cell-records-dataset', label='Dataset', icon='box', href='/Dataset'),
-            html.Div(id="call-data", style={"margin-left": "40px"})
+            html.Div(id="call-data", style={"margin-left": "40px", "margin-top": '10px'})
         ]
     ),
     title='CELLYZER',
@@ -285,7 +285,7 @@ callpagevisualizesidebar = dac.Sidebar(
             dac.SidebarButton(id='add-cell-records', label='Home', icon='home', href='/'),
             dac.SidebarButton(id='add-cell-records-dataset', label='Dataset', icon='box', href='/Dataset'),
             html.P('Call Dataset', style={"margin-left": "40px", 'font-size': 20, 'color': 'white'}),
-            html.Div(id="call_data_visu_sidebar", style={"margin-left": "40px"})
+            html.Div(id="call_data_visu_sidebar", style={"margin-left": "40px", "margin-top": '10px'})
         ]
     ),
     title='CELLYZER',
@@ -561,7 +561,7 @@ def add_call_dataset(filename, content, n_clicks):
                 output_call = []
                 for x in call_data_list:
                     a = x[0]
-                    output_call.append(dcc.Link(a, href='/Call_Dataset/' + str(a)))
+                    output_call.append(dcc.Link(a, href='/Call_Dataset/' + str(a), style={'color':'yellow'}))
                     output_call.append(html.Br())
                 name = html.Div(children=output_call)
                 return name
@@ -613,7 +613,7 @@ def add_call_dataset(filename, content, n_clicks):
                 output_call = []
                 for x in call_data_list:
                     a = x[0]
-                    output_call.append(dcc.Link(a, href='/Call_Dataset/' + str(a)))
+                    output_call.append(dcc.Link(a, href='/Call_Dataset/' + str(a), style={'color':'yellow'}))
                     output_call.append(html.Br())
                 name = html.Div(children=output_call)
                 return name
@@ -623,7 +623,7 @@ def add_call_dataset(filename, content, n_clicks):
             output_call = []
             for x in call_data_list:
                 a = x[0]
-                output_call.append(dcc.Link(a, href='/Call_Dataset/' + str(a)))
+                output_call.append(dcc.Link(a, href='/Call_Dataset/' + str(a), style={'color':'yellow'}))
                 output_call.append(html.Br())
             name = html.Div(children=output_call)
             return name
@@ -632,7 +632,7 @@ def add_call_dataset(filename, content, n_clicks):
         output_call = []
         for x in call_data_list:
             a = x[0]
-            output_call.append(dcc.Link(a, href='/Call_Dataset/' + str(a)))
+            output_call.append(dcc.Link(a, href='/Call_Dataset/' + str(a), style={'color':'yellow'}))
             output_call.append(html.Br())
         name = html.Div(children=output_call)
         return name
@@ -789,7 +789,7 @@ def call_visu_sidebar(pathname):
         output_call = []
         for x in call_data_list:
             a = x[0]
-            output_call.append(dcc.Link(a, href='/Call_Dataset/' + str(a)))
+            output_call.append(dcc.Link(a, href='/Call_Dataset/' + str(a), style={'color':'yellow'}))
             output_call.append(html.Br())
         name = html.Div(children=output_call)
         return name
@@ -807,24 +807,18 @@ def update_table(n_clicks, click2):
             return None
 
         if n_clicks is not None:
-            record_call = update_call_data[-1][3]
-            dict_list = []
-            for record in record_call:
-                dict_list.append(vars(record))
-            header = list(dict_list[0].keys())
+            call_data = update_call_data[-1][-1]
+            show_data = cz.utils.print_dataset(dataset_obj=call_data, head=50, tail=50)
+            header = show_data[0]
+            dict_list = show_data[1]
             tab = []
             column = []
             for i in header:
                 column.append(
                     html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
             tab.append(html.Tr(children=column))
-            # count = 0
             for j in dict_list:
                 value = list(j.values())
-                # count += 1
-                # row_content = []
-                # if count > 100:
-                #     break
                 row_content = []
                 for x in value:
                     row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
@@ -1393,7 +1387,7 @@ cellpagevisualizesidebar = dac.Sidebar(
             dac.SidebarButton(id='add-cell-records', label='Home', icon='home', href='/'),
             dac.SidebarButton(id='add-cell-records-dataset', label='Dataset', icon='box', href='/Dataset'),
             html.P('Cell Dataset', style={"margin-left": "40px", 'font-size': 20, 'color': 'white'}),
-            html.Div(id="cell_data_visu_sidebar", style={"margin-left": "40px"})
+            html.Div(id="cell_data_visu_sidebar", style={"margin-left": "40px", "margin-top": '10px'})
         ]
     ),
     title='CELLYZER',
@@ -1543,7 +1537,7 @@ def add_cell_dataset(call_file, filename, contents, n_clicks):
                 output_cell = []
                 for x in cell_data_list:
                     a = x[0]
-                    output_cell.append(dcc.Link(a, href='/Cell_Dataset/' + str(a)))
+                    output_cell.append(dcc.Link(a, href='/Cell_Dataset/' + str(a), style={'color':'yellow'}))
                     output_cell.append(html.Br())
                 name_cell = html.Div(children=output_cell)
                 return name_cell
@@ -1581,7 +1575,7 @@ def add_cell_dataset(call_file, filename, contents, n_clicks):
                 output_cell = []
                 for x in cell_data_list:
                     a = x[0]
-                    output_cell.append(dcc.Link(a, href='/Cell_Dataset/' + str(a)))
+                    output_cell.append(dcc.Link(a, href='/Cell_Dataset/' + str(a), style={'color':'yellow'}))
                     output_cell.append(html.Br())
                 name_cell = html.Div(children=output_cell)
                 return name_cell
@@ -1591,7 +1585,7 @@ def add_cell_dataset(call_file, filename, contents, n_clicks):
             output_cell = []
             for x in cell_data_list:
                 a = x[0]
-                output_cell.append(dcc.Link(a, href='/Cell_Dataset/' + str(a)))
+                output_cell.append(dcc.Link(a, href='/Cell_Dataset/' + str(a), style={'color':'yellow'}))
                 output_cell.append(html.Br())
             name_cell = html.Div(children=output_cell)
             return name_cell
@@ -1600,7 +1594,7 @@ def add_cell_dataset(call_file, filename, contents, n_clicks):
         output_cell = []
         for x in cell_data_list:
             a = x[0]
-            output_cell.append(dcc.Link(a, href='/Cell_Dataset/' + str(a)))
+            output_cell.append(dcc.Link(a, href='/Cell_Dataset/' + str(a), style={'color':'yellow'}))
             output_cell.append(html.Br())
         name_cell = html.Div(children=output_cell)
         return name_cell
@@ -1720,24 +1714,18 @@ def view_cell_data(n_clicks, click2):
             return None
 
         if n_clicks is not None:
-            cell_records = update_cell_data[-1][3]
-            dict_list = []
-            for record in cell_records:
-                dict_list.append(vars(record))
-            header = list(dict_list[0].keys())
+            cell_dataset = update_cell_data[-1][-1]
+            show_data = cz.utils.print_dataset(dataset_obj=cell_dataset, head=50, tail=50)
+            header = show_data[0]
+            dict_list = show_data[1]
             tab = []
             column = []
             for i in header:
                 column.append(
                     html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
             tab.append(html.Tr(children=column))
-            # count = 0
             for j in dict_list:
                 value = list(j.values())
-                # count += 1
-                # row_content = []
-                # if count > 100:
-                #     break
                 row_content = []
                 for x in value:
                     row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
@@ -1908,7 +1896,7 @@ def cell_visu_sidebar(pathname):
         output_cell = []
         for x in cell_data_list:
             a = x[0]
-            output_cell.append(dcc.Link(a, href='/Cell_Dataset/' + str(a)))
+            output_cell.append(dcc.Link(a, href='/Cell_Dataset/' + str(a), style={'color':'yellow'}))
             output_cell.append(html.Br())
         name_cell = html.Div(children=output_cell)
         return name_cell
@@ -1940,7 +1928,7 @@ messagepagesidebar = dac.Sidebar(
         [
             dac.SidebarButton(id='add-cell-records', label='Home', icon='home', href='/'),
             dac.SidebarButton(id='add-cell-records-dataset', label='Dataset', icon='box', href='/Dataset'),
-            html.Div(id="message-data", style={"margin-left": "40px"})
+            html.Div(id="message-data", style={"margin-left": "40px","margin-top": 10})
         ]
     ),
     title='CELLYZER',
@@ -2010,7 +1998,7 @@ messagepagevisualizesidebar = dac.Sidebar(
             dac.SidebarButton(id='add-cell-records', label='Home', icon='home', href='/'),
             dac.SidebarButton(id='add-cell-records-dataset', label='Dataset', icon='box', href='/Dataset'),
             html.P('Message Dataset', style={"margin-left": "40px", 'font-size': 20, 'color': 'white'}),
-            html.Div(id="message_data_visu_sidebar", style={"margin-left": "40px"})
+            html.Div(id="message_data_visu_sidebar", style={"margin-left": "40px", "margin-top": 10})
         ]
     ),
     title='CELLYZER',
@@ -2204,7 +2192,7 @@ def add_message_dataset(filename, contents, n_clicks):
                 output_message = []
                 for x in message_data_list:
                     a = x[0]
-                    output_message.append(dcc.Link(a, href='/Message_Dataset/' + str(a)))
+                    output_message.append(dcc.Link(a, href='/Message_Dataset/' + str(a), style={'color':'yellow'}))
                     output_message.append(html.Br())
                 name_message = html.Div(children=output_message)
                 return name_message
@@ -2245,7 +2233,7 @@ def add_message_dataset(filename, contents, n_clicks):
                 output_message = []
                 for x in message_data_list:
                     a = x[0]
-                    output_message.append(dcc.Link(a, href='/Message_Dataset/' + str(a)))
+                    output_message.append(dcc.Link(a, href='/Message_Dataset/' + str(a), style={'color':'yellow'}))
                     output_message.append(html.Br())
                 name_message = html.Div(children=output_message)
                 return name_message
@@ -2255,7 +2243,7 @@ def add_message_dataset(filename, contents, n_clicks):
             output_message = []
             for x in message_data_list:
                 a = x[0]
-                output_message.append(dcc.Link(a, href='/Message_Dataset/' + str(a)))
+                output_message.append(dcc.Link(a, href='/Message_Dataset/' + str(a), style={'color':'yellow'}))
                 output_message.append(html.Br())
             name_message = html.Div(children=output_message)
             return name_message
@@ -2263,7 +2251,7 @@ def add_message_dataset(filename, contents, n_clicks):
         output_message = []
         for x in message_data_list:
             a = x[0]
-            output_message.append(dcc.Link(a, href='/Message_Dataset/' + str(a)))
+            output_message.append(dcc.Link(a, href='/Message_Dataset/' + str(a), style={'color':'yellow'}))
             output_message.append(html.Br())
         name_message = html.Div(children=output_message)
         return name_message
@@ -2349,24 +2337,18 @@ def view_message_data(n_clicks, click2):
             return None
 
         if n_clicks is not None:
-            message_record = update_message_data[-1][3]
-            dict_list = []
-            for record in message_record:
-                dict_list.append(vars(record))
-            header = list(dict_list[0].keys())
+            message_data = update_message_data[-1][-1]
+            show_data = cz.utils.print_dataset(dataset_obj=message_data, head=50, tail=50)
+            header = show_data[0]
+            dict_list = show_data[1]
             tab = []
             column = []
             for i in header:
                 column.append(
                     html.Th(i, style={'border': '1px solid black', 'background-color': '#4CAF50', 'color': 'white'}))
             tab.append(html.Tr(children=column))
-            # count = 0
             for j in dict_list:
                 value = list(j.values())
-                # count += 1
-                # row_content = []
-                # if count > 100:
-                #     break
                 row_content = []
                 for x in value:
                     row_content.append(html.Td(x, style={'border': '1px solid black', 'padding-left': '10px'}))
@@ -2671,7 +2653,7 @@ def message_visu_sidebar(pathname):
         output_message = []
         for x in message_data_list:
             a = x[0]
-            output_message.append(dcc.Link(a, href='/Message_Dataset/' + str(a)))
+            output_message.append(dcc.Link(a, href='/Message_Dataset/' + str(a), style={'color':'yellow'}))
             output_message.append(html.Br())
         name_message = html.Div(children=output_message)
         return name_message

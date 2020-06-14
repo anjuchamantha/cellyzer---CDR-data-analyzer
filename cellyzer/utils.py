@@ -43,7 +43,7 @@ def print_dataset(dataset_obj, notebook=False, name="Dataset", rows=None, summer
         print(tabulate.tabulate(rows, header, tablefmt='html'))
     else:
         print(tabulate.tabulate(rows, header, tablefmt='pretty'))
-
+    return [header, dict_list]
 
 def print_close_contacts(close_contact_dict):
     # print close contacts as a dictionary
