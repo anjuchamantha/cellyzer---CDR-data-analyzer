@@ -557,7 +557,7 @@ def add_call_dataset(filename, content, n_clicks):
         try:
             call_content.append(content)
             call_files_name.append(filename)
-            if content in all_file_content or filename in call_name or ' ' in filename or len(filename)==0:
+            if content in all_file_content or filename in call_name or filename is None or ' ' in filename or len(filename)==0:
                 output_call = []
                 for x in call_data_list:
                     a = x[0]
@@ -1354,8 +1354,8 @@ cell_dataset = html.Div([
                     dbc.Col(
                         dcc.Dropdown(
                             id="select_call",
-                            placeholder="Select the Call Dataset to link",
-                            style={'width': 800}
+                            style={'width': 400, 'color':'black', 'font-weight':'bold'},
+                            placeholder="Select the Call Dataset to link"
                         ),
                     ),
                 ],
@@ -1454,11 +1454,11 @@ records_of_cell = html.Div([
             ],
             row=True,
         ),
-        dbc.Button('Records Cell', id='records_cell', outline=True, color='success',
+        dbc.Button('Records Cell', id='records_cell', color='success',
                    className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div', style={"margin": 20, "margin-top": 100}
     ),
-    html.Div(id='show_records_cell', className='ndex_dataset_cell_record_div'),
+    html.Div(id='show_records_cell', className='sample_call_dataset_show'),
 ],
     className='index_page_div')
 
@@ -1533,7 +1533,7 @@ def add_cell_dataset(call_file, filename, contents, n_clicks):
             content_cell.append(contents)
             adding_call.append(call_file)
             cell_file_name.append(filename)
-            if contents in all_cell_content or filename in added_cell_name or ' ' in filename or len(filename)==0:
+            if filename in added_cell_name or filename is None or ' ' in filename or len(filename)==0 or call_file is None:
                 output_cell = []
                 for x in cell_data_list:
                     a = x[0]
@@ -1618,8 +1618,8 @@ def add_cell_dataset_alert(call_file, filename, contents, n_clicks, is_open):
             elif call_file is None:
                 word = 'Please add call dataset'
                 return True, word
-            elif contents in all_cell_content:
-                word = 'This file already exist'
+            # elif contents in all_cell_content:
+            #     word = 'This file already exist'
                 return True, word
             elif filename in added_cell_name:
                 word = 'Please enter other name'
@@ -1652,14 +1652,13 @@ def add_cell_dataset_alert(call_file, filename, contents, n_clicks, is_open):
         return False, None
 
 
-######## direct for the datset page after adding cell dataset
+######## direct for the dataset page after adding cell dataset
 @app.callback(Output('show_cell_dash', 'href'),
               [Input('select_call', 'value'), Input('upload-data_cell', 'value'), Input('filepath_cell', 'contents')]
               )
-def cell_direct_datset(call_file, filename, contents):
+def cell_direct_dataset(call_file, filename, contents):
     try:
-        if (filename in added_cell_name) or (contents in all_cell_content) or (contents is None) or (
-                filename is None) or (call_file is None) or (' ' in filename) or len(filename)==0:
+        if (filename in added_cell_name) or (contents is None) or (filename is None) or (call_file is None) or (' ' in filename) or len(filename)==0:
             return None
         else:
             for call in call_data_list:
@@ -1751,7 +1750,7 @@ def close_cell_data(n_clicks):
     if n_clicks is not None:
         return None
 
-
+cell_idList = []
 ###### get cell_id records
 @app.callback(Output('show_records_cell', 'children'),
               [Input('records_cell', 'n_clicks'),
@@ -1759,17 +1758,36 @@ def close_cell_data(n_clicks):
                ])
 def get_cell_records(n_clicks, cell_id):
     if n_clicks is not None:
+        cell_idList.append(cell_id)
         try:
-            antana_dataset = update_cell_data[-1][-1]
-            record_cell = antana_dataset.get_cell_records(cell_id)
-            cell = record_cell.get_cell_id()
+            if cell_id is None:
+                list_cell = html.Div([
+                    html.H5(children='Please enter number',
+                            style={'color': 'red', 'font-size': '20px', 'padding-left': '20px'})])
+                
+            else:
+                antana_dataset = update_cell_data[-1][-1]
+                record_cell = antana_dataset.get_location(cell_id)
+                latitude = record_cell[0]
+                longitude= record_cell[1]
+                list_cell = []
+                list_cell.append(html.H4('Latitude of cell id  '+ str(cell_id) + ' :   ' + str(latitude), style={'font-weight': 'bold', 'color':'red'}))
+                list_cell.append(html.Br())
+                list_cell.append(html.H4('Longitude of cell id '+ str(cell_id) + ' :   ' + str(longitude), style={'font-weight': 'bold', 'color': 'red'}))
+            return list_cell
 
         except Exception as e:
             print(e)
-            cell = "Id does not exist"
-        return html.H5('Cell_id: ' + cell, className='index_dataset_add_call_data')
+            cell = "Cell id does not exist"
+            return html.H5(cell )
 
-
+###### set 0 n_clicks trip_visualize_button button
+@app.callback(Output('records_cell', 'n_clicks'),
+              [Input('cell_id', 'value')])
+def cell_recrd_button_(cell_id):
+    if len(cell_idList) >= 1 and cell_idList[-1] != cell_id:
+        return None
+    
 ######## get population around cell
 @app.callback(Output('show_population', 'children'),
               [Input('population_button', 'n_clicks'),
@@ -2188,7 +2206,7 @@ def add_message_dataset(filename, contents, n_clicks):
         try:
             content_message.append(contents)
             file_name_message.append(filename)
-            if contents in all_message_content or filename in added_message_name or ' ' in filename or len(filename)==0:
+            if contents in all_message_content or filename in added_message_name or filename is None or ' ' in filename or len(filename)==0:
                 output_message = []
                 for x in message_data_list:
                     a = x[0]
