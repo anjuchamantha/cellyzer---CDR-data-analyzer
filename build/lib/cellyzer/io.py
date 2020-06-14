@@ -7,6 +7,7 @@ altering datasets (removing columns etc.)
 """
 
 import csv
+import io
 import xlrd
 import json
 import logging as log
@@ -135,7 +136,7 @@ def read_csv(filepath):
         pass
 
 
-def read_call(file_path, file_type='csv', hash=True):
+def read_call(file_path="", file_type='csv', hash=True, decode_read="", splitted_line=None):
     print("[x]  Reading Call Data")
 
     """
@@ -151,6 +152,22 @@ def read_call(file_path, file_type='csv', hash=True):
 
 
     """
+    if not (decode_read == ""):
+        data_list = decode_read.getvalue().split('\r\n')
+        fieldnames = data_list[0].split(',')
+        call_list = []
+        for line in data_list[1:len(data_list) - 1]:
+            splitted_line = line.split(',')
+            call = dict()
+            i = 0
+            for f in fieldnames:
+                if splitted_line[i] is not None:
+                    call[f] = splitted_line[i]
+                else:
+                    call[f] = ''
+                i += 1
+            call_list.append(call)
+        return create_call_obj(call_list, fieldnames, hash)
 
     try:
         if file_type.lower() == 'csv':
@@ -166,14 +183,13 @@ def read_call(file_path, file_type='csv', hash=True):
                     for f in fieldnames:
                         call[f] = val[f]
                     call_list.append(call)
-
                 # for c in call_list:
-                #  print(c)
+                #     print(c)
                 return create_call_obj(call_list, fieldnames, hash)
         elif file_type.lower() == 'xls' or file_type.lower() == 'xlsx':
-            return read_xls(file_path)
+            return read_xls(file_path, hash)
         elif file_type.lower() == 'json':
-            return read_json(file_path)
+            return read_json(file_path, hash)
         else:
             print('Invalid Format')
     except IOError:
@@ -181,7 +197,7 @@ def read_call(file_path, file_type='csv', hash=True):
         pass
 
 
-def read_msg(file_path, file_type='csv', hash=True):
+def read_msg(file_path='', file_type='csv', hash=True, decode_read="", splitted_line=None):
     print("[x]  Reading Message Data...")
 
     """
@@ -197,6 +213,23 @@ def read_msg(file_path, file_type='csv', hash=True):
 
 
     """
+    if not (decode_read == ""):
+        data_list = decode_read.getvalue().split('\r\n')
+        fieldnames = data_list[0].split(',')
+        msg_list = []
+        for line in data_list[1:len(data_list) - 1]:
+            splitted_line = line.split(',')
+            msg = dict()
+            i = 0
+            for f in fieldnames:
+                if splitted_line[i] is not None:
+                    msg[f] = splitted_line[i]
+                else:
+                    msg[f] = ''
+                i += 1
+            msg_list.append(msg)
+        # print(msg_list)
+        return create_msg_obj(msg_list, fieldnames, hash)
 
     try:
         if file_type.lower() == 'csv':
@@ -213,9 +246,9 @@ def read_msg(file_path, file_type='csv', hash=True):
 
                 return create_msg_obj(messages_list, fieldnames, hash)
         elif file_type.lower() == 'xls' or file_type.lower() == 'xlsx':
-            return read_xls(file_path)
+            return read_xls(file_path, hash)
         elif file_type.lower() == 'json':
-            return read_json(file_path)
+            return read_json(file_path, hash)
         else:
             print('Invalid Format')
     except IOError:
@@ -223,7 +256,8 @@ def read_msg(file_path, file_type='csv', hash=True):
         pass
 
 
-def read_cell(file_path, call_csv_path=None, call_dataset_obj=None, file_type='csv'):
+def read_cell(file_path='', call_csv_path=None, call_dataset_obj=None, file_type='csv', decode_read="",
+              splitted_line=None):
     # print("[x]  Reading Cell Data")
 
     """
@@ -239,11 +273,34 @@ def read_cell(file_path, call_csv_path=None, call_dataset_obj=None, file_type='c
 
 
     """
+    if not (decode_read == ""):
+        data_list = decode_read.getvalue().split('\r\n')
+        fieldnames = data_list[0].split(',')
+        cell_list = []
+        if call_csv_path is not None:
+            call_data_set = read_call(call_csv_path)
+        if call_dataset_obj is not None:
+            call_data_set = call_dataset_obj
+        else:
+            call_data_set = None
+        for line in data_list[1:len(data_list) - 1]:
+            splitted_line = line.split(',')
+            cell = dict()
+            i = 0
+            for f in fieldnames:
+                if splitted_line[i] is not None:
+                    cell[f] = splitted_line[i]
+                else:
+                    cell[f] = ''
+                i += 1
+            cell_list.append(cell)
+        # print(call_list)
+        return create_cell_obj(cell_list, fieldnames, call_data_set)
+
     try:
         if file_type.lower() == 'csv':
             with open(file_path, 'r') as csv_file:
                 reader = csv.DictReader(csv_file)
-
                 fieldnames = reader.fieldnames
                 cell_list = []
                 for val in reader:
@@ -275,7 +332,7 @@ def read_cell(file_path, call_csv_path=None, call_dataset_obj=None, file_type='c
         pass
 
 
-def read_xls(filepath, call_data_set=None):
+def read_xls(filepath, call_data_set=None, hash=True):
     print("[x]  Reading Data From Excel File")
 
     """
@@ -292,15 +349,15 @@ def read_xls(filepath, call_data_set=None):
     if 'latitude' in fieldnames and len(fieldnames) == 3:
         return create_cell_obj(sample, fieldnames, call_data_set)
     elif 'duration' in fieldnames and len(fieldnames) == 7:
-        return create_call_obj(sample, fieldnames)
+        return create_call_obj(sample, fieldnames, hash)
     elif 'length' in fieldnames and len(fieldnames) == 5:
-        return create_msg_obj(sample, fieldnames)
+        return create_msg_obj(sample, fieldnames, hash)
     else:
         log.warning('Invalid Input')
         log.getLogger().setLevel(_level)
 
 
-def read_json(filepath):
+def read_json(filepath, hash=True):
     print("[x]  Reading Data From JSON File")
 
     """
@@ -322,13 +379,13 @@ def read_json(filepath):
                         for records in data[key]:
                             record_list.append(records)
                         print(record_list)
-                        return create_call_obj(record_list, fieldnames)
+                        return create_call_obj(record_list, fieldnames, hash)
                     elif key.lower() == 'messagerecords':
                         fieldnames = data[key][0].keys()
                         for records in data[key]:
                             record_list.append(records)
                         print(record_list)
-                        return create_msg_obj(record_list, fieldnames)
+                        return create_msg_obj(record_list, fieldnames, hash)
                     elif key.lower() == 'cellrecords':
                         fieldnames = data[key][0].keys()
                         for records in data[key]:
@@ -355,7 +412,8 @@ def create_call_obj(calls, fieldnames, hash):
     if calls is not None:
 
         call_records = []
-        for call in calls:
+        for i in range(0, len(calls)):
+            call = calls[i]
             user = other_user = direction = duration = timestamp = cell_id = cost = None
 
             for key in call:
@@ -383,11 +441,11 @@ def create_call_obj(calls, fieldnames, hash):
             # print(user, other_user, direction, length, timestamp)
 
             call_record_obj = CallRecord(
-                user, other_user, direction, duration, timestamp, cell_id, cost)
+                user, other_user, direction, duration, timestamp, cell_id, cost, index=i)
             call_records.append(call_record_obj)
-
-        filtered_call_records, bad_records = parse_records(call_records, fieldnames)
-        call_dataset_obj = CallDataSet(filtered_call_records, fieldnames)
+        fieldnames_ = ['user', 'other_user', 'direction', 'duration', 'timestamp', 'call_id', 'cost']
+        filtered_call_records, bad_records = parse_records(call_records, fieldnames_)
+        call_dataset_obj = CallDataSet(filtered_call_records, fieldnames_)
 
         print("[x]  Objects creation successful\n")
         return call_dataset_obj
@@ -450,6 +508,7 @@ def create_cell_obj(cells, fieldnames, call_data_set):
             cell_records.append(cell_record_obj)
         filtered_cell_records, bad_records = parse_records(cell_records, fieldnames)
         cell_dataset_obj = CellDataSet(filtered_cell_records, fieldnames, call_data_set)
+        print("[x]  Objects creation successful\n")
         return cell_dataset_obj
 
 

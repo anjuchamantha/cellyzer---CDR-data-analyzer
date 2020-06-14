@@ -8,26 +8,42 @@ def print_record_lists(records):
         print(vars(record))
 
 
-def print_dataset(dataset_obj, notebook=False, name="Dataset"):
+def print_dataset(dataset_obj, notebook=False, name="Dataset", rows=None, summerize=False, head=5, tail=5):
+    if rows is not None:
+        if rows > 50:
+            summerize = True
+
     # print a demo_datasets obj as a dictionary
     print("\n >>> %s :" % name)
     dict_list = []
-    for record in dataset_obj.get_records():
-        dict_list.append(vars(record))
+    records = dataset_obj.get_records()
+    len_records = len(records)
+    if len_records > 50:
+        summerize = True
+    if summerize:
+        for record in records[:head]:
+            dict_list.append(record.__dict__)
+        dict_list.append({})
+        for record in records[-tail:]:
+            dict_list.append(record.__dict__)
+    else:
+        for record in records:
+            dict_list.append(record.__dict__)
     header = list(dict_list[0].keys())
-    header.insert(0, '')
-    # print (header)
-
+    # header.insert(0, '')
+    # # print (header)
+    #
     rows = []
     for i in range(0, len(dict_list)):
         values = list(dict_list[i].values())
-        values.insert(0, i + 1)
+        # values.insert(0, i + 1)
         rows.append(values)
-    # print (rows)
+    # # print (rows)
     if notebook:
         print(tabulate.tabulate(rows, header, tablefmt='html'))
     else:
         print(tabulate.tabulate(rows, header, tablefmt='pretty'))
+    return [header, dict_list]
 
 
 def print_close_contacts(close_contact_dict):
@@ -48,6 +64,8 @@ def tabulate_list_of_dictionaries(dictionary_list):
 
     :return: print table
     """
+    if not dictionary_list:
+        return None
     if type(dictionary_list) == list:
         header = []
         for item in dictionary_list[0].keys():

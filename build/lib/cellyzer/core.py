@@ -19,7 +19,8 @@ class Record:
 
 class CallRecord(Record):
 
-    def __init__(self, user, other_user, direction, duration, timestamp, cell_id, cost):
+    def __init__(self, user, other_user, direction, duration, timestamp, cell_id, cost, index=""):
+        self.index = index
         self.user = user
         self.other_user = other_user
         self.direction = direction
@@ -109,6 +110,12 @@ class DataSet:
     def get_fieldnames(self):
         return self._fieldnames
 
+    def to_dict(self):
+        records_list = []
+        for record in self.get_records():
+            records_list.append(vars(record))
+        return records_list
+
 
 class CallMessageDataSet(DataSet):
 
@@ -143,7 +150,8 @@ class CallMessageDataSet(DataSet):
                     records.append(record)
             if (user1 is not None) and (user2 is not None):
                 # returns a list of Record objects where the given 2 users are involved
-                if (str(user1) == user and str(user2) == other_user) or (str(user1) == other_user and str(user2) == user):
+                if (str(user1) == user and str(user2) == other_user) or (
+                        str(user1) == other_user and str(user2) == user):
                     records.append(record)
         return records
 
@@ -206,37 +214,55 @@ class CallMessageDataSet(DataSet):
             matrix.append(row)
         headers = all_users
         headers.insert(0, "")
-        tools.print_matrix(matrix, headers)
-        return matrix, headers
+        tools.print_matrix_new(matrix, headers)
 
-    def get_connections(self):
+    def get_connections(self, users=[], allow_duplicates=False):
         """
         returns a list of lists of [user1,user2]
         user1 makes a call to user2
 
         :return: connections : list
         """
-        connections = []
+        connections = set()
+        connections_dup = []
         for record in self.get_records():
-            connection, direction = [record.get_user(), record.get_other_user()], record.get_direction()
+            if not users:
+                connection, direction = [record.get_user(), record.get_other_user()], record.get_direction()
+            else:
+                u1 = record.get_user()
+                u2 = record.get_other_user()
+                if u1 in users or u2 in users:
+                    connection, direction = [u1, u2], record.get_direction()
+                else:
+                    continue
             if direction == "Incoming":
                 connection.reverse()
-            connections.append(connection)
-        return connections
+            if allow_duplicates:
+                connections_dup.append(connection)
+            else:
+                connections.add(tuple(connection))
+        if allow_duplicates:
+            return connections_dup
+        else:
+            return connections
 
-    def visualize_connection_network(self, directed=True):
+    def visualize_connection_network(self, directed=True, users=[], gui=False, fig_id='1'):
         """
         generates a directed graph of connected users
 
+        :param fig_id: str
+        :param gui: boolean
         :param directed: boolean
+        :param users: list
+                list of users
 
         :return: connections : list
                  directed : boolean
         """
-        connections = self.get_connections()
+        connections = self.get_connections(users, allow_duplicates=True)
         weighted_edge_list = tools.get_weighted_edge_list(connections, directed)
-        visualization.network_graph(weighted_edge_list, directed)
-        return connections, directed
+        visualization.network_graph(weighted_edge_list, directed, gui, fig_id)
+        # return connections
 
     def get_most_active_time(self, user):
         """

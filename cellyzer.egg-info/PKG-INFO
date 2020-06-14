@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: cellyzer
-Version: 1.0.1
+Version: 1.1.0
 Summary: A CDR(Call Data Records) data analyzing library
 Home-page: https://github.com/anjuchamantha/cellyzer---CDR-data-analyzer
 Author: Team Cellyzer
@@ -22,7 +22,7 @@ Description: # CELLYZER
         
         Binary installers for the latest released version are available at the Python package index:
         
-        http://pypi.python.org/pypi/cellyzer/
+        https://pypi.org/project/cellyzer/
         
         Use the package manager [pip](https://pip.pypa.io/en/stable/) to install cellyzer.
         
@@ -79,6 +79,5 @@ Description: # CELLYZER
 Platform: UNKNOWN
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Intended Audience :: Science/Research
-Classifier: Programming Language :: Python :: 3
 Classifier: Programming Language :: Python :: 3.7
 Description-Content-Type: text/markdown

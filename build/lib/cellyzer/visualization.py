@@ -5,15 +5,23 @@ Graphing - matplotlib, networkx
 """
 
 import networkx as nx
+import matplotlib
+
+matplotlib.use("agg")
 import matplotlib.pyplot as plt
 import numpy as np
 import folium
 from folium.plugins import MarkerCluster
 import webbrowser
 import os
+import base64
+from io import BytesIO
+
+plt.rcParams['figure.dpi'] = 200
 
 
-def network_graph(edge_list, directed):
+def network_graph(edge_list, directed, gui, fig_id):
+    plt.figure(fig_id)
     if directed:
         g = nx.DiGraph()
     else:
@@ -29,11 +37,22 @@ def network_graph(edge_list, directed):
                      edge_color="dodgerblue",
                      style="solid", width=2)
     nx.draw_networkx_edge_labels(g, pos, edge_labels=labels, with_labels=True, font_size=8, label_pos=0.3)
-    plt.savefig("connection_network.png")
-    plt.show()
+    # plt.figure(figsize=(50, 50), dpi=80, facecolor='w', edgecolor='k')
+    # mng = plt.get_current_fig_manager()
+    # mng.window.state('zoomed')
+
+    tmpfile = BytesIO()
+    plt.savefig(tmpfile, format='png')
+    encoded = base64.b64encode(tmpfile.getvalue()).decode('utf-8')
+    html = '<div>' + '<img src=\'data:image/png;base64,{}\'>'.format(encoded) + '</div>'
+    with open('outputs\\connection_network.html', 'w') as f:
+        f.write(html)
+    webbrowser.open("outputs\\connection_network.html")
 
 
-def active_time_bar_chart(time_dict):
+def active_time_bar_chart(time_dict, gui=False, user='xxx', dataset_id='1'):
+    fig_id = user + dataset_id
+    plt.figure(fig_id)
     hours = []
     activity = []
     for key, value in time_dict.items():
@@ -46,7 +65,16 @@ def active_time_bar_chart(time_dict):
     plt.ylabel("Activity")
     plt.xlabel("Hours")
     plt.title("Most active times during day")
-    plt.show()
+    # mng = plt.get_current_fig_manager()
+    # mng.window.state('zoomed')
+
+    tmpfile = BytesIO()
+    plt.savefig(tmpfile, format='png')
+    encoded = base64.b64encode(tmpfile.getvalue()).decode('utf-8')
+    html = '<div>' + '<img src=\'data:image/png;base64,{}\'>'.format(encoded) + '</div>'
+    with open('outputs\\active_time_bar_chart.html', 'w') as f:
+        f.write(html)
+    webbrowser.open("outputs\\active_time_bar_chart.html")
 
 
 def cell_population_visualization(cell_list, map_name="population_map", notebook=False):
@@ -65,7 +93,7 @@ def cell_population_visualization(cell_list, map_name="population_map", notebook
         return map1
     else:
         # visualize in web browser
-        file_path = map_name + '.html'
+        file_path = 'outputs\\' + map_name + '.html'
         map1.save(file_path)
         webbrowser.open(file_path)
 
@@ -95,12 +123,14 @@ def view_home_work_locations(home_location=None, work_location=None, map_name="h
             return map1
         else:
             # visualize in web browser
-            file_path = map_name + '.html'
+            file_path = 'outputs\\' + map_name + '.html'
             map1.save(file_path)
             webbrowser.open(file_path)
 
 
 def create_marked_map(location_list, location="location", value="timestamp"):
+    if not location_list:
+        return None
     initial_location = location_list[0][location]
     marked_map = folium.Map(location=initial_location, tiles="OpenStreetMap", zoom_start=13)
     marker_cluster = folium.plugins.MarkerCluster().add_to(marked_map)
@@ -113,6 +143,9 @@ def create_marked_map(location_list, location="location", value="timestamp"):
 
 
 def trip_visualization(locations, map_name="trip_map", notebook=False):
+    if not locations:
+        print("No trips to visualize")
+        return None
     marked_map = create_marked_map(locations, value="timestamp")
     location_list = []
     for item in locations:
@@ -122,5 +155,5 @@ def trip_visualization(locations, map_name="trip_map", notebook=False):
     if notebook:
         return marked_map
     else:
-        marked_map.save(map_name + '.html')
-        webbrowser.open(map_name + '.html')
+        marked_map.save('outputs\\' + map_name + '.html')
+        webbrowser.open('outputs\\' + map_name + '.html')
