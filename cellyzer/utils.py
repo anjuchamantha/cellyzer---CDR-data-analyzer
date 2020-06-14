@@ -45,6 +45,7 @@ def print_dataset(dataset_obj, notebook=False, name="Dataset", rows=None, summer
         print(tabulate.tabulate(rows, header, tablefmt='pretty'))
     return [header, dict_list]
 
+
 def print_close_contacts(close_contact_dict):
     # print close contacts as a dictionary
     header = ["contact no", "no of interactions between users"]
@@ -63,6 +64,8 @@ def tabulate_list_of_dictionaries(dictionary_list):
 
     :return: print table
     """
+    if not dictionary_list:
+        return None
     if type(dictionary_list) == list:
         header = []
         for item in dictionary_list[0].keys():

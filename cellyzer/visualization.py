@@ -93,7 +93,7 @@ def cell_population_visualization(cell_list, map_name="population_map", notebook
         return map1
     else:
         # visualize in web browser
-        file_path = 'outputs\\'+map_name + '.html'
+        file_path = 'outputs\\' + map_name + '.html'
         map1.save(file_path)
         webbrowser.open(file_path)
 
@@ -123,12 +123,14 @@ def view_home_work_locations(home_location=None, work_location=None, map_name="h
             return map1
         else:
             # visualize in web browser
-            file_path = 'outputs\\'+map_name + '.html'
+            file_path = 'outputs\\' + map_name + '.html'
             map1.save(file_path)
             webbrowser.open(file_path)
 
 
 def create_marked_map(location_list, location="location", value="timestamp"):
+    if not location_list:
+        return None
     initial_location = location_list[0][location]
     marked_map = folium.Map(location=initial_location, tiles="OpenStreetMap", zoom_start=13)
     marker_cluster = folium.plugins.MarkerCluster().add_to(marked_map)
@@ -141,6 +143,9 @@ def create_marked_map(location_list, location="location", value="timestamp"):
 
 
 def trip_visualization(locations, map_name="trip_map", notebook=False):
+    if not locations:
+        print("No trips to visualize")
+        return None
     marked_map = create_marked_map(locations, value="timestamp")
     location_list = []
     for item in locations:
@@ -150,5 +155,5 @@ def trip_visualization(locations, map_name="trip_map", notebook=False):
     if notebook:
         return marked_map
     else:
-        marked_map.save('outputs\\'+map_name + '.html')
-        webbrowser.open('outputs\\'+map_name + '.html')
+        marked_map.save('outputs\\' + map_name + '.html')
+        webbrowser.open('outputs\\' + map_name + '.html')

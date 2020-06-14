@@ -23,8 +23,8 @@ population = antennaDataSet.get_population()
 cz.utils.tabulate_list_of_dictionaries(population)
 cz.visualization.cell_population_visualization(population)
 
-print(">> Trip details of user : %s" % "7331c02864")
-call_made_locations = antennaDataSet.get_trip_details("7331c02864", console_print=False, tabulate=True)
+print(">> Trip details of user : %s" % "373a4fb419")
+call_made_locations = antennaDataSet.get_trip_details("373a4fb419", console_print=True, tabulate=True)
 cz.visualization.trip_visualization(call_made_locations, notebook=False)
 
 test = callDataSet.get_records()
