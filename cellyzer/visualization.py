@@ -45,9 +45,9 @@ def network_graph(edge_list, directed, gui, fig_id):
     plt.savefig(tmpfile, format='png')
     encoded = base64.b64encode(tmpfile.getvalue()).decode('utf-8')
     html = '<div>' + '<img src=\'data:image/png;base64,{}\'>'.format(encoded) + '</div>'
-    with open('connection_network.html', 'w') as f:
+    with open('outputs\\connection_network.html', 'w') as f:
         f.write(html)
-    webbrowser.open("connection_network.html")
+    webbrowser.open("outputs\\connection_network.html")
 
 
 def active_time_bar_chart(time_dict, gui=False, user='xxx', dataset_id='1'):
@@ -72,9 +72,9 @@ def active_time_bar_chart(time_dict, gui=False, user='xxx', dataset_id='1'):
     plt.savefig(tmpfile, format='png')
     encoded = base64.b64encode(tmpfile.getvalue()).decode('utf-8')
     html = '<div>' + '<img src=\'data:image/png;base64,{}\'>'.format(encoded) + '</div>'
-    with open('active_time_bar_chart.html', 'w') as f:
+    with open('outputs\\active_time_bar_chart.html', 'w') as f:
         f.write(html)
-    webbrowser.open("active_time_bar_chart.html")
+    webbrowser.open("outputs\\active_time_bar_chart.html")
 
 
 def cell_population_visualization(cell_list, map_name="population_map", notebook=False):
@@ -93,7 +93,7 @@ def cell_population_visualization(cell_list, map_name="population_map", notebook
         return map1
     else:
         # visualize in web browser
-        file_path = map_name + '.html'
+        file_path = 'outputs\\'+map_name + '.html'
         map1.save(file_path)
         webbrowser.open(file_path)
 
@@ -123,7 +123,7 @@ def view_home_work_locations(home_location=None, work_location=None, map_name="h
             return map1
         else:
             # visualize in web browser
-            file_path = map_name + '.html'
+            file_path = 'outputs\\'+map_name + '.html'
             map1.save(file_path)
             webbrowser.open(file_path)
 
@@ -150,5 +150,5 @@ def trip_visualization(locations, map_name="trip_map", notebook=False):
     if notebook:
         return marked_map
     else:
-        marked_map.save(map_name + '.html')
-        webbrowser.open(map_name + '.html')
+        marked_map.save('outputs\\'+map_name + '.html')
+        webbrowser.open('outputs\\'+map_name + '.html')

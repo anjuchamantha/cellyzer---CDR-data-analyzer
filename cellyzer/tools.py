@@ -136,17 +136,17 @@ def print_matrix_new(matrix, headers):
         print("Matrix Length : ", len(matrix))
         header_fixed_script = '<table id="header-fixed"></table>'
         jquery_script = '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>'
-        js_script = '<script src="../Matrix/js_script.js"></script>'
-        html_head = '<head> \n <link href="../Matrix/connection_matrix.css" rel="stylesheet" type="text/css"></link> \n {} \n {}' \
+        js_script = '<script src="../../Matrix/js_script.js"></script>'
+        html_head = '<head> \n <link href="../../Matrix/connection_matrix.css" rel="stylesheet" type="text/css"></link> \n {} \n {}' \
                     '</head>'.format(jquery_script, js_script)
         html_tag = "<html> \n {} \n <body> \n <h1>Connection Matrix</h1> \n ".format(html_head)
         table_header = create_header(headers)
         table_body = create_rows(matrix)
         html_tag += '<table> \n {} \n {} \n </table>  \n </body> \n</html>'.format(table_header, table_body)
-        f = open('connection_matrix.html', 'w')
+        f = open('outputs\\connection_matrix.html', 'w')
         f.write(html_tag)
         f.close()
-        webbrowser.open_new_tab('connection_matrix.html')
+        webbrowser.open_new_tab('outputs\\connection_matrix.html')
 
 
 def create_rows(matrix, text_align='center'):

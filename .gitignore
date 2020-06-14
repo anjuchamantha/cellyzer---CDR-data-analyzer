@@ -1,14 +1,12 @@
 *.pyc
 cellyzer/__pycache__/
 
-connection_network.png
-trip_map.html
-route_map.html
+active_time_bar_chart.html
+connection_matrix.html
+connection_network.html
 population_map.html
+trip_map.html
 home_work_location.html
-/demo/active_time_bar_chart.html
-/demo/active_time_bar_chart.png
-/demo/connection_network.html
-/gui/active_time_bar_chart.png
+
 /gui/connection_network.html
 /gui/active_time_bar_chart.html
