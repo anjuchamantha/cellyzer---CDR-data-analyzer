@@ -19,6 +19,11 @@ from io import BytesIO
 
 plt.rcParams['figure.dpi'] = 200
 
+try:
+    os.mkdir('outputs')
+except OSError as error:
+    print(error)
+
 
 def network_graph(edge_list, directed, gui, fig_id):
     plt.figure(fig_id)
