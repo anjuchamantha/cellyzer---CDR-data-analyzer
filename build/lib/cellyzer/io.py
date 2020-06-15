@@ -418,12 +418,12 @@ def create_call_obj(calls, fieldnames, hash):
 
             for key in call:
                 if 'user' in key:
-                    if hash:
+                    if hash and call['user'] != '':
                         user = hash_number(call["user"])
                     else:
                         user = call["user"]
                 elif 'other' in key:
-                    if hash:
+                    if hash and call['other'] != '':
                         other_user = hash_number(call[key])
                     else:
                         other_user = call[key]
@@ -460,12 +460,12 @@ def create_msg_obj(messages, fieldnames, hash):
 
             for key in msg:
                 if 'user' in key:
-                    if hash:
+                    if hash and msg['user'] != '':
                         user = hash_number(msg[key])
                     else:
                         user = msg[key]
                 elif 'other' in key:
-                    if hash:
+                    if hash and msg['other'] != '':
                         other_user = hash_number(msg[key])
                     else:
                         other_user = msg[key]
@@ -673,7 +673,7 @@ def parse_records(records, fieldnames):
 
     elif 'latitude' in fieldnames:
         filtered_records, ignored_list, bad_records = filter_cells(records)
-
+    print(ignored_list)
     if ignored_list['all'] != 0:
         w = "{} record(s) were removed due to " \
             "missing or incomplete fields.".format(ignored_list['all'])

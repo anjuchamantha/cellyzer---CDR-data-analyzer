@@ -9,8 +9,8 @@ callDataSet = cz.read_call(call_file_path)
 
 # cz.utils.print_dataset(callDataSet, name="Call Dataset")
 #
-# all_users_of_calls = callDataSet.get_all_users()
-# print(">> All Users in call dataSet : %s \n" % all_users_of_calls)
+all_users_of_calls = callDataSet.get_all_users()
+print(">> All Users in call dataSet : %s \n" % all_users_of_calls)
 
 search_user_call_1 = "3e97992791"
 search_user_call_2 = "265034e175"
