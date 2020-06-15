@@ -5,6 +5,7 @@ table {
   background-color: #aaa;
   overflow: hidden;
   border-collapse: collapse;
+  overflow: scroll;
 }
 
 
@@ -36,7 +37,7 @@ tbody {
   display: block; /*seperates the tbody from the header*/
   height: 500px;
   width: 1320px;
-  overflow: scroll;
+
 }
 
 tbody td {
