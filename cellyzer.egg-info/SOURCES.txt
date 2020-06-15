@@ -5,6 +5,7 @@ cellyzer/__init__.py
 cellyzer/core.py
 cellyzer/dashboard.py
 cellyzer/io.py
+cellyzer/matrix.py
 cellyzer/tools.py
 cellyzer/utils.py
 cellyzer/visualization.py

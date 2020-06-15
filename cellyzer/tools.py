@@ -4,7 +4,7 @@ import logging
 import sys
 import webbrowser
 
-from .Matrix import matrix as matrixFile
+from . import matrix as matrixFile
 
 
 class _AnsiColorizer(object):
