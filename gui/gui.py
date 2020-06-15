@@ -1444,15 +1444,16 @@ records_of_cell = html.Div([
     html.Div([
         dbc.FormGroup(
             [
-                dbc.Label("Enter Cell ID", html_for="example-email-row", width=2),
+                dbc.Button("Select Cell ID", color="primary", className="sample_call_dataset_viewdata", id='select_id_record_specific'),
+                html.P('Click the "Select Cell ID" button before selecting ID', style={'color':'red', 'font-size':16}),
                 dbc.Col(
-                    dbc.Input(
-                        type="number", id="cell_id", placeholder="Enter ID", style={'width': '500px'}
+                        dcc.Dropdown(
+                            id="cell_id",
+                            placeholder="Select a Id",
+                            style = {'width':500}
+                        ),
                     ),
-                    width=10,
-                ),
             ],
-            row=True,
         ),
         dbc.Button('Records Cell', id='records_cell', color='success',
                    className='sample_call_dataset_viewdata')],
@@ -1467,6 +1468,20 @@ population_around_cell = html.Div([
     navbar_cell_dataset_visualize,
     cellpagevisualizesidebar,
     html.Div([
+        html.P('Do not select Id for getting population around all cells', style={'color':'green', 'font-size':20}),
+        dbc.FormGroup(
+            [
+                dbc.Button("Select Cell ID", color="primary", className="sample_call_dataset_viewdata", id='select_id_population'),
+                html.P('Click the "Select Cell ID" button before selecting ID', style={'color':'red', 'font-size':16}),
+                dbc.Col(
+                        dcc.Dropdown(
+                            id="cell_id_population",
+                            placeholder="Select a Id",
+                            style = {'width':500}
+                        ),
+                    ),
+            ],
+        ),
         dbc.Button('Get Population', id='population_button', color='danger',
                    className='sample_call_dataset_viewdata')],
         className='sample_call_dataset_view_div', style={"margin": 20, "margin-top": 100}
@@ -1546,11 +1561,15 @@ def add_cell_dataset(call_file, filename, contents, n_clicks):
                     f_name = call[0]
                     if call_file == f_name:
                         cell_data = parse_contents_cell(contents, call[-1])
+                        cell_id=[]
+                        record_cell = cell_data.get_cell_records()
+                        for ids in record_cell:
+                            cell_id.append(ids.get_cell_id())
                         dict_list = []
                         cell_record = cell_data.get_records()
                         for record in cell_record:
                             dict_list.append(vars(record))
-                        cell_data_list.append([filename, contents, call[2], cell_record, cell_data])
+                        cell_data_list.append([filename, contents, call[2], cell_record, cell_id, cell_data])
                         all_cell_content.append(contents)
                         added_cell_name.append(filename)
                         break
@@ -1617,9 +1636,6 @@ def add_cell_dataset_alert(call_file, filename, contents, n_clicks, is_open):
                 return True, word
             elif call_file is None:
                 word = 'Please add call dataset'
-                return True, word
-            # elif contents in all_cell_content:
-            #     word = 'This file already exist'
                 return True, word
             elif filename in added_cell_name:
                 word = 'Please enter other name'
@@ -1750,6 +1766,7 @@ def close_cell_data(n_clicks):
     if n_clicks is not None:
         return None
 
+
 cell_idList = []
 ###### get cell_id records
 @app.callback(Output('show_records_cell', 'children'),
@@ -1762,7 +1779,7 @@ def get_cell_records(n_clicks, cell_id):
         try:
             if cell_id is None:
                 list_cell = html.Div([
-                    html.H5(children='Please enter number',
+                    html.H5(children='Please select cell Id',
                             style={'color': 'red', 'font-size': '20px', 'padding-left': '20px'})])
                 
             else:
@@ -1787,20 +1804,42 @@ def get_cell_records(n_clicks, cell_id):
 def cell_recrd_button_(cell_id):
     if len(cell_idList) >= 1 and cell_idList[-1] != cell_id:
         return None
-    
+
+cell_idList_pop = []
 ######## get population around cell
 @app.callback(Output('show_population', 'children'),
-              [Input('population_button', 'n_clicks'),
+              [Input('population_button', 'n_clicks'), Input('cell_id_population', 'value')
                ])
-def get_population(n_clicks):
+def get_population(n_clicks, cell_id):
     try:
         if n_clicks is not None:
+            cell_idList_pop.append(cell_id)  
             antana_dataset = update_cell_data[-1][-1]
-            population = antana_dataset.get_population()
-            return cz.visualization.cell_population_visualization(population)
+            if cell_id is None:
+                population = antana_dataset.get_population(cell_id)
+                return cz.visualization.cell_population_visualization(population)
+            else:
+                population = antana_dataset.get_population(cell_id)
+                value = list(population.values())
+                if value[-1] ==0:
+                    list_cell = html.Div([
+                        html.H5(children='No population around this antena',
+                            style={'color': 'red', 'font-size': '20px', 'padding-left': '20px'})])
+                    return list_cell
+                else:
+                    popu = []
+                    popu.append(population)
+                    return cz.visualization.cell_population_visualization(popu)
 
     except Exception as e:
         print(e)
+
+###### set 0 n_clicks population_button button
+@app.callback(Output('population_button', 'n_clicks'),
+              [Input('cell_id_population', 'value')])
+def cell_recrd_button_(cell_id):
+    if len(cell_idList_pop) >= 1 and cell_idList_pop[-1] != cell_id:
+        return None
 
 
 trip_userList = []
@@ -1931,6 +1970,14 @@ def get_cell_users():
         add_call.append({'label':user, 'value': user})
     return add_call
 
+def get_cell_ID_drop():
+    cell_id = update_cell_data[-1][4]
+    add_call=[]
+    for ids in cell_id:
+        add_call.append({'label':ids, 'value': ids})
+    return add_call
+
+
 ######## select user for get trip visualization using dropdown
 @app.callback(Output('trip_user', 'options'),
             [   Input('select_user_trip_visu', 'n_clicks')
@@ -1938,6 +1985,22 @@ def get_cell_users():
 def select_user_trip_visu(n_clicks):
     if n_clicks is not None:
         return get_cell_users()
+    
+######## select cell id for get cell records using dropdown
+@app.callback(Output('cell_id', 'options'),
+            [   Input('select_id_record_specific', 'n_clicks')
+            ])
+def select_cell_specific_record(n_clicks):
+    if n_clicks is not None:
+        return get_cell_ID_drop()
+
+######## select cell id for get population using dropdown
+@app.callback(Output('cell_id_population', 'options'),
+            [   Input('select_id_population', 'n_clicks')
+            ])
+def select_cell_specific_record(n_clicks):
+    if n_clicks is not None:
+        return get_cell_ID_drop()
 
 ### over cell callback
 
