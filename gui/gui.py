@@ -41,8 +41,8 @@ def SimpleTitleBar(name="<Sub Title>"):
             fluid=True,
             sticky=True,
         ),
-        style={"padding-bottom": 20, "position": "fixed", "overflow": "hidden",
-               "top": 0, "width": "100rem", "background-color": "white", 'margin-left': '20px'
+        style={"padding-bottom": 10, "overflow": "hidden",
+               "top": 0, "width": "100%", "background-color": "white", 'margin-left': '20px'
                }
     )
 
@@ -105,7 +105,7 @@ homepageSidebar = dac.Sidebar(
     title='CELLYZER',
     color="primary",
     brand_color="secondary",
-    src="https://adminlte.io/themes/AdminLTE/dist/img/user2-160x160.jpg",
+    src="https://i0.wp.com/www.butterflyfields.com/wp-content/uploads/2019/02/How-does-a-Computer-work1.jpg?fit=1024%2C1024&ssl=1",
     elevation=3,
     opacity=0.8
 )
@@ -136,24 +136,32 @@ home_page = html.Div([
             html.Hr(),
             html.P("Instructions", className="lead", style={'text-align': 'center', 'font-size': '30px'}),
             html.Hr(),
-            dbc.Row([
-                html.Div([
-                    dbc.CardHeader('Adding a dataset', style={'font-size': '24px', 'text-align': 'center'}),
-                    dbc.Col([
-                        html.Img(src='assets/add-call.gif')
-                    ]),
-                    html.P('Note : Adding a cell records a call dataset', style={'padding-left': '10px','padding-top':'10px'})
-                ], style={'border-right': '1px solid #212529'}),
-                html.Div([
-                    dbc.CardHeader('Select a function', style={'font-size': '24px', 'text-align': 'center'}),
-                    dbc.Col([
-                        html.Img(src='assets/functions.gif')
-                    ]),
-                    html.P('Note : User can select customized functions', style={'padding-left': '10px','padding-top':'10px'})
-                ]),
-            ])
+            html.Div([
+                dbc.Row([
+                    html.Div([
+                        dbc.Card([
+                            dbc.CardImg(src='assets/add-call.gif', top=True),
+                            dbc.CardBody([
+                                html.H4("Adding a Dataset", className="card-title"),
+                                html.P('Note : Adding a cell records a call dataset', className="card-text")
+                            ]),
+                        ]),
+                    ], style={'float': 'center'}),
+                ], style={'display': 'block'}),
+                dbc.Row([
+                    html.Div([
+                        dbc.Card([
+                            dbc.CardImg(src='assets/functions.gif', top=True),
+                            dbc.CardBody([
+                                html.H4("Select a function", className="card-title"),
+                                html.P('ote : User can select customized functions', className="card-text")
+                            ])
+                        ]),
+                    ], style={'float': 'center'}),
+                ], style={'display': 'block'}),
+            ], style={'margin': '0rem 12rem'})
         ],
-        style={"margin": 20, "margin-top": 100, 'margin-left': 80}
+        style={"margin": 20, "margin-top": 60, 'margin-left': 80}
     ),
 ], className='index_page_div')
 
@@ -173,7 +181,7 @@ NavBar = html.Div(
         # "position": "fixed",
         "overflow": "hidden",
         "top": 0,
-        "width": "100rem",
+        "width": "100%",
         "background-color": "white",
         'margin-left': '20px'
     }
