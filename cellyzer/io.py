@@ -32,8 +32,6 @@ def io_func():
 
 
 def to_json(dataset_object, filename):
-    print("[x]  Writing to JSON file ...")
-
     """
          write demo_datasets object to a json file.
 
@@ -45,24 +43,29 @@ def to_json(dataset_object, filename):
             File to export to.
 
         """
+    instance_type = type(dataset_object).__name__
+    if instance_type != "CallDataSet" and instance_type != "MessageDataSet" and instance_type != "CellDataSet":
+        raise TypeError
+    elif type(filename) != str:
+        raise TypeError
+    else:
+        print("[x]  Writing to JSON file ...")
 
-    if '.JSON' or '.json' not in filename:
-        filename = filename + '.json'
+        if '.JSON' or '.json' not in filename:
+            filename = filename + '.json'
 
-    i = 0
-    records = dataset_object.get_records()
-    obj_dict = OrderedDict([('Record:' + str(records.index(obj)), obj) for obj in records])
+        i = 0
+        records = dataset_object.get_records()
+        obj_dict = OrderedDict([('Record:' + str(records.index(obj)), obj) for obj in records])
 
-    with open(filename, 'w') as f:
-        f.write(dumps(obj_dict, indent=4, separators=(',', ': ')))
+        with open(filename, 'w') as f:
+            f.write(dumps(obj_dict, indent=4, separators=(',', ': ')))
 
-    print("Successfully exported {} object(s) to {}".format(len(records),
-                                                            filename))
+        print("Successfully exported {} object(s) to {}".format(len(records),
+                                                                filename))
 
 
 def to_csv(dataset_object, filename):
-    print("[x]  Writing to CSV file ...")
-
     """
             write demo_datasets object to a csv file.
 
@@ -74,31 +77,38 @@ def to_csv(dataset_object, filename):
                 File to export to.
 
             """
+    instance_type = type(dataset_object).__name__
+    if instance_type != "CallDataSet" and instance_type != "MessageDataSet" and instance_type != "CellDataSet":
+        raise TypeError
+    elif type(filename) != str:
+        raise TypeError
+    else:
+        print("[x]  Writing to CSV file ...")
 
-    data = [flatten(obj) for obj in dataset_object.get_records()]
-    fieldnames = dataset_object.fieldnames
+        data = [flatten(obj) for obj in dataset_object.get_records()]
+        fieldnames = dataset_object.fieldnames
 
-    if '.csv' not in filename:
-        filename = filename + '.csv'
+        if '.csv' not in filename:
+            filename = filename + '.csv'
 
-    with open(filename, 'w') as f:
-        w = csv.writer(f)
-        w.writerow(fieldnames)
+        with open(filename, 'w') as f:
+            w = csv.writer(f)
+            w.writerow(fieldnames)
 
-        def make_repr(item):
-            if item is None:
-                return None
-            elif isinstance(item, float):
-                return repr(round(item, 5))
-            else:
-                return str(item)
+            def make_repr(item):
+                if item is None:
+                    return None
+                elif isinstance(item, float):
+                    return repr(round(item, 5))
+                else:
+                    return str(item)
 
-        for row in data:
-            row = dict((k, make_repr(v)) for k, v in row.items())
-            w.writerow([make_repr(row.get(k, None)) for k in fieldnames])
+            for row in data:
+                row = dict((k, make_repr(v)) for k, v in row.items())
+                w.writerow([make_repr(row.get(k, None)) for k in fieldnames])
 
-    print("Successfully exported {} object(s) to {}".format(len(dataset_object.get_records()),
-                                                            filename))
+        print("Successfully exported {} object(s) to {}".format(len(dataset_object.get_records()),
+                                                                filename))
 
 
 def read_csv(filepath):
@@ -113,27 +123,30 @@ def read_csv(filepath):
         Path of the file.
 
     """
-    try:
-        with open(filepath, 'r') as csv_file:
-            records = csv.DictReader(csv_file)
+    if type(filepath) != str:
+        raise TypeError
+    else:
+        try:
+            with open(filepath, 'r') as csv_file:
+                records = csv.DictReader(csv_file)
 
-            fieldnames = records.fieldnames
-            record_list = []
-            for val in records:
-                record = dict()
-                for f in fieldnames:
-                    record[f] = val[f]
-                record_list.append(record)
+                fieldnames = records.fieldnames
+                record_list = []
+                for val in records:
+                    record = dict()
+                    for f in fieldnames:
+                        record[f] = val[f]
+                    record_list.append(record)
 
-            for c in record_list:
-                print(c)
-            dataset_object = DataSet(record_list, fieldnames)
+                for c in record_list:
+                    print(c)
+                dataset_object = DataSet(record_list, fieldnames)
 
-            return dataset_object
+                return dataset_object
 
-    except IOError:
-        print("IO Error :", IOError)
-        pass
+        except IOError:
+            print("IO Error :", IOError)
+            pass
 
 
 def read_call(file_path="", file_type='csv', hash=True, decode_read="", splitted_line=None):
@@ -152,49 +165,54 @@ def read_call(file_path="", file_type='csv', hash=True, decode_read="", splitted
 
 
     """
-    if not (decode_read == ""):
-        data_list = decode_read.getvalue().split('\r\n')
-        fieldnames = data_list[0].split(',')
-        call_list = []
-        for line in data_list[1:len(data_list) - 1]:
-            splitted_line = line.split(',')
-            call = dict()
-            i = 0
-            for f in fieldnames:
-                if splitted_line[i] is not None:
-                    call[f] = splitted_line[i]
-                else:
-                    call[f] = ''
-                i += 1
-            call_list.append(call)
-        return create_call_obj(call_list, fieldnames, hash)
+    if type(file_path) != str or type(file_type) != str or type(hash) != bool:
+        raise TypeError
+    elif type(splitted_line) != list and splitted_line is not None:
+        raise TypeError
+    else:
+        if not (decode_read == ""):
+            data_list = decode_read.getvalue().split('\r\n')
+            fieldnames = data_list[0].split(',')
+            call_list = []
+            for line in data_list[1:len(data_list) - 1]:
+                splitted_line = line.split(',')
+                call = dict()
+                i = 0
+                for f in fieldnames:
+                    if splitted_line[i] is not None:
+                        call[f] = splitted_line[i]
+                    else:
+                        call[f] = ''
+                    i += 1
+                call_list.append(call)
+            return create_call_obj(call_list, fieldnames, hash)
 
-    try:
-        if file_type.lower() == 'csv':
-            # dataset_object = read_csv(file_path)
-            # return create_call_obj(dataset_object.get_records(), dataset_object.fieldnames)
-            with open(file_path, 'r') as csv_file:
-                reader = csv.DictReader(csv_file)
+        try:
+            if file_type.lower() == 'csv':
+                # dataset_object = read_csv(file_path)
+                # return create_call_obj(dataset_object.get_records(), dataset_object.fieldnames)
+                with open(file_path, 'r') as csv_file:
+                    reader = csv.DictReader(csv_file)
 
-                fieldnames = reader.fieldnames
-                call_list = []
-                for val in reader:
-                    call = dict()
-                    for f in fieldnames:
-                        call[f] = val[f]
-                    call_list.append(call)
-                # for c in call_list:
-                #     print(c)
-                return create_call_obj(call_list, fieldnames, hash)
-        elif file_type.lower() == 'xls' or file_type.lower() == 'xlsx':
-            return read_xls(file_path, hash)
-        elif file_type.lower() == 'json':
-            return read_json(file_path, hash)
-        else:
-            print('Invalid Format')
-    except IOError:
-        print("IO Error :", IOError)
-        pass
+                    fieldnames = reader.fieldnames
+                    call_list = []
+                    for val in reader:
+                        call = dict()
+                        for f in fieldnames:
+                            call[f] = val[f]
+                        call_list.append(call)
+                    # for c in call_list:
+                    #     print(c)
+                    return create_call_obj(call_list, fieldnames, hash)
+            elif file_type.lower() == 'xls' or file_type.lower() == 'xlsx':
+                return read_xls(file_path, hash)
+            elif file_type.lower() == 'json':
+                return read_json(file_path, hash)
+            else:
+                print('Invalid Format')
+        except IOError:
+            print("IO Error :", IOError)
+            pass
 
 
 def read_msg(file_path='', file_type='csv', hash=True, decode_read="", splitted_line=None):
@@ -213,52 +231,57 @@ def read_msg(file_path='', file_type='csv', hash=True, decode_read="", splitted_
 
 
     """
-    if not (decode_read == ""):
-        data_list = decode_read.getvalue().split('\r\n')
-        fieldnames = data_list[0].split(',')
-        msg_list = []
-        for line in data_list[1:len(data_list) - 1]:
-            splitted_line = line.split(',')
-            msg = dict()
-            i = 0
-            for f in fieldnames:
-                if splitted_line[i] is not None:
-                    msg[f] = splitted_line[i]
-                else:
-                    msg[f] = ''
-                i += 1
-            msg_list.append(msg)
-        # print(msg_list)
-        return create_msg_obj(msg_list, fieldnames, hash)
+    if type(file_path) != str or type(file_type) != str or type(hash) != bool:
+        raise TypeError
+    elif type(splitted_line) != list and splitted_line is not None:
+        raise TypeError
+    else:
+        if not (decode_read == ""):
+            data_list = decode_read.getvalue().split('\r\n')
+            fieldnames = data_list[0].split(',')
+            msg_list = []
+            for line in data_list[1:len(data_list) - 1]:
+                splitted_line = line.split(',')
+                msg = dict()
+                i = 0
+                for f in fieldnames:
+                    if splitted_line[i] is not None:
+                        msg[f] = splitted_line[i]
+                    else:
+                        msg[f] = ''
+                    i += 1
+                msg_list.append(msg)
+            # print(msg_list)
+            return create_msg_obj(msg_list, fieldnames, hash)
 
-    try:
-        if file_type.lower() == 'csv':
-            with open(file_path, 'r') as csv_file:
-                reader = csv.DictReader(csv_file)
+        try:
+            if file_type.lower() == 'csv':
+                with open(file_path, 'r') as csv_file:
+                    reader = csv.DictReader(csv_file)
 
-                fieldnames = reader.fieldnames
-                messages_list = []
-                for val in reader:
-                    message = dict()
-                    for f in fieldnames:
-                        message[f] = val[f]
-                    messages_list.append(message)
+                    fieldnames = reader.fieldnames
+                    messages_list = []
+                    for val in reader:
+                        message = dict()
+                        for f in fieldnames:
+                            message[f] = val[f]
+                        messages_list.append(message)
 
-                return create_msg_obj(messages_list, fieldnames, hash)
-        elif file_type.lower() == 'xls' or file_type.lower() == 'xlsx':
-            return read_xls(file_path, hash)
-        elif file_type.lower() == 'json':
-            return read_json(file_path, hash)
-        else:
-            print('Invalid Format')
-    except IOError:
-        print("IO Error :", IOError)
-        pass
+                    return create_msg_obj(messages_list, fieldnames, hash)
+            elif file_type.lower() == 'xls' or file_type.lower() == 'xlsx':
+                return read_xls(file_path, hash)
+            elif file_type.lower() == 'json':
+                return read_json(file_path, hash)
+            else:
+                print('Invalid Format')
+        except IOError:
+            print("IO Error :", IOError)
+            pass
 
 
 def read_cell(file_path='', call_csv_path=None, call_dataset_obj=None, file_type='csv', decode_read="",
               splitted_line=None):
-    # print("[x]  Reading Cell Data")
+    print("[x]  Reading Cell Data")
 
     """
     Load cell records from a file.
@@ -273,63 +296,72 @@ def read_cell(file_path='', call_csv_path=None, call_dataset_obj=None, file_type
 
 
     """
-    if not (decode_read == ""):
-        data_list = decode_read.getvalue().split('\r\n')
-        fieldnames = data_list[0].split(',')
-        cell_list = []
-        if call_csv_path is not None:
-            call_data_set = read_call(call_csv_path)
-        if call_dataset_obj is not None:
-            call_data_set = call_dataset_obj
-        else:
-            call_data_set = None
-        for line in data_list[1:len(data_list) - 1]:
-            splitted_line = line.split(',')
-            cell = dict()
-            i = 0
-            for f in fieldnames:
-                if splitted_line[i] is not None:
-                    cell[f] = splitted_line[i]
-                else:
-                    cell[f] = ''
-                i += 1
-            cell_list.append(cell)
-        # print(call_list)
-        return create_cell_obj(cell_list, fieldnames, call_data_set)
-
-    try:
-        if file_type.lower() == 'csv':
-            with open(file_path, 'r') as csv_file:
-                reader = csv.DictReader(csv_file)
-                fieldnames = reader.fieldnames
-                cell_list = []
-                for val in reader:
-                    cell = dict()
-                    for f in fieldnames:
-                        cell[f] = val[f]
-                    cell_list.append(cell)
-                if call_csv_path is not None:
-                    call_data_set = read_call(call_csv_path)
-                if call_dataset_obj is not None:
-                    call_data_set = call_dataset_obj
-                else:
-                    call_data_set = None
-                return create_cell_obj(cell_list, fieldnames, call_data_set)
-        elif file_type.lower() == 'xls' or file_type.lower() == 'xlsx':
+    if type(file_path) != str or type(file_type) != str:
+        raise TypeError
+    elif type(call_csv_path) != str and call_csv_path is not None:
+        raise TypeError
+    elif type(call_dataset_obj).__name__ != "CallDataSet" and call_dataset_obj is not None:
+        raise TypeError
+    elif type(splitted_line) != list and splitted_line is not None:
+        raise TypeError
+    else:
+        if not (decode_read == ""):
+            data_list = decode_read.getvalue().split('\r\n')
+            fieldnames = data_list[0].split(',')
+            cell_list = []
             if call_csv_path is not None:
-                call_data_set = read_call(call_csv_path, 'xls')
+                call_data_set = read_call(call_csv_path)
             if call_dataset_obj is not None:
                 call_data_set = call_dataset_obj
             else:
                 call_data_set = None
-            return read_xls(file_path, call_data_set)
-        elif file_type.lower() == 'json':
-            return read_json(file_path)
-        else:
-            print('Invalid Format')
-    except IOError:
-        print("IO Error :", IOError)
-        pass
+            for line in data_list[1:len(data_list) - 1]:
+                splitted_line = line.split(',')
+                cell = dict()
+                i = 0
+                for f in fieldnames:
+                    if splitted_line[i] is not None:
+                        cell[f] = splitted_line[i]
+                    else:
+                        cell[f] = ''
+                    i += 1
+                cell_list.append(cell)
+            # print(call_list)
+            return create_cell_obj(cell_list, fieldnames, call_data_set)
+
+        try:
+            if file_type.lower() == 'csv':
+                with open(file_path, 'r') as csv_file:
+                    reader = csv.DictReader(csv_file)
+                    fieldnames = reader.fieldnames
+                    cell_list = []
+                    for val in reader:
+                        cell = dict()
+                        for f in fieldnames:
+                            cell[f] = val[f]
+                        cell_list.append(cell)
+                    if call_csv_path is not None:
+                        call_data_set = read_call(call_csv_path)
+                    if call_dataset_obj is not None:
+                        call_data_set = call_dataset_obj
+                    else:
+                        call_data_set = None
+                    return create_cell_obj(cell_list, fieldnames, call_data_set)
+            elif file_type.lower() == 'xls' or file_type.lower() == 'xlsx':
+                if call_csv_path is not None:
+                    call_data_set = read_call(call_csv_path, 'xls')
+                if call_dataset_obj is not None:
+                    call_data_set = call_dataset_obj
+                else:
+                    call_data_set = None
+                return read_xls(file_path, call_data_set)
+            elif file_type.lower() == 'json':
+                return read_json(file_path)
+            else:
+                print('Invalid Format')
+        except IOError:
+            print("IO Error :", IOError)
+            pass
 
 
 def read_xls(filepath, call_data_set=None, hash=True):

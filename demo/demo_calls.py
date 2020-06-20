@@ -6,11 +6,12 @@ import cellyzer as cz
 
 call_file_path = "demo_datasets/test_data/calls.csv"
 callDataSet = cz.read_call(call_file_path)
-
+# cz.to_json(callDataSet,"calls")
+# print(type(callDataSet).__name__)
 # cz.utils.print_dataset(callDataSet, name="Call Dataset")
 #
-all_users_of_calls = callDataSet.get_all_users()
-print(">> All Users in call dataSet : %s \n" % all_users_of_calls)
+# all_users_of_calls = callDataSet.get_all_users()
+# print(">> All Users in call dataSet : %s \n" % all_users_of_calls)
 
 search_user_call_1 = "3e97992791"
 search_user_call_2 = "265034e175"
@@ -35,9 +36,9 @@ search_user_call_3 = '329233d117'
 # print(">> close contacts of %s :" % search_user_call_1)
 # cz.utils.print_close_contacts(close_contacts)
 #
-#active_time = callDataSet.get_most_active_time(search_user_call_1)
-#print(">> most active times during day of %s - %s" % (search_user_call_1, active_time))
-#cz.visualization.active_time_bar_chart(active_time)
+# active_time = callDataSet.get_most_active_time(search_user_call_1)
+# print(">> most active times during day of %s - %s" % (search_user_call_1, active_time))
+# cz.visualization.active_time_bar_chart(active_time)
 #
 # ignored_call_details = callDataSet.get_ignored_call_details(search_user_call_3)
 # print(">> Ignored calls details : ")

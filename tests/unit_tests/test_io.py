@@ -23,23 +23,57 @@ class TestIO(unittest.TestCase):
         cls.msg_json_path = "../../demo/demo_datasets/test_data/json data/message.json"
         cls.cell_json_path = "../../demo/demo_datasets/test_data/json data/cell.json"
 
+        # cls.call_csv_test_obj = io.read_call(cls.call_csv_test_path)
+
     def test_to_json(self):
-        pass
+        with self.assertRaises(TypeError):
+            io.to_json("obj", "calls")
+            io.to_json(None, "calls")
+            io.to_json(io.read_call(self.call_csv_test_path), 123)
+            io.to_json(io.read_call(self.call_csv_test_path), None)
 
     def test_to_csv(self):
-        pass
+        with self.assertRaises(TypeError):
+            io.to_csv("obj", "calls")
+            io.to_csv(None, "calls")
+            io.to_csv(io.read_call(self.call_csv_test_path), 123)
+            io.to_csv(io.read_call(self.call_csv_test_path), None)
 
     def test_read_csv(self):
-        pass
+        with self.assertRaises(TypeError):
+            io.read_csv(123)
+            io.read_csv(None)
 
     def test_read_call(self):
-        pass
+        with self.assertRaises(TypeError):
+            io.read_call(file_path=123)
+            io.read_call(None)
+            io.read_call(self.call_csv_test_path, file_type=123)
+            io.read_call(self.call_csv_test_path, file_type=None)
+            io.read_call(self.call_csv_test_path, hash=123)
+            io.read_call(self.call_csv_test_path, hash=None)
+            io.read_call(self.call_csv_test_path, splitted_line={})
 
     def test_read_msg(self):
-        pass
+        with self.assertRaises(TypeError):
+            io.read_msg(file_path=123)
+            io.read_msg(None)
+            io.read_msg(self.msg_csv_test_path, file_type=123)
+            io.read_msg(self.msg_csv_test_path, file_type=None)
+            io.read_msg(self.msg_csv_test_path, hash=123)
+            io.read_msg(self.msg_csv_test_path, hash=None)
+            io.read_msg(self.msg_csv_test_path, splitted_line={})
 
     def test_read_cell(self):
-        pass
+        with self.assertRaises(TypeError):
+            io.read_cell(file_path=123)
+            io.read_cell(None)
+            io.read_cell(self.cell_csv_test_path, call_csv_path=123)
+            io.read_cell(self.cell_csv_test_path, call_dataset_obj=io.read_msg(self.msg_csv_test_path))
+            io.read_cell(self.cell_csv_test_path, call_dataset_obj="call_data_object")
+            io.read_cell(self.cell_csv_test_path, file_type=123)
+            io.read_cell(self.cell_csv_test_path, file_type=None)
+            io.read_cell(self.cell_csv_test_path, splitted_line={})
 
     def test_reas_xls(self):
         pass
