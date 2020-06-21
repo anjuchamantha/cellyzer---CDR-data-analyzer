@@ -356,12 +356,19 @@ def read_cell(file_path='', call_csv_path=None, call_dataset_obj=None, file_type
                     call_data_set = None
                 return read_xls(file_path, call_data_set)
             elif file_type.lower() == 'json':
-                return read_json(file_path)
+                if call_csv_path is not None:
+                    call_data_set = read_call(call_csv_path, 'xls')
+                if call_dataset_obj is not None:
+                    call_data_set = call_dataset_obj
+                else:
+                    call_data_set = None
+                return read_json(file_path, call_data_set)
             else:
                 print('Invalid Format')
         except IOError:
             print("IO Error :", IOError)
             pass
+
 
 
 def read_xls(filepath, call_data_set=None, hash=True):
@@ -392,7 +399,7 @@ def read_xls(filepath, call_data_set=None, hash=True):
             log.getLogger().setLevel(_level)
 
 
-def read_json(filepath, hash=True):
+def read_json(filepath, call_data_set=None, hash=True):
     print("[x]  Reading Data From JSON File")
 
     """
@@ -429,7 +436,7 @@ def read_json(filepath, hash=True):
                             for records in data[key]:
                                 record_list.append(records)
                             print(record_list)
-                            return create_cell_obj(record_list, fieldnames)
+                            return create_cell_obj(record_list, fieldnames, call_data_set)
                         else:
                             log.warning("This File Has Invalid Inputs")
                 except ValueError:  # includes simplejson.decoder.JSONDecodeError
@@ -437,6 +444,7 @@ def read_json(filepath, hash=True):
         except IOError:
             print("IO Error :", IOError)
             pass
+
 
 
 def hash_number(number):
@@ -460,14 +468,16 @@ def create_call_obj(calls, fieldnames, hash):
             user = other_user = direction = duration = timestamp = cell_id = cost = None
 
             for key in call:
+                if not isinstance(call[key], str):
+                    call[key] = str(call[key])
                 if 'user' in key:
                     if hash and call['user'] != '':
-                        user = hash_number(call["user"])
+                        user = hash_number(str(call["user"]))
                     else:
                         user = call["user"]
                 elif 'other' in key:
                     if hash and call['other'] != '':
-                        other_user = hash_number(call[key])
+                        other_user = hash_number(str(call[key]))
                     else:
                         other_user = call[key]
                 elif 'dir' in key:
@@ -504,6 +514,8 @@ def create_msg_obj(messages, fieldnames, hash):
             user = other_user = direction = length = timestamp = None
 
             for key in msg:
+                if not isinstance(msg[key], str):
+                    msg[key] = str(msg[key])
                 if 'user' in key:
                     if hash and msg['user'] != '':
                         user = hash_number(msg[key])
@@ -540,6 +552,8 @@ def create_cell_obj(cells, fieldnames, call_data_set):
             cell_id = latitude = longitude = None
 
             for key in cell:
+                if not isinstance(cell[key], str):
+                    cell[key] = str(cell[key])
                 if 'antenna_id' in key or 'cell_id' in key:
                     cell_id = cell[key]
                 elif 'latitude' in key:
