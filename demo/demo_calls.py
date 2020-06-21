@@ -4,13 +4,15 @@ This is for manual testing the library
 
 import cellyzer as cz
 
-call_file_path = "demo_datasets/test_data/calls.csv"
-callDataSet = cz.read_call(call_file_path)
+call_file_path = "demo_datasets/test_data/excel data/calls.xlsx"
+cell_file_path = "demo_datasets/test_data/excel data/cell.xlsx"
+callDataSet = cz.read_call(call_file_path, file_type='xls')
+cellDataset = cz.read_cell(cell_file_path,call_dataset_obj=callDataSet,file_type='xls')
 
 # cz.utils.print_dataset(callDataSet, name="Call Dataset")
 #
-all_users_of_calls = callDataSet.get_all_users()
-print(">> All Users in call dataSet : %s \n" % all_users_of_calls)
+# all_users_of_calls = callDataSet.get_all_users()
+# print(">> All Users in call dataSet : %s \n" % all_users_of_calls)
 
 search_user_call_1 = "3e97992791"
 search_user_call_2 = "265034e175"
