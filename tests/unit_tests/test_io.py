@@ -75,20 +75,45 @@ class TestIO(unittest.TestCase):
             io.read_cell(self.cell_csv_test_path, file_type=None)
             io.read_cell(self.cell_csv_test_path, splitted_line={})
 
-    def test_reas_xls(self):
-        pass
+    def test_read_xls(self):
+        with self.assertRaises(TypeError):
+            io.read_xls(filepath=123)
+            io.read_xls(filepath=None)
+            io.read_xls(filepath=self.call_xlsx_path, call_data_set="data obj")
+            io.read_xls(filepath=self.call_xlsx_path, hash="True")
+            io.read_xls(filepath=self.call_xlsx_path, hash=None)
 
     def test_read_json(self):
-        pass
+        with self.assertRaises(TypeError):
+            io.read_json(filepath=123)
+            io.read_json(filepath=None)
+            io.read_json(filepath=self.call_json_path, hash=None)
+            io.read_json(filepath=self.call_json_path, hash="True")
+            io.read_json(filepath=self.call_json_path, hash=123)
 
     def test_hash_number(self):
-        pass
+        with self.assertRaises(TypeError):
+            io.hash_number(123)
+            io.hash_number(None)
+            io.hash_number([])
 
     def test_create_call_obj(self):
-        pass
+        with self.assertRaises(TypeError):
+            io.create_call_obj(calls=None, fieldnames=[], hash=True)
+            io.create_call_obj(calls={}, fieldnames=[], hash=True)
+            io.create_call_obj(calls=[], fieldnames={}, hash=True)
+            io.create_call_obj(calls=[], fieldnames=None, hash=True)
+            io.create_call_obj(calls=[], fieldnames=[], hash="True")
+            io.create_call_obj(calls=[], fieldnames=[], hash=None)
 
     def test_create_msg_obj(self):
-        pass
+        with self.assertRaises(TypeError):
+            io.create_msg_obj(messages=None, fieldnames=[], hash=True)
+            io.create_msg_obj(messages={}, fieldnames=[], hash=True)
+            io.create_msg_obj(messages=[], fieldnames={}, hash=True)
+            io.create_msg_obj(messages=[], fieldnames=None, hash=True)
+            io.create_msg_obj(messages=[], fieldnames=[], hash="True")
+            io.create_msg_obj(messages=[], fieldnames=[], hash=None)
 
     def test_create_cell_obj(self):
         pass

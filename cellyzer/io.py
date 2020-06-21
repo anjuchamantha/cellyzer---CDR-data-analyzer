@@ -376,17 +376,20 @@ def read_xls(filepath, call_data_set=None, hash=True):
         Path of the file.
 
     """
-    sample, fieldnames = xls_to_dict(filepath)
-    _level = log.getLogger().level
-    if 'latitude' in fieldnames and len(fieldnames) == 3:
-        return create_cell_obj(sample, fieldnames, call_data_set)
-    elif 'duration' in fieldnames and len(fieldnames) == 7:
-        return create_call_obj(sample, fieldnames, hash)
-    elif 'length' in fieldnames and len(fieldnames) == 5:
-        return create_msg_obj(sample, fieldnames, hash)
+    if type(filepath) != str or type(hash) != bool:
+        raise TypeError
     else:
-        log.warning('Invalid Input')
-        log.getLogger().setLevel(_level)
+        sample, fieldnames = xls_to_dict(filepath)
+        _level = log.getLogger().level
+        if 'latitude' in fieldnames and len(fieldnames) == 3:
+            return create_cell_obj(sample, fieldnames, call_data_set)
+        elif 'duration' in fieldnames and len(fieldnames) == 7:
+            return create_call_obj(sample, fieldnames, hash)
+        elif 'length' in fieldnames and len(fieldnames) == 5:
+            return create_msg_obj(sample, fieldnames, hash)
+        else:
+            log.warning('Invalid Input')
+            log.getLogger().setLevel(_level)
 
 
 def read_json(filepath, hash=True):
@@ -400,49 +403,57 @@ def read_json(filepath, hash=True):
         Path of the file.
 
     """
-    record_list = []
-    try:
-        with open(filepath) as json_file:
-            try:
-                data = json.load(json_file)
-                for key in data:
-                    if key.lower() == 'callrecords':
-                        fieldnames = data[key][0].keys()
-                        for records in data[key]:
-                            record_list.append(records)
-                        print(record_list)
-                        return create_call_obj(record_list, fieldnames, hash)
-                    elif key.lower() == 'messagerecords':
-                        fieldnames = data[key][0].keys()
-                        for records in data[key]:
-                            record_list.append(records)
-                        print(record_list)
-                        return create_msg_obj(record_list, fieldnames, hash)
-                    elif key.lower() == 'cellrecords':
-                        fieldnames = data[key][0].keys()
-                        for records in data[key]:
-                            record_list.append(records)
-                        print(record_list)
-                        return create_cell_obj(record_list, fieldnames)
-                    else:
-                        log.warning("This File Has Invalid Inputs")
-            except ValueError:  # includes simplejson.decoder.JSONDecodeError
-                print('Decoding JSON has failed. Please Check The JSON File Again')
-    except IOError:
-        print("IO Error :", IOError)
-        pass
+    if type(filepath) != str or type(hash) != bool:
+        raise TypeError
+    else:
+        record_list = []
+        try:
+            with open(filepath) as json_file:
+                try:
+                    data = json.load(json_file)
+                    for key in data:
+                        if key.lower() == 'callrecords':
+                            fieldnames = data[key][0].keys()
+                            for records in data[key]:
+                                record_list.append(records)
+                            print(record_list)
+                            return create_call_obj(record_list, fieldnames, hash)
+                        elif key.lower() == 'messagerecords':
+                            fieldnames = data[key][0].keys()
+                            for records in data[key]:
+                                record_list.append(records)
+                            print(record_list)
+                            return create_msg_obj(record_list, fieldnames, hash)
+                        elif key.lower() == 'cellrecords':
+                            fieldnames = data[key][0].keys()
+                            for records in data[key]:
+                                record_list.append(records)
+                            print(record_list)
+                            return create_cell_obj(record_list, fieldnames)
+                        else:
+                            log.warning("This File Has Invalid Inputs")
+                except ValueError:  # includes simplejson.decoder.JSONDecodeError
+                    print('Decoding JSON has failed. Please Check The JSON File Again')
+        except IOError:
+            print("IO Error :", IOError)
+            pass
 
 
 def hash_number(number):
-    last3 = number[-3:]
-    hash_val = str(hashlib.sha224(number[:7].encode()).hexdigest())
-    # print(hash_val[:6] + last3)
-    return hash_val[:7] + last3
+    if type(number) != str and type(number) != int and type(number) != float:
+        raise TypeError
+    else:
+        number = str(number)
+        last3 = number[-3:]
+        hash_val = str(hashlib.sha224(number[:7].encode()).hexdigest())
+        # print(hash_val[:6] + last3)
+        return hash_val[:7] + last3
 
 
 def create_call_obj(calls, fieldnames, hash):
-    if calls is not None:
-
+    if type(calls) != list or type(hash) != bool:
+        raise TypeError
+    elif calls is not None:
         call_records = []
         for i in range(0, len(calls)):
             call = calls[i]
@@ -484,7 +495,9 @@ def create_call_obj(calls, fieldnames, hash):
 
 
 def create_msg_obj(messages, fieldnames, hash):
-    if messages is not None:
+    if type(messages) != list or type(fieldnames) != list or type(hash) != bool:
+        raise TypeError
+    elif messages is not None:
 
         msg_records = []
         for msg in messages:
