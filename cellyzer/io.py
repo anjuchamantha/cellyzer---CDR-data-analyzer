@@ -505,7 +505,7 @@ def create_call_obj(calls, fieldnames, hash):
 
 
 def create_msg_obj(messages, fieldnames, hash):
-    if type(messages) != list or type(fieldnames) != list or type(hash) != bool:
+    if type(messages) != list or type(hash) != bool:
         raise TypeError
     elif messages is not None:
 
