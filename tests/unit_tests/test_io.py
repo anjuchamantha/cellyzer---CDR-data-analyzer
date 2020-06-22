@@ -40,11 +40,20 @@ class TestIO(unittest.TestCase):
             io.to_csv(io.read_call(self.call_csv_test_path), None)
 
     def test_read_csv(self):
+        self.assertEqual(type(io.read_csv(self.call_csv_test_path)).__name__, "DataSet")
+        self.assertEqual(type(io.read_csv(self.call_csv_long_path)).__name__, "DataSet")
+        self.assertEqual(type(io.read_csv(self.msg_csv_test_path)).__name__, "DataSet")
+
         with self.assertRaises(TypeError):
             io.read_csv(123)
             io.read_csv(None)
 
     def test_read_call(self):
+        self.assertEqual(type(io.read_call(self.call_csv_test_path)).__name__, "CallDataSet")
+        self.assertEqual(type(io.read_call(self.call_csv_long_path)).__name__, "CallDataSet")
+        self.assertEqual(type(io.read_call(self.call_json_path, file_type="json")).__name__, "CallDataSet")
+        self.assertEqual(type(io.read_call(self.call_xlsx_path, file_type="xls")).__name__, "CallDataSet")
+
         with self.assertRaises(TypeError):
             io.read_call(file_path=123)
             io.read_call(None)
@@ -55,6 +64,10 @@ class TestIO(unittest.TestCase):
             io.read_call(self.call_csv_test_path, splitted_line={})
 
     def test_read_msg(self):
+        self.assertEqual(type(io.read_msg(self.msg_csv_test_path)).__name__, "MessageDataSet")
+        self.assertEqual(type(io.read_msg(self.msg_json_path, file_type="json")).__name__, "MessageDataSet")
+        self.assertEqual(type(io.read_msg(self.msg_xlsx_path, file_type="xls")).__name__, "MessageDataSet")
+
         with self.assertRaises(TypeError):
             io.read_msg(file_path=123)
             io.read_msg(None)
@@ -65,6 +78,15 @@ class TestIO(unittest.TestCase):
             io.read_msg(self.msg_csv_test_path, splitted_line={})
 
     def test_read_cell(self):
+        self.assertEqual(type(io.read_cell(self.cell_csv_test_path)).__name__, "CellDataSet")
+        self.assertEqual(type(io.read_cell(self.cell_csv_test_path, call_csv_path=self.call_csv_test_path)).__name__,
+                         "CellDataSet")
+        self.assertEqual(type(
+            io.read_cell(self.cell_csv_test_path, call_dataset_obj=io.read_call(self.call_csv_test_path))).__name__,
+                         "CellDataSet")
+        self.assertEqual(type(io.read_cell(self.cell_json_path, file_type="json")).__name__, "CellDataSet")
+        self.assertEqual(type(io.read_cell(self.cell_xlsx_path, file_type="xlsx")).__name__, "CellDataSet")
+
         with self.assertRaises(TypeError):
             io.read_cell(file_path=123)
             io.read_cell(None)
@@ -76,6 +98,13 @@ class TestIO(unittest.TestCase):
             io.read_cell(self.cell_csv_test_path, splitted_line={})
 
     def test_read_xls(self):
+        self.assertEqual(type(io.read_xls(filepath=self.call_xlsx_path)).__name__, "CallDataSet")
+        self.assertEqual(type(io.read_xls(filepath=self.msg_xlsx_path)).__name__, "MessageDataSet")
+        self.assertEqual(type(io.read_xls(filepath=self.cell_xlsx_path)).__name__, "CellDataSet")
+        self.assertEqual(type(
+            io.read_xls(filepath=self.call_xlsx_path, call_data_set=io.read_call(self.call_csv_test_path))).__name__,
+                         "CallDataSet")
+
         with self.assertRaises(TypeError):
             io.read_xls(filepath=123)
             io.read_xls(filepath=None)
@@ -84,6 +113,13 @@ class TestIO(unittest.TestCase):
             io.read_xls(filepath=self.call_xlsx_path, hash=None)
 
     def test_read_json(self):
+        self.assertEqual(type(io.read_json(filepath=self.call_json_path)).__name__, "CallDataSet")
+        self.assertEqual(type(io.read_json(filepath=self.msg_json_path)).__name__, "MessageDataSet")
+        self.assertEqual(type(io.read_json(filepath=self.cell_json_path)).__name__, "CellDataSet")
+        self.assertEqual(type(
+            io.read_json(filepath=self.call_json_path, call_data_set=io.read_call(self.call_csv_test_path))).__name__,
+                         "CallDataSet")
+
         with self.assertRaises(TypeError):
             io.read_json(filepath=123)
             io.read_json(filepath=None)
@@ -92,6 +128,10 @@ class TestIO(unittest.TestCase):
             io.read_json(filepath=self.call_json_path, hash=123)
 
     def test_hash_number(self):
+        self.assertEqual(io.hash_number("0714567893"), "e5f2aad893")
+        self.assertEqual(io.hash_number(1234567890), "bb3fc34890")
+        self.assertEqual(io.hash_number(12345.67890), "26defe4789")
+
         with self.assertRaises(TypeError):
             io.hash_number(123)
             io.hash_number(None)
@@ -116,28 +156,11 @@ class TestIO(unittest.TestCase):
             io.create_msg_obj(messages=[], fieldnames=[], hash=None)
 
     def test_create_cell_obj(self):
-        pass
-
-    def test_filter_calls(self):
-        pass
-
-    def test_filter_messages(self):
-        pass
-
-    def test_filter_cells(self):
-        pass
-
-    def test_parse_records(self):
-        pass
-
-    def test_make_json_from_data(self):
-        pass
-
-    def test_xls_to_dict(self):
-        pass
-
-    def test_float_to_int(self):
-        pass
+        with self.assertRaises(TypeError):
+            io.create_cell_obj(cells=None, fieldnames=[], call_data_set=io.read_call(self.call_csv_test_path))
+            io.create_cell_obj(cells="[]", fieldnames=[], call_data_set=io.read_call(self.call_csv_test_path))
+            io.create_cell_obj(cells=[], fieldnames=[], call_data_set=None)
+            io.create_cell_obj(cells=[], fieldnames=[], call_data_set="None")
 
 
 if __name__ == '__main__':

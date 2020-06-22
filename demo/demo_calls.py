@@ -16,8 +16,8 @@ cz.read_cell(file_path="demo_datasets/test_data/excel data/cell.xlsx", file_type
 
 
 cz.read_call(file_path="demo_datasets/test_data/json data/call.json", file_type="json")
-# cz.read_msg(file_path="demo_datasets/test_data/json data/message.json", file_type="json")
-# cz.read_cell(file_path="demo_datasets/test_data/json data/cell.json", file_type="json")
+cz.read_msg(file_path="demo_datasets/test_data/json data/message.json", file_type="json")
+cz.read_cell(file_path="demo_datasets/test_data/json data/cell.json", file_type="json")
 
 # print(type(callDataSet).__name__)
 # cz.utils.print_dataset(callDataSet, name="Call Dataset")

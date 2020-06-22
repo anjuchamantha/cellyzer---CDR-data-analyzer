@@ -112,7 +112,7 @@ def to_csv(dataset_object, filename):
 
 
 def read_csv(filepath):
-    print("         from a CSV file ...")
+    # print("         from a CSV file ...")
 
     """
      Load records from a csv file.
@@ -138,8 +138,8 @@ def read_csv(filepath):
                         record[f] = val[f]
                     record_list.append(record)
 
-                for c in record_list:
-                    print(c)
+                # for c in record_list:
+                #     print(c)
                 dataset_object = DataSet(record_list, fieldnames)
 
                 return dataset_object
@@ -370,7 +370,6 @@ def read_cell(file_path='', call_csv_path=None, call_dataset_obj=None, file_type
             pass
 
 
-
 def read_xls(filepath, call_data_set=None, hash=True):
     print("[x]  Reading Data From Excel File")
 
@@ -423,19 +422,19 @@ def read_json(filepath, call_data_set=None, hash=True):
                             fieldnames = data[key][0].keys()
                             for records in data[key]:
                                 record_list.append(records)
-                            print(record_list)
+                            # print(record_list)
                             return create_call_obj(record_list, fieldnames, hash)
                         elif key.lower() == 'messagerecords':
                             fieldnames = data[key][0].keys()
                             for records in data[key]:
                                 record_list.append(records)
-                            print(record_list)
+                            # print(record_list)
                             return create_msg_obj(record_list, fieldnames, hash)
                         elif key.lower() == 'cellrecords':
                             fieldnames = data[key][0].keys()
                             for records in data[key]:
                                 record_list.append(records)
-                            print(record_list)
+                            # print(record_list)
                             return create_cell_obj(record_list, fieldnames, call_data_set)
                         else:
                             log.warning("This File Has Invalid Inputs")
@@ -444,7 +443,6 @@ def read_json(filepath, call_data_set=None, hash=True):
         except IOError:
             print("IO Error :", IOError)
             pass
-
 
 
 def hash_number(number):
@@ -545,8 +543,11 @@ def create_msg_obj(messages, fieldnames, hash):
 
 
 def create_cell_obj(cells, fieldnames, call_data_set):
-    if cells is not None:
-
+    if type(cells) != list:
+        raise TypeError
+    elif type(call_data_set).__name__ != "CallDataSet" and call_data_set is not None:
+        raise TypeError
+    elif cells is not None:
         cell_records = []
         for cell in cells:
             cell_id = latitude = longitude = None
@@ -766,7 +767,7 @@ def xls_to_dict(workbook_url):
         filteredlist = float_to_int(row)
         rows.append(filteredlist)
     sheet_data = make_json_from_data(columns, rows)
-    print(sheet_data)
+    # print(sheet_data)
     return sheet_data, columns
 
 
