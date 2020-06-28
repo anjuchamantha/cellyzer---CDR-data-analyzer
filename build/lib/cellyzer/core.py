@@ -121,7 +121,7 @@ class CallMessageDataSet(DataSet):
 
     def get_records(self, user1=None, user2=None):
         """
-        filter records using given user(s)
+        Get records of a given user or records between given 2 users
 
         :param user1: string or None
                 contact number of user1
@@ -129,7 +129,7 @@ class CallMessageDataSet(DataSet):
         :param user2: string or None
                 contact number of user2
 
-        :return: record(s) : list
+        :return: record(s) : list of records
         """
         all_records = super().get_records()
         records = []
@@ -173,10 +173,9 @@ class CallMessageDataSet(DataSet):
 
     def get_connected_users(self, user):
         """
-        get a list of users that are connected to the given user
+        get a list of users that are connected to a given user
 
-        :param user: string/int
-                contact number of user
+        :param user: string
 
         :return: connected_users : list
         """
@@ -246,27 +245,29 @@ class CallMessageDataSet(DataSet):
         else:
             return connections
 
-    def visualize_connection_network(self, directed=True, users=[], gui=False, fig_id='1'):
+    def visualize_connection_network(self, directed=True, users=[], gui=False, fig_id='1', font_size=5):
         """
-        generates a directed graph of connected users
+        Generates a graph with the connections within a given list of users.
+        If the graph is directed the arrow head implies the direction of the call/message.
+        The value near the arrow gives the number of connections made to that direction.
 
         :param fig_id: str
         :param gui: boolean
         :param directed: boolean
         :param users: list
                 list of users
+        :param font_size: int
 
         :return: connections : list
                  directed : boolean
         """
         connections = self.get_connections(users, allow_duplicates=True)
         weighted_edge_list = tools.get_weighted_edge_list(connections, directed)
-        visualization.network_graph(weighted_edge_list, directed, gui, fig_id)
-        # return connections
+        visualization.network_graph(weighted_edge_list, directed, gui, fig_id, font_size, users)
 
     def get_most_active_time(self, user):
         """
-        get most active time of a user during a day
+        Returns a dictionary with the hours in the day as keys and values as number of calls/messages made.
 
         :param user: string
                 contact number of the user
@@ -384,9 +385,6 @@ class MessageDataSet(CallMessageDataSet):
                 contacts_dict[user2] = len(records)
             close_contacts = dict(sorted(contacts_dict.items(), key=itemgetter(1), reverse=True)[:int(top_contact)])
             return close_contacts
-
-    def get_frequenct_conversations(self):
-        print("Frequent conversations between ")
 
 
 class CellDataSet(DataSet):
@@ -535,7 +533,6 @@ class CellDataSet(DataSet):
         else:
             trips = []
             user_records = self._call_data_Set.get_records(str(user))
-            # utils.print_record_lists(user_records)
             for record in user_records:
                 trip = dict()
                 if str(user) == record.get_user():
@@ -576,7 +573,7 @@ class User:
         >> antenna_file_path = "demo_datasets/test_data/antennas.csv"
         >> callDataSet = cz.read_call(call_file_path)
         >> cellDataSet = cz.read_cell(antenna_file_path)
-        >> user_number = "7163185791"
+        >> user_number = "xxxxxxxxx"
         >> user_obj = cz.User(callDataSet=callDataSet, cellDataSet=cellDataSet, contact_no=user_number)
         >> user_obj.get_contact_no()
         """
@@ -651,7 +648,7 @@ class User:
         >> antenna_file_path = "demo_datasets/test_data/antennas.csv"
         >> callDataSet = cz.read_call(call_file_path)
         >> cellDataSet = cz.read_cell(antenna_file_path)
-        >> user_number = "7163185791"
+        >> user_number = "xxxxxxxxx"
         >> user_obj = cz.User(callDataSet=callDataSet, cellDataSet=cellDataSet, contact_no=user_number)
         >> home_location = user_obj.get_home_location()
         """
@@ -669,7 +666,7 @@ class User:
         >> antenna_file_path = "demo_datasets/test_data/antennas.csv"
         >> callDataSet = cz.read_call(call_file_path)
         >> cellDataSet = cz.read_cell(antenna_file_path)
-        >> user_number = "7163185791"
+        >> user_number = "xxxxxxxxx"
         >> user_obj = cz.User(callDataSet=callDataSet, cellDataSet=cellDataSet, contact_no=user_number)
         >> work_location = user_obj.get_work_location()
         """
@@ -687,7 +684,7 @@ class User:
         >> antenna_file_path = "demo_datasets/test_data/antennas.csv"
         >> callDataSet = cz.read_call(call_file_path)
         >> cellDataSet = cz.read_cell(antenna_file_path)
-        >> user_number = "7163185791"
+        >> user_number = "xxxxxxxxx"
         >> user_obj = cz.User(callDataSet=callDataSet, cellDataSet=cellDataSet, contact_no=user_number)
         >> home_location_cell = user_obj.get_home_location_related_cell_id()
         """
@@ -708,7 +705,7 @@ class User:
         >> antenna_file_path = "demo_datasets/test_data/antennas.csv"
         >> callDataSet = cz.read_call(call_file_path)
         >> cellDataSet = cz.read_cell(antenna_file_path)
-        >> user_number = "7163185791"
+        >> user_number = "xxxxxxxxx"
         >> user_obj = cz.User(callDataSet=callDataSet, cellDataSet=cellDataSet, contact_no=user_number)
         >> work_location_cell = user_obj.get_work_location_related_cell_id()
         """

@@ -3,7 +3,6 @@ README.md
 setup.py
 cellyzer/__init__.py
 cellyzer/core.py
-cellyzer/dashboard.py
 cellyzer/io.py
 cellyzer/matrix.py
 cellyzer/tools.py
