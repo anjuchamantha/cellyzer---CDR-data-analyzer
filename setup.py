@@ -9,7 +9,7 @@ def readme():
 
 setup(
     name="cellyzer",
-    version="1.1.2",
+    version="1.1.3",
     description="A CDR(Call Data Records) data analyzing library",
     long_description=readme(),
     long_description_content_type="text/markdown",

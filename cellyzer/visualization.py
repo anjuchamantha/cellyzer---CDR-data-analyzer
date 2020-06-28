@@ -1,13 +1,8 @@
 """
 Graphing classes and Mapping classes are modeled here
-
-Graphing - matplotlib, networkx
 """
-
 import networkx as nx
 import matplotlib
-
-matplotlib.use("agg")
 import matplotlib.pyplot as plt
 import numpy as np
 import folium
@@ -17,6 +12,8 @@ import os
 import base64
 from io import BytesIO
 
+matplotlib.use("agg")
+
 plt.rcParams['figure.dpi'] = 200
 
 try:
@@ -25,28 +22,23 @@ except OSError as error:
     print(error)
 
 
-def network_graph(edge_list, directed, gui, fig_id):
+def network_graph(edge_list, directed, gui, fig_id, font_size=6, users="All"):
     plt.figure(fig_id)
     if directed:
         g = nx.DiGraph()
     else:
         g = nx.Graph()
-
-    # print(weighted_edges)
     for edge in edge_list:
         g.add_edge(edge[0], edge[1], weight=edge[2])
 
     pos = nx.circular_layout(g)
     labels = nx.get_edge_attributes(g, 'weight')
-    nx.draw_networkx(g, pos, font_size=7, node_size=800, node_color="lightcoral", node_shape="o",
-                     edge_color="dodgerblue",
-                     style="solid", width=2)
-    nx.draw_networkx_edge_labels(g, pos, edge_labels=labels, with_labels=True, font_size=8, label_pos=0.3)
-    # plt.figure(figsize=(50, 50), dpi=80, facecolor='w', edgecolor='k')
-    # mng = plt.get_current_fig_manager()
-    # mng.window.state('zoomed')
+    nx.draw_networkx(g, pos, font_size=font_size, node_size=800, node_color="lightcoral", node_shape="o",
+                     edge_color="dodgerblue", style="solid", width=2, )
+    nx.draw_networkx_edge_labels(g, pos, edge_labels=labels, with_labels=True, font_size=font_size, label_pos=0.3)
 
     tmpfile = BytesIO()
+    plt.title('Connections of : {}'.format(users), fontsize=8)
     plt.savefig(tmpfile, format='png')
     encoded = base64.b64encode(tmpfile.getvalue()).decode('utf-8')
     html = '<div>' + '<img src=\'data:image/png;base64,{}\'>'.format(encoded) + '</div>'
@@ -66,12 +58,10 @@ def active_time_bar_chart(time_dict, gui=False, user='xxx', dataset_id='1'):
 
     y_pos = np.arange(len(hours))
     plt.bar(y_pos, activity, align='center', alpha=0.9)
-    plt.xticks(y_pos, hours)
-    plt.ylabel("Activity")
-    plt.xlabel("Hours")
-    plt.title("Most active times during day")
-    # mng = plt.get_current_fig_manager()
-    # mng.window.state('zoomed')
+    plt.xticks(y_pos, hours, fontsize=6)
+    plt.ylabel("Activity", fontsize=8)
+    plt.xlabel("Hours", fontsize=8)
+    plt.title("Most active times during day - user: " + user, fontsize=8)
 
     tmpfile = BytesIO()
     plt.savefig(tmpfile, format='png')

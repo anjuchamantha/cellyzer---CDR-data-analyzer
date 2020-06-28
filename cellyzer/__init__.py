@@ -1,7 +1,5 @@
-__all__ = ['core', 'io', 'utils', 'tests']
+__all__ = ['core', 'io', 'utils']
 
-from .io import io_func, read_csv, to_csv, to_json, read_call, read_msg, read_cell
+from .io import read_csv, to_csv, to_json, read_call, read_msg, read_cell, read_xls, read_json
 from .core import CallRecord, MessageRecord, CellRecord, CallDataSet, MessageDataSet, CellDataSet, User
 from . import utils, io, core, visualization, tools, matrix
-
-# __version__ = "0.5.3"

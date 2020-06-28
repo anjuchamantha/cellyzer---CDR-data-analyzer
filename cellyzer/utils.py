@@ -30,15 +30,10 @@ def print_dataset(dataset_obj, notebook=False, name="Dataset", rows=None, summer
         for record in records:
             dict_list.append(record.__dict__)
     header = list(dict_list[0].keys())
-    # header.insert(0, '')
-    # # print (header)
-    #
     rows = []
     for i in range(0, len(dict_list)):
         values = list(dict_list[i].values())
-        # values.insert(0, i + 1)
         rows.append(values)
-    # # print (rows)
     if notebook:
         print(tabulate.tabulate(rows, header, tablefmt='html'))
     else:

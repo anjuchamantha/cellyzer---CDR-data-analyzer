@@ -245,7 +245,7 @@ class CallMessageDataSet(DataSet):
         else:
             return connections
 
-    def visualize_connection_network(self, directed=True, users=[], gui=False, fig_id='1'):
+    def visualize_connection_network(self, directed=True, users=[], gui=False, fig_id='1', font_size=5):
         """
         Generates a graph with the connections within a given list of users.
         If the graph is directed the arrow head implies the direction of the call/message.
@@ -256,14 +256,14 @@ class CallMessageDataSet(DataSet):
         :param directed: boolean
         :param users: list
                 list of users
+        :param font_size: int
 
         :return: connections : list
                  directed : boolean
         """
         connections = self.get_connections(users, allow_duplicates=True)
         weighted_edge_list = tools.get_weighted_edge_list(connections, directed)
-        visualization.network_graph(weighted_edge_list, directed, gui, fig_id)
-        # return connections
+        visualization.network_graph(weighted_edge_list, directed, gui, fig_id, font_size, users)
 
     def get_most_active_time(self, user):
         """
@@ -385,9 +385,6 @@ class MessageDataSet(CallMessageDataSet):
                 contacts_dict[user2] = len(records)
             close_contacts = dict(sorted(contacts_dict.items(), key=itemgetter(1), reverse=True)[:int(top_contact)])
             return close_contacts
-
-    def get_frequenct_conversations(self):
-        print("Frequent conversations between ")
 
 
 class CellDataSet(DataSet):
@@ -536,7 +533,6 @@ class CellDataSet(DataSet):
         else:
             trips = []
             user_records = self._call_data_Set.get_records(str(user))
-            # utils.print_record_lists(user_records)
             for record in user_records:
                 trip = dict()
                 if str(user) == record.get_user():

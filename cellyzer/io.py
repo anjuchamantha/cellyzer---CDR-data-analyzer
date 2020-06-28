@@ -7,7 +7,6 @@ altering datasets (removing columns etc.)
 """
 
 import csv
-import io
 import xlrd
 import json
 import logging as log
@@ -16,7 +15,6 @@ from json import dumps
 import hashlib
 
 from dateutil.parser import parse
-from datetime import datetime
 
 from .core import DataSet, MessageDataSet, CallDataSet, CellDataSet, Record, CallRecord, MessageRecord, CellRecord
 from .tools import ColorHandler
@@ -24,11 +22,6 @@ from .utils import flatten
 
 log.getLogger().setLevel(log.WARN)
 log.getLogger().addHandler(ColorHandler())
-
-
-def io_func():
-    print("I am from io")
-    return
 
 
 def to_json(dataset_object, filename):
@@ -112,8 +105,6 @@ def to_csv(dataset_object, filename):
 
 
 def read_csv(filepath):
-    # print("         from a CSV file ...")
-
     """
      Load records from a csv file.
 
@@ -137,9 +128,6 @@ def read_csv(filepath):
                     for f in fieldnames:
                         record[f] = val[f]
                     record_list.append(record)
-
-                # for c in record_list:
-                #     print(c)
                 dataset_object = DataSet(record_list, fieldnames)
 
                 return dataset_object
@@ -201,8 +189,6 @@ def read_call(file_path="", file_type='csv', hash=True, decode_read="", splitted
                         for f in fieldnames:
                             call[f] = val[f]
                         call_list.append(call)
-                    # for c in call_list:
-                    #     print(c)
                     return create_call_obj(call_list, fieldnames, hash)
             elif file_type.lower() == 'xls' or file_type.lower() == 'xlsx':
                 return read_xls(file_path, hash)
@@ -251,7 +237,6 @@ def read_msg(file_path='', file_type='csv', hash=True, decode_read="", splitted_
                         msg[f] = ''
                     i += 1
                 msg_list.append(msg)
-            # print(msg_list)
             return create_msg_obj(msg_list, fieldnames, hash)
 
         try:
@@ -326,7 +311,6 @@ def read_cell(file_path='', call_csv_path=None, call_dataset_obj=None, file_type
                         cell[f] = ''
                     i += 1
                 cell_list.append(cell)
-            # print(call_list)
             return create_cell_obj(cell_list, fieldnames, call_data_set)
 
         try:
@@ -422,19 +406,16 @@ def read_json(filepath, call_data_set=None, hash=True):
                             fieldnames = data[key][0].keys()
                             for records in data[key]:
                                 record_list.append(records)
-                            # print(record_list)
                             return create_call_obj(record_list, fieldnames, hash)
                         elif key.lower() == 'messagerecords':
                             fieldnames = data[key][0].keys()
                             for records in data[key]:
                                 record_list.append(records)
-                            # print(record_list)
                             return create_msg_obj(record_list, fieldnames, hash)
                         elif key.lower() == 'cellrecords':
                             fieldnames = data[key][0].keys()
                             for records in data[key]:
                                 record_list.append(records)
-                            # print(record_list)
                             return create_cell_obj(record_list, fieldnames, call_data_set)
                         else:
                             log.warning("This File Has Invalid Inputs")
@@ -452,7 +433,6 @@ def hash_number(number):
         number = str(number)
         last3 = number[-3:]
         hash_val = str(hashlib.sha224(number[:7].encode()).hexdigest())
-        # print(hash_val[:6] + last3)
         return hash_val[:7] + last3
 
 
@@ -489,8 +469,6 @@ def create_call_obj(calls, fieldnames, hash):
                 elif 'cost' in key:
                     cost = call[key]
 
-            # print(user, other_user, direction, length, timestamp)
-
             call_record_obj = CallRecord(
                 user, other_user, direction, duration, timestamp, cell_id, cost, index=i)
             call_records.append(call_record_obj)
@@ -498,7 +476,7 @@ def create_call_obj(calls, fieldnames, hash):
         filtered_call_records, bad_records = parse_records(call_records, fieldnames_)
         call_dataset_obj = CallDataSet(filtered_call_records, fieldnames_)
 
-        print("[x]  Objects creation successful\n")
+        print("[x]  Dataset object creation successful\n")
         return call_dataset_obj
 
 
@@ -530,7 +508,6 @@ def create_msg_obj(messages, fieldnames, hash):
                     length = msg[key]
                 elif 'time' in key:
                     timestamp = msg[key]
-            # print(user, other_user, direction, length, timestamp)
 
             message_record_obj = MessageRecord(
                 user, other_user, direction, length, timestamp)
@@ -538,7 +515,7 @@ def create_msg_obj(messages, fieldnames, hash):
         filtered_message_records, bad_records = parse_records(msg_records, fieldnames)
         message_dataset_obj = MessageDataSet(filtered_message_records, fieldnames)
 
-        print("[x]  Objects creation successful\n")
+        print("[x]  Dataset object creation successful\n")
         return message_dataset_obj
 
 
@@ -568,7 +545,7 @@ def create_cell_obj(cells, fieldnames, call_data_set):
             cell_records.append(cell_record_obj)
         filtered_cell_records, bad_records = parse_records(cell_records, fieldnames)
         cell_dataset_obj = CellDataSet(filtered_cell_records, fieldnames, call_data_set)
-        print("[x]  Objects creation successful\n")
+        print("[x]  Dataset object creation successful\n")
         return cell_dataset_obj
 
 
@@ -733,7 +710,6 @@ def parse_records(records, fieldnames):
 
     elif 'latitude' in fieldnames:
         filtered_records, ignored_list, bad_records = filter_cells(records)
-    print(ignored_list)
     if ignored_list['all'] != 0:
         w = "{} record(s) were removed due to " \
             "missing or incomplete fields.".format(ignored_list['all'])
@@ -767,7 +743,6 @@ def xls_to_dict(workbook_url):
         filteredlist = float_to_int(row)
         rows.append(filteredlist)
     sheet_data = make_json_from_data(columns, rows)
-    # print(sheet_data)
     return sheet_data, columns
 
 
