@@ -25,7 +25,7 @@ user_record_list = messageDataSet.get_records(search_user1, search_user2)
 user_message_dataset = cz.MessageDataSet(user_record_list)
 cz.utils.print_dataset(user_message_dataset, name="New Message DataSet obj : User Records of %s" % search_user1 + " & " + search_user2)
 #save dataset as a csv file
-cz.io.to_csv(user_message_dataset,"records_of_2_users")
+cz.io.to_json(user_message_dataset,"records_of_2_users")
 # create a date time object with a timestamp string
 # date = cz.tools.get_datetime_from_timestamp("Mon Feb 11 07:08:49 +0000 1980")
 

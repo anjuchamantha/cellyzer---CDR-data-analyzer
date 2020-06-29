@@ -43,7 +43,7 @@ def to_json(dataset_object, filename):
             filename = filename + '.json'
 
         i = 0
-        records = dataset_object.get_records()
+        records = dataset_object.to_dict()
         obj_dict = OrderedDict([('Record:' + str(records.index(obj)), obj) for obj in records])
 
         with open(filename, 'w') as f:
