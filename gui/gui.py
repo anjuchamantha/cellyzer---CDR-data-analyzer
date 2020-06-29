@@ -1169,7 +1169,7 @@ def show_active_time(n_clicks, user_4):
                             style={'color': 'red', 'font-size': '20px', 'padding-left': '20px'})])
             else:
                 active_time = call_data.get_most_active_time(str(user_4))
-                cz.visualization.active_time_bar_chart(active_time, gui=True, dataset_id=str(user_4))
+                cz.visualization.active_time_bar_chart(active_time, gui=True, dataset_id=str(user_4),user=user_4)
             return table
 
     except Exception as e:
