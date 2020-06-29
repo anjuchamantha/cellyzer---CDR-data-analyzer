@@ -68,8 +68,14 @@ def to_csv(dataset_object, filename):
     else:
         print("[x]  Writing to CSV file ...")
 
-        data = [flatten(obj) for obj in dataset_object.get_records()]
-        fieldnames = dataset_object.fieldnames
+        data = [flatten(obj) for obj in dataset_object.to_dict()]
+        'fieldnames = dataset_object.get_fieldnames()'
+        if instance_type == "CallDataSet":
+            fieldnames = ["_user", "_other", "_direction", "_duration", "_timestamp", "_antenna_id", "_cost"]
+        elif instance_type == "MessageDataSet":
+            fieldnames = ["_user", "_other", "_direction", "_length", "_timestamp"]
+        elif instance_type == "CellDataSet":
+            fieldnames = ["_antenna_id","_latitude","_longitude"]
 
         if '.csv' not in filename:
             filename = filename + '.csv'
@@ -88,6 +94,7 @@ def to_csv(dataset_object, filename):
 
             for row in data:
                 row = dict((k, make_repr(v)) for k, v in row.items())
+                print(row)
                 w.writerow([make_repr(row.get(k, None)) for k in fieldnames])
 
         print("Successfully exported {} object(s) to {}".format(len(dataset_object.get_records()),
