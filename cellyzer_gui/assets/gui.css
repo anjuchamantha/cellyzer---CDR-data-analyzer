@@ -1,0 +1,558 @@
+
+.index_page_CELLYZER {
+    text-align: center;
+    color: orange;
+    background: black;
+    padding-top: 20px;
+    padding-bottom: 20px;      
+}
+
+.index_page_Dashboard {
+    color: white;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.index_page_dataset_div {
+    padding: 6px 8px 6px 20px;
+    text-decoration: none;
+    font-size: 22px;
+    color: white;
+    display: block;
+}
+
+.index_page_Dashboard_div {
+    height: 100%;
+    width: 240px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color:black;
+    overflow-x: hidden;
+    padding-top: 20px;
+}
+
+.index_page_Img {
+    width: 100%;
+    height: 500px;
+}
+
+.index_page_welcome {
+    position: absolute;
+    bottom: 200px;
+    background: rgba(0, 0, 0, 0.5);
+    color: orange;
+    width: 100%;
+    text-align: center;
+    font-weight: 900;
+    font-size: 20px;
+}
+
+.index_page_welcome_div {
+    position: relative;
+    max-width: 1300px;
+    margin: 0px auto;
+    color: #007bff;
+}
+
+.index_page_div {
+    margin-left: 222px;
+    padding: 0px 10px;
+}
+
+.index_dataset_CELLYZER {
+    text-align: center;
+    color: orange;
+    background: black;
+    padding-top: 20px;
+    padding-bottom: 20px;  
+}
+
+.index_dataset_Dasboard {
+    color: white;
+    padding-left: 20px;
+}
+
+.index_dataset_Call_Dataset {
+    padding: 6px 8px 6px 20px;
+    text-decoration: none;
+    font-size: 22px;
+    color: white;
+    display: block;
+    margin-left: 20px;
+}
+
+.index_dataset_Dashboard_div {
+    height: 100%;
+    width: 240px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color:#111;
+    overflow-x: hidden;
+    padding-top: 20px;
+    margin-top: 8px;
+}
+
+.index_dataset_add_call_data {
+    background: gray;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 50px;
+    color: white;
+    text-align: left;
+}
+
+.index_dataset_add_call_data_div {
+    width: 100%;
+    margin-top: 50px;
+    padding-left: 30px;
+}
+
+.index_datatset_calldata_button {
+    background-color: #4CAF50;
+    height: 50px;
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 6px;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+.index_dataset_upload_data {
+    margin-top: 30px;
+}
+
+.index_dataset_div {
+    margin-left: 250px;
+    padding: 10px 10px;
+    background-color: white;
+    height: 600px;
+}
+
+.call_dataset_input_div{
+    height: 500px;
+}
+
+.call_page_welcome_div {
+    position: relative;
+    max-width: 1300px;
+    margin: 20px 20px;
+    color: #007bff;
+    font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-weight: 300!important;
+}
+
+.call_dataset_div {
+    margin-left: 250px;
+    padding: 10px 10px;
+    background-color: white;
+    height: 600px;
+}
+
+
+.sample_call_data_cellyzer {
+    text-align: center;
+    color: orange;
+    background: black;
+    padding-top: 20px;
+    padding-bottom: 20px; 
+}
+
+.sample_call_dataset_Dashboard {
+    color: white;
+    padding-left: 20px;  
+}
+
+.sample_call_dataset_h5 {
+    padding: 6px 8px 6px 20px;
+    text-decoration: none;
+    font-size: 22px;
+    color: white;
+    display: block;
+}
+
+.sample_dataset_Dashboard_div {
+    height: 100%;
+    width: 240px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color:#111;
+    overflow-x: hidden;
+    padding-top: 20px;
+    margin-top: 8px;   
+}
+
+.sample_dataset_visualize {
+    width: 1065px;
+    margin-top: 50px;
+    padding-left: 0px;
+    margin-bottom: 40px;
+}
+
+.sample_call_data_visualize_option {
+    padding-left: 30px;
+    font-size: 22px;
+    display: block;
+    background: rgba(0, 0, 0, 0.664);
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+.sample_call_dataset_viewdata {
+    margin: 4px 6px;
+    margin-bottom: 20px;
+    cursor: pointer;
+
+}
+
+.sample_call_dataset_close {
+    margin: 4px 6px;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+.sample_call_dataset_view_div {
+    padding-left: 40px;
+}
+
+.sample_call_dataset_show{
+    padding-left: 40px;
+    margin-top: 30px;
+}
+
+.sample_call_dataset_show_all_users{
+    padding-left: 40px;
+    margin-top: 30px;
+}
+
+.sample_call_dataset_div {
+    margin-left: 222px;
+    padding: 0px 10px;   
+    padding-left: 28px; 
+}
+
+.index_cell_dataset_cellyzer {
+    text-align: center;
+    color: orange;
+    background: black;
+    padding-top: 20px;
+    padding-bottom: 20px; 
+}
+
+.index_cell_dataset_Dashboard{
+    color: white;
+    padding-left: 20px;
+}
+
+.index_cell_dataset_h5 {
+    padding: 6px 8px 6px 20px;
+    text-decoration: none;
+    font-size: 22px;
+    color: white;
+    display: block;
+}
+
+.index_cell_dataset_Dashboard_div {
+    height: 100%;
+    width: 240px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color:#111;
+    overflow-x: hidden;
+    padding-top: 20px;
+    margin-top: 8px;   
+}
+
+.index_cell_dataset_addcell {
+    background: gray;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 50px;
+    color: white;
+}
+
+.index_cell_dataset_addcell_div {
+    width: 700px;
+    margin-top: 50px;
+    padding-left: 30px;
+}
+
+.index_celldata_add_button {
+    background-color: #4CAF50;
+    height: 50px;
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 6px;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+.index_cell_dataset_upload_data {
+    margin-top: 30px;
+}
+
+.index_cell_dataset_div {
+    margin-left: 222px;
+    padding: 0px 10px;  
+}
+
+.sample_cell_data_cellyzer {
+    text-align: center;
+    color: orange;
+    background: black;
+    padding-top: 20px;
+    padding-bottom: 20px; 
+}
+
+.sample_cell_dataset_Dashboard {
+    color: white;
+    padding-left: 20px;  
+}
+
+.sample_cell_dataset_h5 {
+    padding: 6px 8px 6px 20px;
+    text-decoration: none;
+    font-size: 22px;
+    color: white;
+    display: block;
+}
+
+.sample_cell_dataset_Dashboard_div {
+    height: 100%;
+    width: 240px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color:#111;
+    overflow-x: hidden;
+    padding-top: 20px;
+    margin-top: 8px;   
+}
+
+.sample_cell_dataset_viewdata {
+    background-color: #4CAF50;
+    height: 50px;
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    margin: 4px 6px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    float: left;
+}
+
+.sample_cell_dataset_close {
+    background-color: #4CAF50;
+    height: 50px;
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    margin: 4px 6px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    float: right;
+}
+
+.sample_cell_dataset_view_div {
+    padding-left: 30px;
+}
+
+.sample_cell_dataset_show{
+    padding-left: 20px;
+    margin-top: 30px;
+}
+
+.sample_cell_dataset_div {
+    margin-left: 222px;
+    padding: 0px 10px;   
+}
+
+.index_message_dataset_cellyzer {
+    text-align: center;
+    color: orange;
+    background: black;
+    padding-top: 20px;
+    padding-bottom: 20px; 
+}
+
+.index_message_dataset_Dashboard{
+    color: white;
+    padding-left: 20px;
+}
+
+.index_message_dataset_h5 {
+    padding: 6px 8px 6px 20px;
+    text-decoration: none;
+    font-size: 22px;
+    color: white;
+    display: block;
+}
+
+.index_message_dataset_Dashboard_div {
+    height: 100%;
+    width: 240px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color:#111;
+    overflow-x: hidden;
+    padding-top: 20px;
+    margin-top: 8px;   
+}
+
+.index_message_dataset_addmessage {
+    background: gray;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 50px;
+    color: white;
+}
+
+.index_message_dataset_addmessage_div {
+    width: 700px;
+    margin-top: 50px;
+    padding-left: 30px;
+}
+
+.index_messagedata_add_button {
+    background-color: #4CAF50;
+    height: 50px;
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 6px;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+.index_message_dataset_upload_data {
+    margin-top: 30px;
+}
+
+.index_message_dataset_div {
+    margin-left: 222px;
+    padding: 0px 10px;  
+}
+
+.sample_message_data_cellyzer {
+    text-align: center;
+    color: orange;
+    background: black;
+    padding-top: 20px;
+    padding-bottom: 20px; 
+}
+
+.sample_message_dataset_Dashboard {
+    color: white;
+    padding-left: 20px;  
+}
+
+.sample_message_dataset_h5 {
+    padding: 6px 8px 6px 20px;
+    text-decoration: none;
+    font-size: 22px;
+    color: white;
+    display: block;
+}
+
+.sample_message_dataset_Dashboard_div {
+    height: 100%;
+    width: 240px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color:#111;
+    overflow-x: hidden;
+    padding-top: 20px;
+    margin-top: 8px;   
+}
+
+.sample_message_dataset_viewdata {
+    background-color: #4CAF50;
+    height: 50px;
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    margin: 4px 6px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    float: left;
+}
+
+.sample_message_dataset_close {
+    background-color: #4CAF50;
+    height: 50px;
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    margin: 4px 6px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    float: right;
+}
+
+.sample_message_dataset_view_div {
+    padding-left: 30px;
+}
+
+.sample_message_dataset_show{
+    padding-left: 20px;
+    margin-top: 30px;
+}
+
+.sample_message_dataset_div {
+    margin-left: 222px;
+    padding: 0px 10px;   
+}
+
+.sample_call_visualize_all_user {
+    color: orange;
+    background: black;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 700px;
+    padding-left: 90px;
+}
+
+.index_page_dataset_div_all_user {
+    padding-left: 40px;
+    text-decoration: none;
+    font-size: 22px;
+    color: white;
+    display: block;
+}
+
+.index_dataset_cell_record_div {
+    width: 200px;
+    margin-top: 50px;
+    padding-left: 30px;
+}

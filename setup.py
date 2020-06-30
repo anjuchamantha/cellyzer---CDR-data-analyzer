@@ -13,8 +13,8 @@ setup(
     description="A CDR(Call Data Records) data analyzing library",
     long_description=readme(),
     long_description_content_type="text/markdown",
-    url="https://anjuchamantha.github.io/cellyzer---CDR-data-analyzer/",
-    PROJECT_URLS={
+    url="https://github.com/anjuchamantha/cellyzer---CDR-data-analyzer",
+    project_urls={
         "Documentation": "https://anjuchamantha.github.io/cellyzer---CDR-data-analyzer/",
         "Source Code": "https://github.com/anjuchamantha/cellyzer---CDR-data-analyzer",
     },
