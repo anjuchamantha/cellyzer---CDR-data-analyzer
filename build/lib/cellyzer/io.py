@@ -26,16 +26,11 @@ log.getLogger().addHandler(ColorHandler())
 
 def to_json(dataset_object, filename):
     """
-         write demo_datasets object to a json file.
-
-        Parameters
-        ----------
-        objects : list
-            List of objects to be exported.
-        filename : string
-            File to export to.
-
-        """
+    Write dataset object to a json file
+    :param dataset_object: dataset object created
+    :param filename: name of the dataset file
+    :return: None
+    """
     instance_type = type(dataset_object).__name__
     if instance_type != "CallDataSet" and instance_type != "MessageDataSet" and instance_type != "CellDataSet":
         raise TypeError
@@ -48,7 +43,7 @@ def to_json(dataset_object, filename):
             filename = filename + '.json'
 
         i = 0
-        records = dataset_object.get_records()
+        records = dataset_object.to_dict()
         obj_dict = OrderedDict([('Record:' + str(records.index(obj)), obj) for obj in records])
 
         with open(filename, 'w') as f:
@@ -60,16 +55,11 @@ def to_json(dataset_object, filename):
 
 def to_csv(dataset_object, filename):
     """
-            write demo_datasets object to a csv file.
-
-            Parameters
-            ----------
-            objects : list
-                List of objects to be exported.
-            filename : string
-                File to export to.
-
-            """
+    Write a dataset object to a csv file
+    :param dataset_object: dataset object created
+    :param filename: name of the dataset file
+    :return: None
+    """
     instance_type = type(dataset_object).__name__
     if instance_type != "CallDataSet" and instance_type != "MessageDataSet" and instance_type != "CellDataSet":
         raise TypeError
@@ -78,8 +68,14 @@ def to_csv(dataset_object, filename):
     else:
         print("[x]  Writing to CSV file ...")
 
-        data = [flatten(obj) for obj in dataset_object.get_records()]
-        fieldnames = dataset_object.fieldnames
+        data = [flatten(obj) for obj in dataset_object.to_dict()]
+        'fieldnames = dataset_object.get_fieldnames()'
+        if instance_type == "CallDataSet":
+            fieldnames = ["_user", "_other", "_direction", "_duration", "_timestamp", "_antenna_id", "_cost"]
+        elif instance_type == "MessageDataSet":
+            fieldnames = ["_user", "_other", "_direction", "_length", "_timestamp"]
+        elif instance_type == "CellDataSet":
+            fieldnames = ["_antenna_id","_latitude","_longitude"]
 
         if '.csv' not in filename:
             filename = filename + '.csv'
@@ -98,6 +94,7 @@ def to_csv(dataset_object, filename):
 
             for row in data:
                 row = dict((k, make_repr(v)) for k, v in row.items())
+                print(row)
                 w.writerow([make_repr(row.get(k, None)) for k in fieldnames])
 
         print("Successfully exported {} object(s) to {}".format(len(dataset_object.get_records()),
@@ -138,21 +135,15 @@ def read_csv(filepath):
 
 
 def read_call(file_path="", file_type='csv', hash=True, decode_read="", splitted_line=None):
+    """
+    Loads call records dataset and returns a call dataset object
+    :param file_path: file path of the dataset
+    :param file_type: csv,xlsx,json file types are accepted
+    :param hash: hash user phone numbers for privacy
+    :return: CallDataset object
+    """
     print("[x]  Reading Call Data")
 
-    """
-     Load call records from a file.
-
-    Parameters
-    ----------
-    path : str
-        Path of the file.
-
-    type : str
-        Type of the file. (CSV,xls,json etc)
-
-
-    """
     if type(file_path) != str or type(file_type) != str or type(hash) != bool:
         raise TypeError
     elif type(splitted_line) != list and splitted_line is not None:
@@ -202,21 +193,15 @@ def read_call(file_path="", file_type='csv', hash=True, decode_read="", splitted
 
 
 def read_msg(file_path='', file_type='csv', hash=True, decode_read="", splitted_line=None):
+    """
+    Loads message records dataset and returns a message dataset object
+    :param file_path: file path of the dataset
+    :param file_type: csv,xlsx,json file types are accepted
+    :param hash: hash user phone numbers for privacy
+    :return: MessageDataset object
+    """
     print("[x]  Reading Message Data...")
 
-    """
-     Load message records from a file.
-
-    Parameters
-    ----------
-    path : str
-        Path of the file.
-
-    type : str
-        Type of the file. (CSV,xls,json etc)
-
-
-    """
     if type(file_path) != str or type(file_type) != str or type(hash) != bool:
         raise TypeError
     elif type(splitted_line) != list and splitted_line is not None:
@@ -266,21 +251,18 @@ def read_msg(file_path='', file_type='csv', hash=True, decode_read="", splitted_
 
 def read_cell(file_path='', call_csv_path=None, call_dataset_obj=None, file_type='csv', decode_read="",
               splitted_line=None):
+    """
+    Loads cell dataset and returns a cell dataset. In order to adda a cell-dataset,
+     a call dataset object or call dataset filepath is also needed
+
+    :param file_path: file path of the dataset
+    :param call_csv_path: file path of the call dataset
+    :param call_dataset_obj: call dataset object
+    :param file_type: csv,xlsx,json file types are accepted
+    :return: CellDataset object
+    """
     print("[x]  Reading Cell Data")
 
-    """
-    Load cell records from a file.
-
-    Parameters
-    ----------
-    path : str
-        Path of the file.
-
-    type : str
-        Type of the file. (CSV,xls,json etc)
-
-
-    """
     if type(file_path) != str or type(file_type) != str:
         raise TypeError
     elif type(call_csv_path) != str and call_csv_path is not None:
@@ -355,17 +337,13 @@ def read_cell(file_path='', call_csv_path=None, call_dataset_obj=None, file_type
 
 
 def read_xls(filepath, call_data_set=None, hash=True):
+    """
+    Read a dataset from a excel file
+    :param filepath: path of the dataset file
+    :return:
+    """
     print("[x]  Reading Data From Excel File")
 
-    """
-    Load records from a excel file.
-
-    Parameters
-    ----------
-    path : str
-        Path of the file.
-
-    """
     if type(filepath) != str or type(hash) != bool:
         raise TypeError
     else:

@@ -23,6 +23,17 @@ except OSError as error:
 
 
 def network_graph(edge_list, directed, gui, fig_id, font_size=6, users="All"):
+    """
+    Visualize the connections of the given list of users in a graph
+    Nodes are users and Edges are the connections
+    The arrow head from A to B represent a call from user A to B
+    The edge value near the arrow head represents the number of calls made from A to B
+    :param edge_list: list of 2 user couples with 1st user made a call to the 2nd
+    :param directed: Bool value to switch between directed and undirected graphs
+    :param fig_id: unique ID to the figure
+    :param users: list of users
+    :return: None, visualizes the graph in a web page
+    """
     plt.figure(fig_id)
     if directed:
         g = nx.DiGraph()
@@ -48,6 +59,14 @@ def network_graph(edge_list, directed, gui, fig_id, font_size=6, users="All"):
 
 
 def active_time_bar_chart(time_dict, gui=False, user='xxx', dataset_id='1'):
+    """
+    Generates a bar chart of the active time of a given user.
+    X-axis represents the time(hour of the day)
+    Y-axis number of records
+    :param time_dict: Dictionary of hour and activities as key,value pairs
+    :param user: Given User
+    :return: None, visualizes the chart in a web page
+    """
     fig_id = user + dataset_id
     plt.figure(fig_id)
     hours = []
@@ -73,6 +92,14 @@ def active_time_bar_chart(time_dict, gui=False, user='xxx', dataset_id='1'):
 
 
 def cell_population_visualization(cell_list, map_name="population_map", notebook=False):
+    """
+    Visualize a map with population around cells
+
+    :param cell_list: cells and its respective number of calls
+    :param map_name: name of the map to be displayed
+    :param notebook: set to True of runs in a notebook
+    :return: shows a map with population around cells
+    """
     location = [cell_list[0]['latitude'], cell_list[0]['longitude']]
     map1 = folium.Map(location=location, zoom_start=12)
     marker_cluster = folium.plugins.MarkerCluster().add_to(map1)
@@ -94,6 +121,15 @@ def cell_population_visualization(cell_list, map_name="population_map", notebook
 
 
 def view_home_work_locations(home_location=None, work_location=None, map_name="home_work_location", notebook=False):
+    """
+    Visualize a map of home and work locations
+    :param home_location: home locations
+    :param work_location: work locations
+    :param map_name: name of the map to be displayed
+    :param notebook: set True if run in notebook
+    :return: shows a map with home/work locations around cells
+    """
+
     if home_location is None and work_location is None:
         print('XXX home location or work location is not provided with data inputs XXX')
     else:
@@ -138,6 +174,13 @@ def create_marked_map(location_list, location="location", value="timestamp"):
 
 
 def trip_visualization(locations, map_name="trip_map", notebook=False):
+    """
+    Visualize the trips/routes of a given user in a map
+    :param locations: Locations visited by the user (sorted in timestamp)
+    :param map_name: name of the map to be displayed
+    :param notebook: set true if runs in notebook
+    :return: shows a map of routes of the user
+    """
     if not locations:
         print("No trips to visualize")
         return None
