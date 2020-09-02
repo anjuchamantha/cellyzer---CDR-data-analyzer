@@ -65,5 +65,5 @@ SOFTWARE.
 
 ## Documentation
 
-The official documentation is hosted on https://github.com/anjuchamantha/cellyzer---CDR-data-analyzer. It includes a demo, a detailed reference for all functions, and guides on how to use **CELLYZER**. 
+The official documentation is hosted on https://anjuchamantha.github.io/cellyzer---CDR-data-analyzer/. It includes a demo, a detailed reference for all functions, and guides on how to use **CELLYZER**. 
 
