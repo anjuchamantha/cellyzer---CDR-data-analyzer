@@ -30,7 +30,7 @@ setup(
     include_package_data=True,
     install_requires=[
         "xlrd == 1.2.0",
-        "numpy == 1.18.2",
+        "numpy == 1.22.0",
         "tabulate == 0.8.7",
         "datetime == 4.3",
         "networkx == 2.4",
